@@ -43,7 +43,7 @@ git clone git@github.com:hosoneu/his_Vue.git
 
 2. 切到下载后的目录
 ``` bash
-cd his-Vue
+cd his_Vue
 ```
 3. 安装依赖
 ````bash
