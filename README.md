@@ -37,7 +37,7 @@ npm install -g @vue/cli --registry https://registry.npm.taobao.org
 3. 下载并安装webstorm
 
 #### 1.2 开始构建
-0.配置一个奇怪配置
+0. 配置一个奇怪配置
 ````
 npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
 ````
