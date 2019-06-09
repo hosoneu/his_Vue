@@ -30,7 +30,7 @@ IDE统一采用WebStorm
 
 2. 安装vue脚手架(vue-cli)
 ````bash
-npm install -g @vue/cli
+npm install -g @vue/cli --registry https://registry.npm.taobao.org
 ````
 
 3. 下载并安装webstorm
