@@ -29,21 +29,22 @@ IDE统一采用WebStorm
 1. 安装node获得附带的npm(此步骤略)
 
 2. 安装vue脚手架(vue-cli)
-``bash
+````bash
 npm install vue-cli -g
-``
+````
 
 3. 下载并安装webstorm
 
 #### 1.2 开始构建
 1. git clone
 ```bash
-git clone git://github.com/coreui/coreui-free-vue-admin-template.git his-vue
+git clone git@github.com:hosoneu/his_Vue.git
 ```
 
-2. 切到下载后的目录 
-cd his-vue
-
+2. 切到下载后的目录
+``` bash
+cd his-Vue
+```
 3. 安装依赖
 ````bash
 npm install --registry https://registry.npm.taobao.org --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
