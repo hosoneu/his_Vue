@@ -30,7 +30,7 @@ IDE统一采用WebStorm
 
 2. 安装vue脚手架(vue-cli)
 ````bash
-npm install vue-cli -g
+npm install -g @vue/cli
 ````
 
 3. 下载并安装webstorm
