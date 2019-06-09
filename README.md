@@ -29,6 +29,7 @@ IDE统一采用WebStorm
 1. 安装node获得附带的npm(此步骤略)
 
 2. 安装vue脚手架(vue-cli)
+参考[官方文档](https://cli.vuejs.org/zh/guide/installation.html)
 ````bash
 npm install -g @vue/cli --registry https://registry.npm.taobao.org
 ````
