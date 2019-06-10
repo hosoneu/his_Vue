@@ -5,6 +5,11 @@ import Router from 'vue-router'
 import home from './home'
 import common from './common'
 import doctor from './doctor'
+// import basicInfo from './basicInfo'
+// import pharmacy from './pharmacy'
+// import register from './register'
+// import tech from './tech'
+
 
 Vue.use(Router);
 
@@ -16,5 +21,9 @@ export default new Router({
     home,
     common,
     doctor,
+    // basicInfo,
+    // tech,
+    // register,
+    // pharmacy
   ]
 })
