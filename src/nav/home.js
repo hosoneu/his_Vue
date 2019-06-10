@@ -1,7 +1,7 @@
 export default [
   {
     name: 'Dashboard',
-    url: '/dashboard',
+    url: '/home/dashboard',
     icon: 'icon-speedometer',
     badge: {
       variant: 'primary',
