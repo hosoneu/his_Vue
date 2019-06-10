@@ -1,6 +1,6 @@
-//前端测试端口
+import Mock from 'mockjs'
+
 export default function () {
-    const Mock = require('mockjs')
     const Random = Mock.Random;
     Mock.mock('/api/data', () => {//当post或get请求到/api/data路由时Mock会拦截请求并返回上面的数据
         let list = [];
@@ -19,5 +19,4 @@ export default function () {
     });
     Mock.mock('/api/login',{
           'code|1': true,});
-    //若需要mock其他端口，请在此处添加
 }

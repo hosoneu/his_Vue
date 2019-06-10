@@ -77,7 +77,7 @@ npm run serve
 
 - `App.vue`: 根组件
 
-- `_nav.js`: 定义导航栏组件的路由配置
+- `nav`: 配置导航栏
 
 - `assets`: 静态文件
 

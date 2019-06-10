@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import BootstrapVue from 'bootstrap-vue'
-import Register from '@/views/pages/Register'
+import Register from '@/views/common/Register'
 
 Vue.use(BootstrapVue)
 
