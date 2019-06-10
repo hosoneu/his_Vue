@@ -84,7 +84,10 @@ computed:{
 
     submitLogin(){
       console.log("click");
-      this.$post('/login').then(res=>{
+      this.$post('/login', {
+        username: this.username,
+        password: this.password
+      }).then(res=>{
         console.log(res);
         if(res.code === true){
           if(this.curr_user_type == 0){
