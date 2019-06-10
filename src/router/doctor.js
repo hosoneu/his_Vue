@@ -1,8 +1,8 @@
 // Containers
-const DefaultContainer = () => import('@/containers/DefaultContainer')
+const DefaultContainer = () => import('../containers/DefaultContainer');
 
 //Doctors
-const DoctorHome = () => import('@/views/doctorWorkspace/doctorHome')
+const DoctorHome = () => import('../views/doctor/doctorHome');
 
 export default {
   path:'/doctor',

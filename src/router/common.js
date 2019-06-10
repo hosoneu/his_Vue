@@ -1,7 +1,7 @@
-const Page404 = () => import('@/views/pages/Page404')
-const Page500 = () => import('@/views/pages/Page500')
-const Login = () => import('@/views/pages/Login')
-const Register = () => import('@/views/pages/Register')
+const Page404 = () => import('../views/common/Page404');
+const Page500 = () => import('../views/common/Page500');
+const Login = () => import('../views/common/Login');
+const Register = () => import('../views/common/Register');
 
 
 export default {
