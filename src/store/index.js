@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import doctor from './dockerWorkspace'
+import doctor from './doctor'
 import common from './common'
 
 Vue.use(Vuex);
