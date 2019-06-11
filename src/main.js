@@ -20,7 +20,9 @@ Vue.use(BootstrapVue);
 Vue.use(VeeValidate);
 Vue.use(Vuex);
 
-start_mock();
+if (process.env.NODE_ENV === 'development') {
+  start_mock();
+}
 
 new Vue({
   el: '#app',
