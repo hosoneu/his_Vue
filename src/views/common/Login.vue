@@ -90,11 +90,7 @@ computed:{
       }).then(res=>{
         console.log(res);
         if(res.code === true){
-          if(this.curr_user_type == 0){
-            this.$router.push("/home");
-          }else{
-            this.$router.push("/doctor")
-          }
+          this.$router.push("/" + this.curr_user_type);
         }else{
           this.alertLoginFail();
         }
