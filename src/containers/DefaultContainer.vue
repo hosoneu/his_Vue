@@ -6,7 +6,7 @@
         <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
       </b-link>
       <b-navbar-nav class="d-md-down-none">
-        <b-nav-item v-for="item in nav" :key ="item" class="px-3" :to="item.url">
+        <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url">
           {{item.name}}
         </b-nav-item>
       </b-navbar-nav>
@@ -16,7 +16,7 @@
     </AppHeader>
     <div class="app-body">
       <main class="main">
-        <Breadcrumb :list="list"/>
+        <div class="row mt-3"></div>
         <div class="container-fluid">
           <router-view></router-view>
         </div>
@@ -29,8 +29,7 @@
     <TheFooter>
       <!--footer-->
       <div>
-        <a href="https://coreui.io">CoreUI</a>
-        <span class="ml-1">&copy; 2018 creativeLabs.</span>
+        <span class="ml-1">Copyright &copy; 2019 <a href="https://coreui.io">HOSO</a>.</span>
       </div>
       <div class="ml-auto">
         <span class="mr-1">Powered by</span>
@@ -71,9 +70,6 @@ export default {
   computed: {
     name () {
       return this.$route.name
-    },
-    list () {
-      return this.$route.matched.filter((route) => route.name || route.meta.label )
     },
     ...mapState('common', ['curr_user_type']),
     nav(){
