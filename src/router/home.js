@@ -68,7 +68,7 @@ export default {
     },
     {
       path: 'theme',
-      redirect: '/theme/colors',
+      redirect: '/home/theme/colors',
       name: 'Theme',
       component: {
         render(c) {
@@ -121,7 +121,7 @@ export default {
     },
     {
       path: 'base',
-      redirect: '/base/cards',
+      redirect: '/home/base/cards',
       name: 'Base',
       component: {
         render(c) {
@@ -213,7 +213,7 @@ export default {
     },
     {
       path: 'buttons',
-      redirect: '/buttons/standard-buttons',
+      redirect: '/home/buttons/standard-buttons',
       name: 'Buttons',
       component: {
         render(c) {
@@ -245,7 +245,7 @@ export default {
     },
     {
       path: 'icons',
-      redirect: '/icons/font-awesome',
+      redirect: '/home/icons/font-awesome',
       name: 'Icons',
       component: {
         render(c) {
@@ -277,7 +277,7 @@ export default {
     },
     {
       path: 'notifications',
-      redirect: '/notifications/alerts',
+      redirect: '/home/notifications/alerts',
       name: 'Notifications',
       component: {
         render(c) {
