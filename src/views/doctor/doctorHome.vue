@@ -23,7 +23,7 @@
           return{
             isBusy: false,
             fields: [
-              {key: 'id', label: 'id'},
+              {key: 'id', label: 'id', sortable: true},
               {key: 'user_name', label: '姓名', sortable: true},
               {key: 'status', label:'状态', sortable: true},
             ],
