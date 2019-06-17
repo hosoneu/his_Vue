@@ -1,6 +1,6 @@
 <template>
         <b-card header="患者列表">
-          <b-table :items="m_items" :fields="m_fields">
+          <b-table :items="initialItems" :fields="tableFields" :busy="isBusy">
             <template slot="status" slot-scope="data">
               <b-badge :variant="data.item.status">{{data.item.status}}</b-badge>
             </template>
@@ -14,15 +14,14 @@
 </template>
 <script>
     export default {
-      props:['initialFields', 'initialItems'],
+      props:['initialFields', 'initialItems','isBusy'],
       data() {
         return {
           innerFields: ['选择'],
-          m_items: this.initialItems
         }
       },
       computed: {
-          m_fields :function(){
+          tableFields :function(){
             return this.initialFields.concat(this.innerFields);
           }
       },
