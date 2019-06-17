@@ -19,10 +19,10 @@ export default function () {
         };
     });
     Mock.mock('/api/login',(data)=>{
-      console.log(data);
+      let param = JSON.parse(data.body);
       return{
         'code': true,
-        'user_type':userType.indexOf(data.body.user_name)
+        'user_type':userType.indexOf(param.username)
       }
     });
 }

@@ -4,8 +4,8 @@ export default {
     curr_user_type:'home'
   },
   mutations:{
-    set_curr_user_type(user_type){
-      this.state.curr_user_type = user_type
+    set_curr_user_type(state, user_type){
+      state.curr_user_type = user_type
     }
   }
 }

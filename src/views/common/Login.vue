@@ -57,7 +57,7 @@
 
 <script>
   import {mapState, mapMutations} from 'vuex'
-  import userType from '../config/userType'
+  import userType from '../../config/userType'
   export default {
   name: 'Login',
   data:function() {
@@ -93,7 +93,7 @@ computed:{
       console.log(data);
       this.$post('/login', data).then(res=>{
         console.log(res);
-        if(res.code === true){
+        if(res.code === true && res.user_type >=0 && res.user_type <= userType.length){
           this.set_curr_user_type(userType[res.user_type]);
           this.$router.push("/" + this.curr_user_type);
         }else{
