@@ -7,7 +7,7 @@
     </b-row>
     <b-row>
       <b-col lg="4">
-        <patient-table @select_user="selectUser" :is-busy="isBusy" :initial-fields="fields" :initial-items="items"></patient-table>
+        <patient-table @select_user="selectUser" :is-busy="isBusy" :initial-fields="fields" :initial-items="items" :per-page="3" :current-page="1"></patient-table>
       </b-col>
     </b-row>
   </div>
