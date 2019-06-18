@@ -76,6 +76,7 @@
         },
         async changeTab(index){
           this.currentTab = index;
+          this.currentPage = 1;
           await this.countPatient();
           await this.getPatientList();
         },
