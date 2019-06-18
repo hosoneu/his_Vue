@@ -1,7 +1,6 @@
 <template>
         <b-card header="患者列表">
-          <b-table id='user-table' :items="items" :fields="tableFields" :busy="isBusy" :per-page="perPage"
-                   :current-page="currentPage">
+          <b-table id='user-table' :items="items" :fields="tableFields" :busy="isBusy">
             <template slot="status" slot-scope="data">
               <b-badge :variant="data.item.status">{{data.item.status}}</b-badge>
             </template>
@@ -54,7 +53,9 @@
       mounted: async function(){
         console.log("mounted");
         await this.countPatient();
+        console.log("await this.countPatient");
         await this.getPatientList(1);
+        console.log("await this.getPatientList");
       },
       computed: {
           tableFields :function(){
@@ -74,7 +75,7 @@
           this.$get(this.getPatientApi, data).then(res=>{
             console.log(res);
             if(res.code === true){
-              this.items = this.items.concat(res.data);
+              this.items = res.data;
               this.isBusy = false;
             }else{
               console.log("加载失败");
