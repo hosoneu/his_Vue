@@ -11,8 +11,7 @@
           @select_user="selectUser"
           :initial-fields="fields"
           :per-page="5"
-          :getPatientApi="getPatientAPI"
-          :countPatientApi="countPatientAPI"
+          :tabs="tabs"
         ></patient-table>
       </b-col>
     </b-row>
@@ -27,8 +26,20 @@
       components: {PatientInfo, PatientTable},
       data: () => {
           return{
-            getPatientAPI:"getPatientList",
-            countPatientAPI:"countPatientList",
+            tabs:[{
+              title:"个人",
+              getPatientApi:"getPatientList",
+              countPatientApi:"countPatientList",
+              getPatientParams:{},
+              countPatientParams:{}
+              },{
+              title:"科室",
+              getPatientApi:"getPatientList",
+              countPatientApi:"countPatientList",
+              getPatientParams:{},
+              countPatientParams:{}
+            }
+            ],
             fields: [
               {key: 'id', label: 'id', sortable: true},
               {key: 'user_name', label: '姓名', sortable: true},

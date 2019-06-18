@@ -8,7 +8,7 @@ export default function () {
   });
   Mock.mock(RegExp('/api/getPatientList' + ".*"), "get", ()=>{
     let list = [];
-    for(let i = 0; i < 5; i++) {
+    for(let i = 0; i < 4; i++) {
       let listObject = {
         id: Random.integer(100, 9999),
         user_name: Random.cword(2, 4),

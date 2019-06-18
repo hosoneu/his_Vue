@@ -1,22 +1,26 @@
 <template>
         <b-card header="患者列表">
-          <b-table id='user-table' :items="items" :fields="tableFields" :busy="isBusy">
-            <template slot="status" slot-scope="data">
-              <b-badge :variant="data.item.status">{{data.item.status}}</b-badge>
-            </template>
-            <template slot="选择" slot-scope="data">
-              <b-button variant="outline-primary" size="sm" @click="selectUser(data.item)" class="mr-2">
-                选择
-              </b-button>
-            </template>
-          </b-table>
-          <b-pagination
-            @change="getPatientList"
-            v-model="currentPage"
-            :total-rows="total"
-            :per-page="perPage"
-            aria-controls="user-table"
-          ></b-pagination>
+          <b-tabs @input="changeTab">
+            <b-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :active="index === currentTab">
+              <b-table :items="items" :fields="tableFields" :busy="isBusy">
+                <template slot="status" slot-scope="data">
+                  <b-badge :variant="data.item.status">{{data.item.status}}</b-badge>
+                </template>
+                <template slot="选择" slot-scope="data">
+                  <b-button variant="outline-primary" size="sm" @click="selectUser(data.item)" class="mr-2">
+                    选择
+                  </b-button>
+                </template>
+              </b-table>
+              <b-pagination
+                @change="getPatientList"
+                v-model="currentPage"
+                :total-rows="total"
+                :per-page="perPage"
+                aria-controls="user-table"
+              ></b-pagination>
+            </b-tab>
+          </b-tabs>
         </b-card>
 </template>
 <script>
@@ -30,16 +34,18 @@
           type: Number,
           default: 5
         },
-        getPatientApi: String,
-        getPatientParams:{
-          type: Object,
-          default:()=>{return {}}
+        tabs:{
+          type:Array,
+          default:()=>{return [
+              {
+                title:"患者",
+                getPatientApi: "getPatientList",
+                getPatientParams:{},
+                countPatientApi: "countPatientList",
+                countPatientParams:{}
+              }
+          ]}
         },
-        countPatientApi: String,
-        countPatientParams:{
-          type:Object,
-          default:()=>{return {}}
-        }
       },
       data() {
         return {
@@ -48,6 +54,7 @@
           items:[],
           total:10,
           currentPage:1,
+          currentTab:0
         }
       },
       mounted: async function(){
@@ -63,16 +70,21 @@
           }
       },
       methods:{
-        selectUser (user) {
+        selectUser(user){
           console.log(user);
           this.$emit('select_user', user);
         },
+        async changeTab(index){
+          this.currentTab = index;
+          await this.countPatient();
+          await this.getPatientList();
+        },
         getPatientList(page){
           console.log("请求患者列表");
-          let data = this.getPatientParams;
+          let data = this.tabs[this.currentTab].getPatientParams;
           data['page'] = page;
           console.log(data);
-          this.$get(this.getPatientApi, data).then(res=>{
+          this.$get(this.tabs[this.currentTab].getPatientApi, data).then(res=>{
             console.log(res);
             if(res.code === true){
               this.items = res.data;
@@ -84,7 +96,7 @@
         },
         countPatient(){
           console.log("请求患者总数");
-          this.$get(this.countPatientApi, this.countPatientParams).then(res=>{
+          this.$get(this.tabs[this.currentTab].countPatientApi, this.tabs[this.currentTab].countPatientParams).then(res=>{
             console.log(res);
             if(res.code === true){
               this.total = res.total;
