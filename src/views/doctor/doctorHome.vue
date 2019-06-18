@@ -27,8 +27,8 @@
       components: {PatientInfo, PatientTable},
       data: () => {
           return{
-            getPatientAPI:"",
-            countPatientAPI:"",
+            getPatientAPI:"getPatientList",
+            countPatientAPI:"countPatientList",
             fields: [
               {key: 'id', label: 'id', sortable: true},
               {key: 'user_name', label: '姓名', sortable: true},

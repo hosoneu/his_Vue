@@ -2,7 +2,10 @@ import Mock from "mockjs";
 
 export default function () {
   const Random = Mock.Random;
-
+  Mock.mock(RegExp('/api/countPatientList' + ".*"), "get", {
+    code:true,
+    total:100
+  });
   Mock.mock(RegExp('/api/getPatientList' + ".*"), "get", ()=>{
     let list = [];
     for(let i = 0; i < 5; i++) {
