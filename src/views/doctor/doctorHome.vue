@@ -1,150 +1,153 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col-6>
-        <b-table class="mb-0 table-outline" responsive="sm" hover :items="tableItems" :fields="tableFields" head-variant="light">
-          <div slot="avatar" class="avatar" slot-scope="item">
-            <img :src="item.value.url" class="img-avatar" alt="">
-            <span class="avatar-status" v-bind:class="{ 'bg-success': item.value.status == 'success',  'bg-warning': item.value.status == 'warning', 'bg-danger': item.value.status == 'danger', 'bg-secondary': item.value.status == '' }"></span>
-          </div>
-          <div slot="user" slot-scope="item">
-            <div>{{item.value.name}}</div>
-            <div class="small text-muted">
-                <span>
-                  <template v-if="item.value.new">New</template>
-                  <template v-else>Recurring</template>
-                </span> | Registered: {{item.value.registered}}
-            </div>
-          </div>
-          <i slot="country" class="h4 mb-0" :class="flag(item.value.flag)" slot-scope="item" :title="item.value.flag" :id="item.value.flag"></i>
-          <i class="flag-icon flag-icon-pw h1" title="pw" id="pw"></i>
-          <div slot="usage" slot-scope="item">
-            <div class="clearfix">
-              <div class="float-left">
-                <strong>{{item.value.value}}%</strong>
+      <b-col lg="12">
+        <patient-info :initial-user="selected_items" ></patient-info>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col lg="4">
+        <patient-table
+          @select_user="selectUser"
+          :initial-fields="fields"
+          :per-page="5"
+          :tabs="tabs"
+        ></patient-table>
+      </b-col>
+      <b-col lg="8">
+        <b-row>
+          <b-col lg="12">
+          <b-card header="基本信息">
+            <div slot="header">
+              基本信息
+              <div class="card-header-actions">
+                <b-button-group class="pull-right">
+                  <b-button size="sm" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
+                  <b-button size="sm" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                  <b-button size="sm" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
+                </b-button-group>
               </div>
-              <div class="float-right">
-                <small class="text-muted">{{item.value.period}}</small>
-              </div>
             </div>
-            <b-progress height={} class="progress-xs" v-model="item.value.value" :variant="variant(item.value.value)"></b-progress>
-          </div>
-          <i slot="payment" slot-scope="item" :class="item.value.icon" style="font-size:24px"></i>
-          <div slot="activity" slot-scope="item">
-            <div class="small text-muted">Last login</div>
-            <strong>{{item.value}}</strong>
-          </div>
-        </b-table>
-      </b-col-6>
+            <b-tabs>
+              <b-tab title = "病史内容">
+                <b-form-group
+                  description="Let us know your full name."
+                  label="Enter your name"
+                  label-for="basicName"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input id="basicName" type="text" autocomplete="name"></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  label="Static"
+                  label-for="basicStatic"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input plaintext id="basicStatic" type="text" value="Username"></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  description="This is a help text"
+                  label="Text Input"
+                  label-for="basicText"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input id="basicText" type="text" placeholder="Text"></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  label="Date" label-for="date"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input type="date" id="date"></b-form-input>
+                </b-form-group>
+              </b-tab>
+              <b-tab title="评估诊断">
+                <b-form-group
+                  description="Please enter your email"
+                  label="Email Input"
+                  label-for="basicEmail"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input id="basicEmail" type="email" placeholder="Enter your email" autocomplete="email"></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  description="Please enter a complex password"
+                  label="Password Input"
+                  label-for="basicPassword"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input id="basicPassword" type="password" placeholder="Enter your password" autocomplete="current-password"></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  label="Disabled Input"
+                  label-for="basicInputDisabled"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input id="basicInputDisabled" type="text" :disabled="true" placeholder="Disabled"></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  label="Textarea"
+                  label-for="basicTextarea"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-input id="basicTextarea" :textarea="true" :rows="9" placeholder="Content.."></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  label="Select"
+                  label-for="basicSelect"
+                  :label-cols="3"
+                  :horizontal="true">
+                  <b-form-select id="basicSelect"
+                                 :plain="true"
+                                 :options="['Please select','Option 1', 'Option 2', 'Option 3']"
+                                 value="Please select">
+                  </b-form-select>
+                </b-form-group>
+              </b-tab>
+            </b-tabs>
+          </b-card>
+          </b-col>
+        </b-row>
+      </b-col>
     </b-row>
   </div>
-    
 </template>
 
 <script>
-    import {mapState} from 'vuex'
+    import PatientTable from "./patientTable";
+    import PatientInfo from "./patientInfo";
     export default {
-        name: "doctorHome",
-        data:function() {
-          return {
-            tableItems: [
-              {
-                avatar: { url: 'img/avatars/1.jpg', status: 'success' },
-                user: { name: 'Yiorgos Avraamu', new: true, registered: 'Jan 1, 2015' },
-                country: { name: 'USA', flag: 'us' },
-                usage: { value: 50, period: 'Jun 11, 2015 - Jul 10, 2015' },
-                payment: { name: 'Mastercard', icon: 'fa fa-cc-mastercard' },
-                activity: '10 sec ago'
-              },
-              {
-                avatar: { url: 'img/avatars/2.jpg', status: 'danger' },
-                user: { name: 'Avram Tarasios', new: false, registered: 'Jan 1, 2015' },
-                country: { name: 'Brazil', flag: 'br' },
-                usage: { value: 22, period: 'Jun 11, 2015 - Jul 10, 2015' },
-                payment: { name: 'Visa', icon: 'fa fa-cc-visa' },
-                activity: '5 minutes ago'
-              },
-              {
-                avatar: { url: 'img/avatars/3.jpg', status: 'warning' },
-                user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2015' },
-                country: { name: 'India', flag: 'in' },
-                usage: { value: 74, period: 'Jun 11, 2015 - Jul 10, 2015' },
-                payment: { name: 'Stripe', icon: 'fa fa-cc-stripe' },
-                activity: '1 hour ago'
-              },
-              {
-                avatar: { url: 'img/avatars/4.jpg', status: '' },
-                user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2015' },
-                country: { name: 'France', flag: 'fr' },
-                usage: { value: 98, period: 'Jun 11, 2015 - Jul 10, 2015' },
-                payment: { name: 'PayPal', icon: 'fa fa-paypal' },
-                activity: 'Last month'
-              },
-              {
-                avatar: { url: 'img/avatars/5.jpg', status: 'success' },
-                user: { name: 'Agapetus Tadeáš', new: true, registered: 'Jan 1, 2015' },
-                country: { name: 'Spain', flag: 'es' },
-                usage: { value: 22, period: 'Jun 11, 2015 - Jul 10, 2015' },
-                payment: { name: 'Google Wallet', icon: 'fa fa-google-wallet' },
-                activity: 'Last week'
-              },
-              {
-                avatar: { url: 'img/avatars/6.jpg', status: 'danger' },
-                user: { name: 'Friderik Dávid', new: true, registered: 'Jan 1, 2015' },
-                country: { name: 'Poland', flag: 'pl' },
-                usage: { value: 43, period: 'Jun 11, 2015 - Jul 10, 2015' },
-                payment: { name: 'Amex', icon: 'fa fa-cc-amex' },
-                activity: 'Last week'
-              }
-            ],
-            tableFields: {
-              avatar: {
-                label: '<i class="icon-people"></i>',
-                class: 'text-center'
-              },
-              user: {
-                label: 'User'
-              },
-              country: {
-                label: 'Country',
-                class: 'text-center'
-              },
-              usage: {
-                label: 'Usage'
-              },
-              payment: {
-                label: 'Payment method',
-                class: 'text-center'
-              },
-              activity: {
-                label: 'Activity'
-              }
+      name: "doctorHome",
+      components: {PatientInfo, PatientTable},
+      data: () => {
+          return{
+            tabs:[{
+              title:"个人",
+              getPatientApi:"getPatientList",
+              countPatientApi:"countPatientList",
+              getPatientParams:{},
+              countPatientParams:{}
+              },{
+              title:"科室",
+              getPatientApi:"getPatientList",
+              countPatientApi:"countPatientList",
+              getPatientParams:{},
+              countPatientParams:{}
             }
-          };
-        },
-      computed:{
-          ...mapState('doctor', ['count'])
-      },
-      methods: {
-        variant (value) {
-          let $variant
-          if (value <= 25) {
-            $variant = 'info'
-          } else if (value > 25 && value <= 50) {
-            $variant = 'success'
-          } else if (value > 50 && value <= 75) {
-            $variant = 'warning'
-          } else if (value > 75 && value <= 100) {
-            $variant = 'danger'
+            ],
+            fields: [
+              {key: 'id', label: 'id', sortable: true},
+              {key: 'user_name', label: '姓名', sortable: true},
+              {key: 'status', label:'状态', sortable: true},
+            ],
+            selected_items:{ status: "secondary", sex: "未选择", id: '未选择', user_name: '未选择', pay_way:'未选择'},
           }
-          return $variant
+      },
+      methods:{
+        selectUser(user){
+          this.selected_items = JSON.parse(JSON.stringify(user));
         },
-        flag (value) {
-          return 'flag-icon flag-icon-' + value
-        }
       }
     }
-
 </script>
 
 <style scoped>

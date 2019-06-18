@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import userType from '../config/userType'
 
 export default function () {
     const Random = Mock.Random;
@@ -17,6 +18,11 @@ export default function () {
             data: list
         };
     });
-    Mock.mock('/api/login',{
-          'code|1': true,});
+    Mock.mock('/api/login',(data)=>{
+      let param = JSON.parse(data.body);
+      return{
+        'code': true,
+        'user_type':userType.indexOf(param.username)
+      }
+    });
 }

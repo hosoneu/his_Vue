@@ -56,8 +56,9 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-export default {
+  import {mapState, mapMutations} from 'vuex'
+  import userType from '../../config/userType'
+  export default {
   name: 'Login',
   data:function() {
   return {
@@ -78,18 +79,22 @@ computed:{
   ...mapState("common",['curr_user_type'])
 },
   methods:{
+    ...mapMutations('common',['set_curr_user_type']),
     countDownChanged (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
 
     submitLogin(){
       console.log("click");
-      this.$post('/login', {
-        username: this.username,
+      let data= {
+        username: this.userName,
         password: this.password
-      }).then(res=>{
+      };
+      console.log(data);
+      this.$post('/login', data).then(res=>{
         console.log(res);
-        if(res.code === true){
+        if(res.code === true && res.user_type >=0 && res.user_type <= userType.length){
+          this.set_curr_user_type(userType[res.user_type]);
           this.$router.push("/" + this.curr_user_type);
         }else{
           this.alertLoginFail();
