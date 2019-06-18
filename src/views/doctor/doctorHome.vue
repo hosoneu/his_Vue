@@ -39,7 +39,7 @@
         selectUser(key){
           console.log("called");
           console.log(key + " outer");
-          this.selected_items = this.items[key];
+          this.selected_items = JSON.parse(JSON.stringify(this.items[key]));
         },
         getPatientList(page){
           console.log("请求患者列表");
