@@ -113,8 +113,8 @@
 </template>
 
 <script>
-    import PatientTable from "./patientTable";
-    import PatientInfo from "./patientInfo";
+    import PatientTable from "./component/patientTable";
+    import PatientInfo from "./component/patientInfo";
     export default {
       name: "doctorHome",
       components: {PatientInfo, PatientTable},
