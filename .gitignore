@@ -10,6 +10,7 @@ selenium-debug.log
 # local env files
 .env.local
 .env.*.local
+config.local.js
 
 # Log files
 npm-debug.log*
@@ -24,3 +25,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+
