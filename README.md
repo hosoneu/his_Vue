@@ -56,7 +56,9 @@ cd his_Vue
 npm install --registry https://registry.npm.taobao.org --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
 ````
 
-4. 启动服务
+4. 添加本地配置 参考[issues#9](https://github.com/hosoneu/his_Vue/issues/9),若不配置下一步无法通过编译
+
+5. 启动服务
 ````bash
 npm run serve
 ````
@@ -77,7 +79,7 @@ npm run serve
 
 - `App.vue`: 根组件
 
-- `_nav.js`: 定义导航栏组件的路由配置
+- `nav`: 配置导航栏
 
 - `assets`: 静态文件
 
