@@ -1,32 +1,43 @@
 <template>
-        <b-card header="患者列表">
+        <b-card header="患者列表" >
           <b-tabs @input="changeTab">
-            <b-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :active="index === currentTab">
-              <b-table :items="items" :fields="tableFields" :busy="isBusy">
-                <template slot="status" slot-scope="data">
-                  <b-badge :variant="data.item.status">{{data.item.status}}</b-badge>
+            <b-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :active="index === currentPatientTab" >
+              <b-table
+                selectable
+                select-mode="single"
+                :items="items"
+                :fields="tableFields"
+                :busy="isBusy"
+                @row-selected="selectPatient"
+              >
+
+                <template slot="diagnosis_status" slot-scope="data" >
+                  <b-badge variant="primary" @click="selectPatient(data.item)">{{data.item.diagnosis_status}}</b-badge>
                 </template>
-                <template slot="选择" slot-scope="data">
-                  <b-button variant="outline-primary" size="sm" @click="selectUser(data.item)" class="mr-2">
-                    选择
-                  </b-button>
-                </template>
+<!--                <template slot="选择" slot-scope="data">-->
+<!--                  <b-button variant="outline-primary" size="sm" @click="selectPatient(data.item)" class="mr-2">-->
+<!--                    选择-->
+<!--                  </b-button>-->
+<!--                </template>-->
               </b-table>
               <b-pagination
                 @change="getPatientList"
-                v-model="currentPage"
+                v-model="currentPatientPage"
                 :total-rows="total"
                 :per-page="perPage"
                 aria-controls="user-table"
+                size="sm"
+                align="center"
               ></b-pagination>
             </b-tab>
           </b-tabs>
         </b-card>
+
 </template>
 <script>
     export default {
       props:{
-        initialFields:{
+        initialPatientFields:{
           type: Array,
           default:()=>{return []}
         },
@@ -50,14 +61,14 @@
       data() {
         return {
           isBusy: false,
-          innerFields: ['选择'],
+          // innerFields: ['选择'],
           items:[],
-          total:10,
-          currentPage:1,
-          currentTab:0
+          total:5,
+          currentPatientPage:1,
+          currentPatientTab:0,
         }
       },
-      mounted: async function(){
+      mounted: async function(){//挂载之后才开始填充数据
         console.log("mounted");
         await this.countPatient();
         console.log("await this.countPatient");
@@ -66,26 +77,31 @@
       },
       computed: {
           tableFields :function(){
-            return this.initialFields.concat(this.innerFields);
+            return this.initialPatientFields;
+            // return this.initialPatientFields.concat(this.innerFields);
           }
       },
       methods:{
-        selectUser(user){
-          console.log(user);
-          this.$emit('select_user', user);
+        selectPatient(patient) {
+          console.log(patient);
+          this.$emit('select_patient', patient);
         },
+        // selectPatient(patient){
+        //   console.log(patient);
+        //   this.$emit('select_patient', patient);
+        // },
         async changeTab(index){
-          this.currentTab = index;
-          this.currentPage = 1;
+          this.currentPatinetTab = index;
+          this.currentPatientPage = 1;
           await this.countPatient();
           await this.getPatientList();
         },
         getPatientList(page){
           console.log("请求患者列表");
-          let data = this.tabs[this.currentTab].getPatientParams;
+          let data = this.tabs[this.currentPatinetTab].getPatientParams;
           data['page'] = page;
           console.log(data);
-          this.$get(this.tabs[this.currentTab].getPatientApi, data).then(res=>{
+          this.$get(this.tabs[this.currentPatinetTab].getPatientApi, data).then(res=>{
             console.log(res);
             if(res.code === true){
               this.items = res.data;
@@ -97,7 +113,7 @@
         },
         countPatient(){
           console.log("请求患者总数");
-          this.$get(this.tabs[this.currentTab].countPatientApi, this.tabs[this.currentTab].countPatientParams).then(res=>{
+          this.$get(this.tabs[this.currentPatinetTab].countPatientApi, this.tabs[this.currentPatinetTab].countPatientParams).then(res=>{
             console.log(res);
             if(res.code === true){
               this.total = res.total;

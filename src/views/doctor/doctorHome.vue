@@ -2,26 +2,37 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col lg="12">
-        <patient-info :initial-user="selected_items" ></patient-info>
+        <patient-info :initial-patient="selected_patient_items" ></patient-info>
       </b-col>
     </b-row>
     <b-row>
-      <b-col lg="4">
+      <b-col lg="3">
         <patient-table
-          @select_user="selectUser"
-          :initial-fields="fields"
+          @select_patient="selectPatient"
+          :initial-patient-fields="patientFields"
           :per-page="5"
           :tabs="tabs"
         ></patient-table>
+
+        <medical-record-template
+          :initial-medical-record-template-fields="medicalRecordTemplateFields"
+          :per-page="5"
+          :medicalRecordTemplateTabs="medicalRecordTemplateTabs"
+        ></medical-record-template>
+
+        <b-card header="历史病历" >
+        </b-card>
+        <b-card header="常用诊断">
+        </b-card>
       </b-col>
-      <b-col lg="8">
+      <b-col lg="9">
         <b-row>
           <b-col lg="12">
           <b-card header="基本信息">
-            <div slot="header">
-              基本信息
+            <div slot="header"><!-- slot设置插槽便于模板数据的精准插入-->
+              填写模块
               <div class="card-header-actions">
-                <b-button-group class="pull-right">
+                <b-button-group class="pull-right"><!-- 此处为清空暂存提交按钮 -->
                   <b-button size="sm" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
                   <b-button size="sm" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
                   <b-button size="sm" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
@@ -30,78 +41,63 @@
             </div>
             <b-tabs>
               <b-tab title = "病史内容">
+                <!--  主诉chiefComplaint -->
                 <b-form-group
-                  description="Let us know your full name."
-                  label="Enter your name"
-                  label-for="basicName"
-                  :label-cols="3"
+                  label="主诉"
+                  label-for="chiefComplaint"
+                  :label-cols="1"
                   :horizontal="true">
-                  <b-form-input id="basicName" type="text" autocomplete="name"></b-form-input>
+                  <b-form-input id="chiefComplaint" type="text" placeholder="请输入内容..."></b-form-input>
                 </b-form-group>
+                <!--  现病史presentHistory -->
                 <b-form-group
-                  label="Static"
-                  label-for="basicStatic"
-                  :label-cols="3"
+                  label="现病史"
+                  label-for="presentHistory"
+                  :label-cols="1"
                   :horizontal="true">
-                  <b-form-input plaintext id="basicStatic" type="text" value="Username"></b-form-input>
+                  <b-form-textarea id="presentHistory" placeholder="请输入内容..." rows="3" ></b-form-textarea>
                 </b-form-group>
+                <!--  现病治疗情况presentTreatment-->
                 <b-form-group
-                  description="This is a help text"
-                  label="Text Input"
-                  label-for="basicText"
-                  :label-cols="3"
+                  label="现病治疗情况"
+                  label-for="presentTreatment"
+                  :label-cols="1"
                   :horizontal="true">
-                  <b-form-input id="basicText" type="text" placeholder="Text"></b-form-input>
+                  <b-form-textarea id="presentTreatment" placeholder="请输入内容..." rows="3" ></b-form-textarea>
                 </b-form-group>
+                <!--既往史pastHistory-->
                 <b-form-group
-                  label="Date" label-for="date"
-                  :label-cols="3"
+                  label="既往史"
+                  label-for="pastHistory"
+                  :label-cols="1"
                   :horizontal="true">
-                  <b-form-input type="date" id="date"></b-form-input>
+                  <b-form-textarea id="pastHistory" placeholder="请输入内容..." rows="3" ></b-form-textarea>
+                </b-form-group>
+                <!--  过敏史allergicHistory-->
+                <b-form-group
+                  label="过敏史"
+                  label-for="allergicHistory"
+                  :label-cols="1"
+                  :horizontal="true">
+                  <b-form-textarea id="allergicHistory" placeholder="请输入内容..." rows="3" ></b-form-textarea>
+                </b-form-group>
+                <!--  体格检查physicalExamination-->
+                <b-form-group
+                  label="体格检查"
+                  label-for="physicalExamination"
+                  :label-cols="1"
+                  :horizontal="true">
+                  <b-form-textarea id="physicalExamination" placeholder="请输入内容..." rows="3" ></b-form-textarea>
                 </b-form-group>
               </b-tab>
               <b-tab title="评估诊断">
-                <b-form-group
-                  description="Please enter your email"
-                  label="Email Input"
-                  label-for="basicEmail"
-                  :label-cols="3"
-                  :horizontal="true">
-                  <b-form-input id="basicEmail" type="email" placeholder="Enter your email" autocomplete="email"></b-form-input>
-                </b-form-group>
-                <b-form-group
-                  description="Please enter a complex password"
-                  label="Password Input"
-                  label-for="basicPassword"
-                  :label-cols="3"
-                  :horizontal="true">
-                  <b-form-input id="basicPassword" type="password" placeholder="Enter your password" autocomplete="current-password"></b-form-input>
-                </b-form-group>
-                <b-form-group
-                  label="Disabled Input"
-                  label-for="basicInputDisabled"
-                  :label-cols="3"
-                  :horizontal="true">
-                  <b-form-input id="basicInputDisabled" type="text" :disabled="true" placeholder="Disabled"></b-form-input>
-                </b-form-group>
-                <b-form-group
-                  label="Textarea"
-                  label-for="basicTextarea"
-                  :label-cols="3"
-                  :horizontal="true">
-                  <b-form-input id="basicTextarea" :textarea="true" :rows="9" placeholder="Content.."></b-form-input>
-                </b-form-group>
-                <b-form-group
-                  label="Select"
-                  label-for="basicSelect"
-                  :label-cols="3"
-                  :horizontal="true">
-                  <b-form-select id="basicSelect"
-                                 :plain="true"
-                                 :options="['Please select','Option 1', 'Option 2', 'Option 3']"
-                                 value="Please select">
-                  </b-form-select>
-                </b-form-group>
+
+                <diagnosis
+                  :tabs="tabs"
+                  :initial-diagnosis-fields="diagnosisFields"
+                >
+                </diagnosis>
+                <!--  体格检查physicalExamination-->
               </b-tab>
             </b-tabs>
           </b-card>
@@ -115,12 +111,14 @@
 <script>
     import PatientTable from "./component/patientTable";
     import PatientInfo from "./component/patientInfo";
+    import MedicalRecordTemplate from "./component/medicalRecordTemplate";
+    import Diagnosis from "./component/diagnosis";
     export default {
       name: "doctorHome",
-      components: {PatientInfo, PatientTable},
+      components: {Diagnosis, MedicalRecordTemplate, PatientInfo, PatientTable},
       data: () => {
           return{
-            tabs:[{
+            tabs:[{//tabs定义挂号列表的状态是个人还是科室的挂号列表
               title:"个人",
               getPatientApi:"getPatientList",
               countPatientApi:"countPatientList",
@@ -132,19 +130,36 @@
               countPatientApi:"countPatientList",
               getPatientParams:{},
               countPatientParams:{}
-            }
+            }],
+            medicalRecordTemplateTabs:[{
+              title:"个人",
+              getMedicalRecordTemplateApi:"getMedicalRecordTemplateList",
+              countMedicalRecordTemplateApi:"countMedicalRecordTemplateList",
+              getMedicalRecordTemplateParams:{},
+              countMedicalRecordTemplateParams:{}
+            },{
+              title:"科室",
+              getMedicalRecordTemplateApi:"getMedicalRecordTemplateList",
+              countMedicalRecordTemplateApi:"countMedicalRecordTemplateList",
+              getMedicalRecordTemplateParams:{},
+              countMedicalRecordTemplateParams:{}
+            }],
+            patientFields: [
+              {key: 'medical_record_id', label: '病历号', sortable: true},
+              {key: 'patient_name', label: '姓名', sortable: true},
+              {key: 'diagnosis_status', label:'状态', sortable: true},
             ],
-            fields: [
-              {key: 'id', label: 'id', sortable: true},
-              {key: 'user_name', label: '姓名', sortable: true},
-              {key: 'status', label:'状态', sortable: true},
+            medicalRecordTemplateFields: [
+              {key: 'medical_record_template_id', label: '模板编号', sortable: true},
+              {key: 'medical_record_template_name', label: '模板名称', sortable: true},
             ],
-            selected_items:{ status: "secondary", sex: "未选择", id: '未选择', user_name: '未选择', pay_way:'未选择'},
+
+            selected_patient_items:{ diagnosis_status: "未知", patient_sex: "未选择", medical_record_id: '未选择', patient_name: '未选择', pay_way:'未选择'},
           }
       },
       methods:{
-        selectUser(user){
-          this.selected_items = JSON.parse(JSON.stringify(user));
+        selectPatient(patient){
+          this.selected_patient_items = JSON.parse(JSON.stringify(patient));
         },
       }
     }
