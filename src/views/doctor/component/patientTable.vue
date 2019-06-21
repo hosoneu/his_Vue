@@ -83,8 +83,8 @@
       },
       methods:{
         selectPatient(patient) {
-          console.log(patient);
-          this.$emit('select_patient', patient);
+          console.log(patient[0]);
+          this.$emit('select_patient', patient[0]);
         },
         // selectPatient(patient){
         //   console.log(patient);
