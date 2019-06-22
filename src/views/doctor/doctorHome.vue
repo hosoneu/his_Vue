@@ -9,15 +9,15 @@
       <b-col lg="3">
         <patient-table
           @select_patient="selectPatient"
-          :initial-patient-fields="patientFields"
+          :fields="patientFields"
           :per-page="5"
           :tabs="tabs"
         ></patient-table>
 
         <medical-record-template
-          :initial-medical-record-template-fields="medicalRecordTemplateFields"
+          :fields="medicalRecordTemplateFields"
           :per-page="5"
-          :medicalRecordTemplateTabs="medicalRecordTemplateTabs"
+          :tabs="medicalRecordTemplateTabs"
         ></medical-record-template>
 
         <b-card header="历史病历" >
@@ -94,7 +94,6 @@
 
                 <diagnosis
                   :tabs="tabs"
-                  :initial-diagnosis-fields="diagnosisFields"
                 >
                 </diagnosis>
                 <!--  体格检查physicalExamination-->

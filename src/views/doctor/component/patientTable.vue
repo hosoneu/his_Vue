@@ -6,7 +6,7 @@
                 selectable
                 select-mode="single"
                 :items="items"
-                :fields="tableFields"
+                :fields="fields"
                 :busy="isBusy"
                 @row-selected="selectPatient"
               >
@@ -37,7 +37,7 @@
 <script>
     export default {
       props:{
-        initialPatientFields:{
+        fields:{
           type: Array,
           default:()=>{return []}
         },
@@ -61,7 +61,6 @@
       data() {
         return {
           isBusy: false,
-          // innerFields: ['选择'],
           items:[],
           total:5,
           currentPatientPage:1,
@@ -74,12 +73,6 @@
         console.log("await this.countPatient");
         await this.getPatientList(1);
         console.log("await this.getPatientList");
-      },
-      computed: {
-          tableFields :function(){
-            return this.initialPatientFields;
-            // return this.initialPatientFields.concat(this.innerFields);
-          }
       },
       methods:{
         selectPatient(patient) {

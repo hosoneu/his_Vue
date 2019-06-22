@@ -40,7 +40,7 @@
                 <b-form-group
                   label="疑似标志"
                   label-for="suspectMark"
-                  :label-cols="3">
+                  :label-cols="2">
                   <b-form-radio-group
                     id="suspectMark"
                     v-model="suspectMarkSelected"
@@ -52,7 +52,7 @@
                 <b-form-group
                   label="发病日期"
                   label-for="onsetDate"
-                  :label-cols="3">
+                  :label-cols="2">
                   <b-form-input type="date" id="onsetDate"></b-form-input>
                 </b-form-group>
               </b-modal>

@@ -12,8 +12,10 @@
           <b-button size="sm" class="d-sm-down-none" href="#" variant="primary">查询</b-button>
         </b-col>
       </b-row>
-      <b-tab v-for="(tab, index) in medicalRecordTemplateTabs" :title="tab.title" :key="index" :active="index === currentTab">
+      <b-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :active="index === currentTab">
         <b-table
+          selectable
+          select-mode="single"
           :items="items"
           :fields="tableFields"
           :busy="isBusy"
@@ -36,7 +38,7 @@
 <script>
     export default {
       props:{
-        initialMedicalRecordTemplateFields:{//初始化病历模板列表
+        fields:{//初始化病历模板列表
           type: Array,
           default:()=>{return []}
         },
@@ -44,7 +46,7 @@
           type: Number,
           default: 5
         },
-        medicalRecordTemplateTabs:{
+        tabs:{
           type:Array,
           default:()=>{return [
             {
@@ -69,7 +71,7 @@
       },
       computed: {
         tableFields :function(){
-          return this.initialMedicalRecordTemplateFields;
+          return this.fields;
         }
       },
       methods:{
@@ -83,11 +85,11 @@
           await this.getMedicalRecordTemplateList();
         },
         getMedicalRecordTemplateList(page){
-          console.log("请求患者列表");
-          let data = this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams;
+          console.log("请求病历模板列表");
+          let data = this.tabs[this.currentTab].getMedicalRecordTemplateParams;
           data['page'] = page;
           console.log(data);
-          this.$get(this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateApi, data).then(res=>{
+          this.$get(this.tabs[this.currentTab].getMedicalRecordTemplateApi, data).then(res=>{
             console.log(res);
             if(res.code === true){
               this.items = res.data;
@@ -99,7 +101,7 @@
         },
         countMedicalRecordTemplate(){
           console.log("请求模板总数");
-          this.$get(this.medicalRecordTemplateTabs[this.currentTab].countMedicalRecordTemplateApi, this.medicalRecordTemplateTabs[this.currentTab].countMedicalRecordTemplateParams).then(res=>{
+          this.$get(this.tabs[this.currentTab].countMedicalRecordTemplateApi, this.tabs[this.currentTab].countMedicalRecordTemplateParams).then(res=>{
             console.log(res);
             if(res.code === true){
               this.total = res.total;
