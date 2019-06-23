@@ -5,7 +5,7 @@ import Router from 'vue-router'
 import home from './home'
 import common from './common'
 import doctor from './doctor'
-// import basicInfo from './basicInfo'
+import basicInfo from './basicInfo'
 // import pharmacy from './pharmacy'
 // import register from './register'
 // import tech from './tech'
@@ -21,7 +21,7 @@ export default new Router({
     home,
     common,
     doctor,
-    // basicInfo,
+    basicInfo,
     // tech,
     // register,
     // pharmacy
