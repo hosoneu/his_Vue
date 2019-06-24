@@ -1,1 +1,6 @@
-export default {}
+export default [
+  {
+    name: 'RegisterHome',
+    url: '/register'
+  }
+]

@@ -27,29 +27,29 @@
     <b-row>
       <b-col md="11" class="my-1"></b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="success" class="btn-pill">添加</b-button>
+        <b-button variant="success" class="btn-pill" @click="insetList" v-b-modal="'departmentModal'">添加</b-button>
       </b-col>
     </b-row>
     <b-table :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
       <template slot="删除" slot-scope="row">
-        <b-button variant="danger" class="btn-pill" @click="deleteList(row.item)">删除</b-button>
+        <b-button variant="danger" class="btn-pill" @click="deleteList(row.index)">删除</b-button>
       </template>
       <template slot="编辑" slot-scope="row">
-        <b-button variant="info" class="btn-pill" @click="updateList(row.item)" v-b-modal="'editModal'">编辑</b-button>
+        <b-button variant="info" class="btn-pill" @click="updateList(row.item)" v-b-modal="'departmentModal'">编辑</b-button>
       </template>
     </b-table>
     <nav>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
     </nav>
-    <BasicModal></BasicModal>
+    <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items"></DepartmentModal>
   </b-card>
 </template>
 
 <script>
-  import BasicModal from "./basicModal";
+  import DepartmentModal from "./departmentModal";
   export default {
     name: "departmentTable",
-    components: {BasicModal},
+    components: {DepartmentModal},
     inheritAttrs: false,
     props: {
       caption: {
@@ -95,6 +95,10 @@
       dark: {
         type: Boolean,
         default: false
+      },
+      itemType: {
+        type:String,
+        default: ""
       }
     },
     data: () => {
@@ -103,6 +107,7 @@
         sortBy: null,
         sortDesc: false,
         filter: null,
+        selected_items: {}
       }
     },
     computed: {
@@ -136,13 +141,19 @@
         this.totalRows = filteredItems.length;
         this.currentPage = 1
       },
-      deleteList(item){
-        alert(item);
-        this.$emit('deleteList', item);
+      deleteList(index){
+        alert(index);
+        this.$emit('deleteList', index);
       },
       updateList(item){
         alert(item);
-        this.$emit('updateList', item);
+        console.log(item);
+        this.selected_items=item;
+        // this.$emit('updateList', item);
+      },
+      insetList(){
+        this.selected_items={department_Code: "", department_Name: "", department_Type: "", department_Category: ""};
+        alert(this.selected_items);
       }
     }
   }

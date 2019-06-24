@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col lg="12">
-        <DepartmentTable :hover="true" :caption="'科室列表'" :initial-fields="department_fields" :table-data="items" :perPage="10" @updateList="updateList" @deleteList="deleteList">
+        <DepartmentTable :hover="true" :caption="'科室列表'" :initial-fields="department_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
         </DepartmentTable>
       </b-col>
     </b-row>
@@ -50,7 +50,8 @@
               }
             ],
             items:[],
-            total: 10
+            total: 10,
+            itemType: '科室'
           }
         },
       mounted: async function(){
@@ -85,10 +86,11 @@
             }
           })
         },
-        deleteList(item){
+        deleteList(index){
           console.log("删除科室");
-          console.log(item);
-          this.$get('deleteDepartment', item).then((res)=> {
+          console.log(index);
+          this.items.splice(index, 1);
+          this.$get('deleteDepartment', index).then((res)=> {
             if(res.code === true){
               console.log("删除成功");
             }else{
