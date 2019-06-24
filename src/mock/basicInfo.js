@@ -2,13 +2,13 @@ import Mock from "mockjs";
 
 export default function () {
   const Random = Mock.Random;
-  Mock.mock(RegExp('/api/getDepartmentListPageCount' + ".*"), "get", {
+  Mock.mock(RegExp('/api/getDepartmentCount' + ".*"), "get", {
     code:true,
     total:100
   });
   Mock.mock(RegExp('/api/getDepartmentList' + ".*"), "get", ()=>{
     let list = [];
-    for(let i = 0; i < 4; i++) {
+    for(let i = 0; i < 99; i++) {
       let listObject = {
         department_Code: Random.integer(100, 9999),
         department_Name: Random.cword(2, 4),
