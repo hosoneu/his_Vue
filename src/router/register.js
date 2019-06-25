@@ -1,11 +1,9 @@
 //默认容器组件
 import DefaultContainer from "../containers/DefaultContainer";
 
-//挂号表单组件
-import RegisterForm from "../views/register/component/registerForm";
+//挂号首页组件
+import RegisterHome from "../views/register/registerHome";
 
-//挂号表格组件
-import RegisterTable from "../views/register/component/registerTable";
 
 export default {
   path: '/register',
@@ -13,14 +11,9 @@ export default {
   component: DefaultContainer,
   children: [
     {
-      path: 'registerForm',
-      name: 'registerForm',
-      component: RegisterForm
+      path: 'registerHome',
+      name: 'registerHome',
+      component: RegisterHome
     },
-    {
-      path: 'registerTable',
-      name: 'registerTable',
-      component: RegisterTable
-    }
   ]
 }

@@ -27,12 +27,15 @@
     <b-row>
       <b-col md="11" class="my-1"></b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="success" class="btn-pill" @click="insetList" v-b-modal="'departmentModal'">添加</b-button>
+        <b-button variant="success" class="btn-pill" @click="insertList" v-b-modal="'departmentModal'">添加</b-button>
       </b-col>
     </b-row>
-    <b-table :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
+    <b-table show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
+      <template slot="departmentType" slot-scope="row">
+        {{getType(row.item)}}
+      </template>
       <template slot="删除" slot-scope="row">
-        <b-button variant="danger" class="btn-pill" @click="deleteList(row.index)">删除</b-button>
+        <b-button variant="danger" class="btn-pill" @click="deleteList(row.index, row.item)">删除</b-button>
       </template>
       <template slot="编辑" slot-scope="row">
         <b-button variant="info" class="btn-pill" @click="updateList(row.item)" v-b-modal="'departmentModal'">编辑</b-button>
@@ -141,9 +144,13 @@
         this.totalRows = filteredItems.length;
         this.currentPage = 1
       },
-      deleteList(index){
+      getType(item){
+        const map = {boolean: {1: '临床', 2: '医技', 3: '财务', 4: '行政', 5: '其他'}};
+        return map.boolean[item.departmentType];
+      },
+      deleteList(index, item){
         alert(index);
-        this.$emit('deleteList', index);
+        this.$emit('deleteList', index, item);
       },
       updateList(item){
         alert(item);
@@ -151,8 +158,8 @@
         this.selected_items=item;
         // this.$emit('updateList', item);
       },
-      insetList(){
-        this.selected_items={department_Code: "", department_Name: "", department_Type: "", department_Category: ""};
+      insertList(){
+        this.selected_items={departmentCode: "", departmentName: "", departmentType: "", departmentCategory: ""};
         alert(this.selected_items);
       }
     }

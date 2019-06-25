@@ -5,25 +5,25 @@
     </template>
     <b-form validated novalidate>
       <b-form-group label-for="科室编码" label="科室编码">
-        <b-form-input type="text" class="form-control-success" id="科室编码" v-model="selected_items.department_Code"></b-form-input>
+        <b-form-input type="text" class="form-control-success" id="科室编码" v-model="selected_items.departmentCode"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
       </b-form-group>
       <b-form-group label-for="科室名称" label="科室名称">
-        <b-form-input type="text" class="form-control-success" id="科室名称" v-model="selected_items.department_Name"></b-form-input>
+        <b-form-input type="text" class="form-control-success" id="科室名称" v-model="selected_items.departmentName"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
       </b-form-group>
       <b-form-group label-for="科室分类" label="科室分类">
-        <b-form-input type="text" class="form-control-success" id="科室分类" v-model="selected_items.department_Type"></b-form-input>
+        <b-form-input type="text" class="form-control-success" id="科室分类" v-model="selected_items.departmentType"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
       </b-form-group>
       <b-form-group label-for="科室类别" label="科室类别">
-        <b-form-input type="text" class="form-control-success" id="科室类别" v-model="selected_items.department_Category"></b-form-input>
+        <b-form-input type="text" class="form-control-success" id="科室类别" v-model="selected_items.departmentCategory"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
