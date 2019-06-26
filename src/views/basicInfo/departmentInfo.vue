@@ -6,7 +6,7 @@
         <VerticalNavs></VerticalNavs>
       </b-col>
       <b-col lg="9">
-        <DepartmentTable :hover="true" :caption="'科室列表'" :initial-fields="department_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
+        <DepartmentTable :caption="'科室列表'" :initial-fields="department_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
         </DepartmentTable>
       </b-col>
     </b-row>

@@ -30,9 +30,10 @@
         <b-button variant="success" class="btn-pill" @click="insertList" v-b-modal="'departmentModal'">添加</b-button>
       </b-col>
     </b-row>
-    <b-table show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
-      <template slot="departmentType" slot-scope="row">
-        {{getType(row.item)}}
+    <b-table selectable select-mode="single" @row-selected="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"
+             :current-page="currentPage" :per-page="perPage">
+      <template slot="departmentType" slot-scope="data">
+        {{convertType(data.item, currentPage)}}
       </template>
       <template slot="删除" slot-scope="row">
         <b-button variant="danger" class="btn-pill" @click="deleteList(row.index, row.item)">删除</b-button>
@@ -42,7 +43,7 @@
       </template>
     </b-table>
     <nav>
-      <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
+      <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons></b-pagination>
     </nav>
     <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items" :edit_fields="captions">
       <template slot="submit" slot-scope="">
@@ -71,7 +72,7 @@
       },
       hover: {
         type: Boolean,
-        default: false
+        default: true
       },
       striped: {
         type: Boolean,
@@ -154,9 +155,14 @@
         this.totalRows = filteredItems.length;
         this.currentPage = 1
       },
-      getType(item){
-        const map = {boolean: {1: '临床', 2: '医技', 3: '财务', 4: '行政', 5: '其他'}};
-        return map.boolean[item.departmentType];
+      convertType(item, key){
+        console.log("转换的是" + key);
+        const map = {departmentType: {1: '临床', 2: '医技', 3: '财务', 4: '行政', 5: '其他'}};
+        return map.departmentType[item.departmentType];
+      },
+      selectItem(item){
+        console.log("已选择" + item.index);
+        this.selected_items = item;
       },
       deleteList(index, item){
         alert(index);

@@ -15,7 +15,7 @@
           <i class="cui-people icons font-2xl d-block mt-4"></i> {{tabs[1]}}
         </template>
         <br>
-        <b-table show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
+        <b-table show-empty hover :items="items" :fields="captions">
         </b-table>
       </b-tab>
       <b-tab>

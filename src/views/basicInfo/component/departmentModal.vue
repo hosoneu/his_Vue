@@ -3,15 +3,23 @@
     <template slot="modal-header">
       <h5>编辑{{edit_name}}</h5>
     </template>
-    <b-form validated novalidate>
-      <b-form-group :label-for=edit_fields[0].label :label=edit_fields[0].label>
-        <b-form-input type="text" class="form-control-success" :id=edit_fields[0].label v-model="selected_items.departmentCode"></b-form-input>
+    <b-form v-for="(index, n) in getFieldsAmount()" :key="index" validated novalidate>
+      <b-form-group :label-for=edit_fields[n].label :label=edit_fields[n].label>
+        <b-form-input type="text" class="form-control-success" :id=edit_fields[n].label v-model="selected_items[edit_fields[n].key]"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
       </b-form-group>
-      <b-form-group label-for="科室名称" label="科室名称">
-        <b-form-input type="text" class="form-control-success" id="科室名称" v-model="selected_items.departmentName"></b-form-input>
+    </b-form>
+    <b-form validated novalidate>
+      <b-form-group :label-for=edit_fields[0].label :label=edit_fields[0].label>
+        <b-form-input type="text" class="form-control-success" :id=edit_fields[0].label v-model="selected_items[edit_fields[0].key]"></b-form-input>
+        <b-form-valid-feedback>
+          Input is not required.
+        </b-form-valid-feedback>
+      </b-form-group>
+      <b-form-group :label-for=edit_fields[1].label :label=edit_fields[1].label>
+        <b-form-input type="text" class="form-control-success" :id=edit_fields[1].label v-model="selected_items.departmentName"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
@@ -70,6 +78,15 @@
               this.edit_item = newValue;
             }
           }
+      },
+      methods:{
+          getFieldsAmount(){
+            console.log("属性数量为" + this.edit_fields.length);
+            return this.edit_fields.length;
+          }
+      },
+      mounted() {
+        this.getFieldsAmount();
       }
     }
 </script>
