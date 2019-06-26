@@ -44,7 +44,17 @@
     <nav>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
     </nav>
-    <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items"></DepartmentModal>
+    <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items" :edit_fields="captions">
+      <template slot="submit" slot-scope="">
+        <b-button variant="success" class="btn-pill" @click="testSlot">提交</b-button>
+      </template>
+      <template slot="reset" slot-scope="">
+        <b-button variant="warning" class="btn-pill" @click="testSlot">重置</b-button>
+      </template>
+      <template slot="cancel" slot-scope="">
+        <b-button variant="danger" class="btn-pill" @click="testSlot">取消</b-button>
+      </template>
+    </DepartmentModal>
   </b-card>
 </template>
 
@@ -161,6 +171,9 @@
       insertList(){
         this.selected_items={departmentCode: "", departmentName: "", departmentType: "", departmentCategory: ""};
         alert(this.selected_items);
+      },
+      testSlot(){
+        console.log("TestSlot 成功！");
       }
     }
   }

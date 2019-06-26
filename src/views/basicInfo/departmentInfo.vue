@@ -59,6 +59,7 @@
           }
         },
         mounted: async function(){
+          this.$store.commit('common/set_curr_user_type', 'basicInfo');
           console.log("mounted");
           await this.getDepartmentList();
           console.log("await this.getDepartmentList");
@@ -100,7 +101,7 @@
                 console.log("加载失败");
               }
             })
-          }
+          },
         }
     }
 

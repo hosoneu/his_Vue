@@ -4,8 +4,8 @@
       <h5>编辑{{edit_name}}</h5>
     </template>
     <b-form validated novalidate>
-      <b-form-group label-for="科室编码" label="科室编码">
-        <b-form-input type="text" class="form-control-success" id="科室编码" v-model="selected_items.departmentCode"></b-form-input>
+      <b-form-group :label-for=edit_fields[0].label :label=edit_fields[0].label>
+        <b-form-input type="text" class="form-control-success" :id=edit_fields[0].label v-model="selected_items.departmentCode"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
@@ -28,11 +28,12 @@
           Input is not required.
         </b-form-valid-feedback>
       </b-form-group>
-      //成功按钮 提交添加或编辑 判断是否变化
     </b-form>
+    <!--成功按钮 提交添加或编辑 判断是否变化-->
     <template slot="modal-footer">
-      <b-button variant="success" class="btn-pill" @click="ok()">提交</b-button>
-      <b-button variant="danger" class="btn-pill" @click="cancel()">取消</b-button>
+      <slot name="submit"></slot>
+      <slot name="reset"></slot>
+      <slot name="cancel"></slot>
     </template>
   </b-modal>
 </template>
@@ -49,6 +50,10 @@
           selected_items: {
             type: Object,
             default: () => {}
+          },
+          edit_fields: {
+            type: [Array, Object],
+            default: ()=> {}
           }
         },
       data: () => {
