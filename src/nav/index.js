@@ -5,6 +5,7 @@ import basicInfo from './basicInfo'
 import pharmacy from './pharmacy'
 import register from './register'
 import tech from './tech'
+import statistics from './statistics'
 export default {
   items: {
     home: home,
@@ -13,6 +14,7 @@ export default {
     common: common,
     pharmacy: pharmacy,
     register: register,
-    tech: tech
+    tech: tech,
+    //statistics:statistics,
   }
 }
