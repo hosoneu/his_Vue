@@ -45,7 +45,7 @@
     <nav>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons></b-pagination>
     </nav>
-    <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items" :edit_fields="captions">
+    <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items" :text_fields="textFields" :select_fields="selectFields" :multi_fields="multiFields">
       <template slot="submit" slot-scope="">
         <b-button variant="success" class="btn-pill" @click="testSlot">提交</b-button>
       </template>
@@ -98,7 +98,15 @@
         type: [Array, Function],
         default: () => []
       },
-      initialFields: {
+      textFields: {
+        type: [Array, Object],
+        default: () => []
+      },
+      selectFields: {
+        type: [Array, Object],
+        default: () => []
+      },
+      multiFields: {
         type: [Array, Object],
         default: () => []
       },
@@ -130,7 +138,7 @@
         return Array.isArray(items) ? items : items()
       },
       totalRows: function () { return this.getRowCount() },
-      captions: function() { return this.initialFields },
+      captions: function() { return this.textFields(this.selectFields, this.multiFields) },
       sortOptions() {
         // Create an options list from our fields
         return this.initialFields
