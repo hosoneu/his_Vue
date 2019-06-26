@@ -58,7 +58,12 @@
               {
                 key: 'fmedicalItemsType',
                 sortable: true,
-                label: '项目类别'
+                label: '项目类别',
+                options: [
+                  {text: '检查', value: '1'},
+                  {text: '检验', value: '2'},
+                  {text: '处置', value: '3'},
+                ]
               },
             ],
             fmedicalItems_multi_fields: [
@@ -84,43 +89,44 @@
           console.log("await this.getFmedicalItemsList");
         },
         methods: {
-          getFmedicalItemsList(){
+          getFmedicalItemsList() {
             console.log("请求非药品项目列表");
-            this.$get('http://localhost:8080/hoso/fmedicalItems/getAllFmedicalItemsForShow').then((res)=> {
+            this.$get('http://localhost:8080/hoso/fmedicalItems/getAllFmedicalItemsForShow').then((res) => {
               alert(res.status);
               console.log(res.data);
-              if(res.status === 'OK'){
+              if (res.status === 'OK') {
                 this.items = res.data;
                 console.log(this.items);
-              }else{
-                console.log("加载科室列表失败");
+              } else {
+                console.log("加载非药品项目列表失败");
               }
             })
           },
-          deleteList(index, item){
+          deleteList(index, item) {
             console.log("删除科室");
             console.log(index);
             alert(item.departmentId);
-            this.$get('http://localhost:8080/hoso/department/delete', {"departmentId": item.departmentId}).then((res)=> {
-              if(res.status === 'OK'){
+            this.$get('http://localhost:8080/hoso/department/delete', {"departmentId": item.departmentId}).then((res) => {
+              if (res.status === 'OK') {
                 console.log("删除成功");
                 this.items.splice(index, 1);
-              }else{
+              } else {
                 console.log("加载失败");
               }
             })
           },
-          updateList(item){
+          updateList(item) {
             console.log("更新科室");
             console.log(item);
-            this.$get('updateDepartment', item).then((res)=> {
-              if(res.code === true){
+            this.$get('updateDepartment', item).then((res) => {
+              if (res.code === true) {
                 console.log("更新成功");
-              }else{
+              } else {
                 console.log("加载失败");
               }
             })
           },
+        }
     }
 </script>
 

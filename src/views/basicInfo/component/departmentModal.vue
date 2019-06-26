@@ -4,11 +4,39 @@
       <h5>编辑{{edit_name}}</h5>
     </template>
     <b-form validated novalidate>
-      <b-form-group v-for="(index, field) in text_fields" :key="index" :label-for=field.label :label=field.label>
-        <b-form-input type="text" class="form-control-success" :id=field.label v-model="selected_items[field.key]"></b-form-input>
+      <b-form-group v-for="field in text_fields" :key="field.key" :label-for="field.label" :label="field.label">
+        <b-form-input type="text" class="form-control-success" :id="field.label" v-model="selected_items[field.key]"></b-form-input>
         <b-form-valid-feedback>
           Input is not required.
         </b-form-valid-feedback>
+      </b-form-group>
+      <b-form-group
+        v-for="field in select_fields"
+        :key="field.key"
+        :label="field.label"
+        :label-for="field.label"
+        :label-cols="3"
+        :horizontal="true">
+        <b-form-select :id="field.label"
+                       :plain="true"
+                       v-model="selected_items[field.key]"
+                       :options="field.options"
+                        >
+        </b-form-select>
+      </b-form-group>
+      <b-form-group
+        v-for="field in multi_fields"
+        :key="field.key"
+        :label="field.label"
+        :label-for="field.label"
+        :label-cols="3"
+        :horizontal="true">
+        <b-form-select :id="field.label"
+                       :plain="true"
+                       v-model="selected_items[field.key]"
+                       :options="['Please select','Option 1', 'Option 2', 'Option 3']"
+                       value="Please select">
+        </b-form-select>
       </b-form-group>
     </b-form>
 <!--    <b-form validated novalidate>-->
@@ -88,10 +116,10 @@
           }
       },
       methods:{
-          getFieldsAmount(){
-            console.log("属性数量为" + this.edit_fields.length);
-            return this.edit_fields.length;
-          }
+          // getFieldsAmount(){
+          //   console.log("属性数量为" + this.edit_fields.length);
+          //   return this.edit_fields.length;
+          // }
       },
       mounted() {
         this.getFieldsAmount();
