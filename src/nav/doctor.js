@@ -1,31 +1,31 @@
 export default [
   {
     name: '病历首页',
-    url: '/doctor',
+    url: '/doctor/homepage',
   },
   {
     name:'检查申请',
-    // url:'/examination1',
+    url:'/doctor/examination1',
   },
   {
     name:'检验申请',
-    // url:'/examination2',
+    url:'/doctor/examination2',
   },
   {
     name:'门诊确诊',
-    // url:'/finalDiagnosis',
+    url:'/doctor/finalDiagnosis',
   },
   {
     name:'成药处方',
-    // url:'/patentPrescription',
+    url:'/doctor/patentPrescription',
   },
   {
     name:'草药处方',
-    // url:'/herbalPrescription',
+    url:'/doctor/herbalPrescription',
   },
   {
     name:'处置申请',
-    // url:'/treatment',
+    url:'/doctor/treatment',
   },
   {
     name:'费用查询',
@@ -33,6 +33,6 @@ export default [
   },
   {
     name:'诊毕',
-    // url:'/treatmentOver',
+    url:'/doctor/treatmentOver',
   },
 ]
