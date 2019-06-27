@@ -50,7 +50,7 @@
 
 <script>
     export default {
-        name: "departmentModal",
+        name: "basicModal",
         props: {
           //编辑项目名称 比如科室
           edit_name: {

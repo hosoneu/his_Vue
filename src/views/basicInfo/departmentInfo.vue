@@ -3,23 +3,21 @@
     <b-row>
       <b-col lg="3">
         <BasicTabs></BasicTabs>
-        <VerticalNavs></VerticalNavs>
       </b-col>
       <b-col lg="9">
-        <DepartmentTable :caption="'科室列表'" :initial-fields="department_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
-        </DepartmentTable>
+        <BasicTable :caption="'科室列表'" :initial-fields="department_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
+        </BasicTable>
       </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-    import DepartmentTable from "./component/departmentTable";
+    import BasicTable from "./component/basicTable";
     import BasicTabs from "./component/basicTabs";
-    import VerticalNavs from "./component/verticalNavs"
     export default {
         name: "departmentInfo",
-        components: {DepartmentTable, BasicTabs, VerticalNavs},
+        components: {BasicTable, BasicTabs},
         data(){
           return{
             department_fields:[
@@ -55,7 +53,8 @@
               }
             ],
             items:[],
-            itemType: '科室'
+            itemType: '科室',
+            isBusy: false,
           }
         },
         mounted: async function(){
@@ -68,7 +67,6 @@
           getDepartmentList(){
             console.log("请求科室列表");
             this.$get('http://localhost:8080/hoso/department/getAllDepartmentWithCategory').then((res)=> {
-              alert(res.status);
               console.log(res.data);
               if(res.status === 'OK'){
                 this.items = res.data;
@@ -99,6 +97,18 @@
                 console.log("更新成功");
               }else{
                 console.log("加载失败");
+              }
+            })
+          },
+          insertList(item){
+            alert(JSON.stringify(item));
+            this.$post('http://localhost:8080/hoso/department/insert', JSON.stringify(item)).then((res) => {
+              if (res.status === 'OK') {
+                console.log("插入成功");
+                //改变数据后重新请求
+                this.getDepartmentList();
+              } else {
+                console.log("插入失败");
               }
             })
           },

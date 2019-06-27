@@ -3,23 +3,21 @@
     <b-row>
       <b-col lg="3">
         <BasicTabs></BasicTabs>
-        <VerticalNavs></VerticalNavs>
       </b-col>
       <b-col lg="9">
-        <DepartmentTable :caption="'非药品项目列表'" :usedData="usedData" :textFields="fmedicalItems_text_fields" :selectFields="fmedicalItems_select_fields" :multiFields="fmedicalItems_multi_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
-        </DepartmentTable>
+        <BasicTable :caption="'非药品项目列表'" :usedData="usedData" :textFields="fmedicalItems_text_fields" :selectFields="fmedicalItems_select_fields" :multiFields="fmedicalItems_multi_fields" :table-data="items" :perPage="10" :itemType="itemType" @insertList ="insertList" @updateList="updateList" @deleteList="deleteList">
+        </BasicTable>
       </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-    import DepartmentTable from "./component/departmentTable";
+    import BasicTable from "./component/basicTable";
     import BasicTabs from "./component/basicTabs";
-    import VerticalNavs from "./component/verticalNavs"
     export default {
         name: "FmedicalItemsInfo",
-        components: {DepartmentTable, BasicTabs, VerticalNavs},
+        components: {BasicTable, BasicTabs},
         data(){
           return{
             fmedicalItems_text_fields:[
@@ -135,11 +133,9 @@
           getFmedicalItemsList() {
             console.log("请求非药品项目列表");
             this.$get('http://localhost:8080/hoso/fmedicalItems/getAllFmedicalItemsForShow').then((res) => {
-              alert(res.status);
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
-                console.log("请求打印");
                 console.log(this.items);
               } else {
                 console.log("加载非药品项目列表失败");
@@ -159,11 +155,12 @@
             })
           },
           updateList(item) {
-            console.log("更新科室");
             alert(JSON.stringify(item));
             this.$post('http://localhost:8080/hoso/fmedicalItems/update', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("更新成功");
+                //改变数据后重新请求
+                this.getFmedicalItemsList();
               } else {
                 console.log("加载失败");
               }
@@ -174,6 +171,8 @@
             this.$post('http://localhost:8080/hoso/fmedicalItems/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
+                //改变数据后重新请求
+                this.getFmedicalItemsList();
               } else {
                 console.log("插入失败");
               }
@@ -182,7 +181,6 @@
           getDepartmentList() {
             console.log("请求科室列表");
             this.$get('http://localhost:8080/hoso/department/getAllDepartment').then((res) => {
-              alert(res.status);
               if (res.status === 'OK') {
                 this.usedData.department = res.data;
                 // console.log("a="+a);
@@ -199,7 +197,6 @@
           getExpenseTypeList() {
             console.log("请求费用科目列表");
             this.$get('http://localhost:8080/hoso/expenseType/getAllExpenseType').then((res) => {
-              alert(res.status);
               if (res.status === 'OK') {
                 this.usedData.expenseType = res.data;
                 // this.usedData.expenseType.concat(res.data);

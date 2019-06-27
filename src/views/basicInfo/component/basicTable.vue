@@ -26,10 +26,10 @@
     </b-row>
     <b-row>
       <b-col md="9" class="my-1"></b-col>
-      <b-col>
+      <b-col md="1" class="my-1">
         <b-button variant="success" class="btn-pill" @click="insertList">添加</b-button>
       </b-col>
-      <b-col>
+      <b-col md="1" class="my-1">
         <b-button variant="danger" class="btn-pill" @click="deleteList">删除</b-button>
       </b-col>
       <b-col md="1" class="my-1">
@@ -41,17 +41,17 @@
       <template :slot="selectField.key" slot-scope="data" v-for="selectField in selectFields">
         {{convertType(data.item, selectField)}}
       </template>
-<!--      <template :slot="multiField.key" slot-scope="row" v-for="multiField in multiFields">-->
-<!--        {{convertFromId(data.item, multiField)}}-->
-<!--        {{queryFromId(row, multiField)}}-->
-<!--      </template>-->
+      <div slot="table-busy" class="text-center text-danger my-2">
+        <b-spinner class="align-middle"></b-spinner>
+        <strong>Loading...</strong>
+      </div>
 
 
     </b-table>
     <nav>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons></b-pagination>
     </nav>
-    <DepartmentModal :usedData="usedData" :edit_name="itemType" :selected_items="this.selected_items" :text_fields="textFields" :select_fields="selectFields" :multi_fields="multiFields">
+    <BasicModal :usedData="usedData" :edit_name="itemType" :selected_items="this.selected_items" :text_fields="textFields" :select_fields="selectFields" :multi_fields="multiFields">
       <template slot="submit" slot-scope="">
         <b-button variant="success" class="btn-pill" @click="submit">提交</b-button>
       </template>
@@ -61,15 +61,15 @@
       <template slot="cancel">
         <b-button variant="danger" class="btn-pill" @click="cancel">取消</b-button>
       </template>
-    </DepartmentModal>
+    </BasicModal>
   </b-card>
 </template>
 
 <script>
-  import DepartmentModal from "./departmentModal";
+  import BasicModal from "./basicModal";
   export default {
-    name: "departmentTable",
-    components: {DepartmentModal},
+    name: "basicTable",
+    components: {BasicModal},
     inheritAttrs: false,
     props: {
       caption: {
@@ -202,11 +202,6 @@
           }
         })
       },
-      // queryFromId(row, field){
-      //   let ds = this.usedData[field.key].filter(single => {if(single.id == row[field.key]) return true;});
-      //   console.log("过滤后" + ds[0]);
-      //   if(ds.length > 0) return ds[0][field.to];
-      // },
       selectItem(item, index){
         console.log("已选择" + (item != null?item.fmedicalItemsName:",其实并未选择"));
         this.selected_items = JSON.parse(JSON.stringify(item));
@@ -258,12 +253,15 @@
       submit(){
         if (this.modal_status === "insert"){
           this.$emit('insertList', this.selected_items);
+          this.$bvModal.hide('basicModal');
         }
         else if (this.modal_status === "update"){
           this.$emit('updateList', this.selected_items);
+          this.$bvModal.hide('basicModal');
         }
         else{
           alert("模态框状态发生错误！");
+          this.$bvModal.hide('basicModal');
         }
       },
       reset(){
@@ -275,9 +273,6 @@
         this.selected_items = null;
         this.selected_index = {};
       },
-      testSlot(){
-        console.log("TestSlot 成功！");
-      }
     }
   }
 </script>
