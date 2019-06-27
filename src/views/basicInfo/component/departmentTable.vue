@@ -41,16 +41,17 @@
       <template :slot="selectField.key" slot-scope="data" v-for="selectField in selectFields">
         {{convertType(data.item, selectField)}}
       </template>
-      <template :slot="multiField.key" slot-scope="data" v-for="multiField in multiFields">
-        {{convertFromId(data.item, multiField)}}
-      </template>
+<!--      <template :slot="multiField.key" slot-scope="row" v-for="multiField in multiFields">-->
+<!--        {{convertFromId(data.item, multiField)}}-->
+<!--        {{queryFromId(row, multiField)}}-->
+<!--      </template>-->
 
 
     </b-table>
     <nav>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons></b-pagination>
     </nav>
-    <DepartmentModal :edit_name="itemType" :selected_items="this.selected_items" :text_fields="textFields" :select_fields="selectFields" :multi_fields="multiFields">
+    <DepartmentModal :usedData="usedData" :edit_name="itemType" :selected_items="this.selected_items" :text_fields="textFields" :select_fields="selectFields" :multi_fields="multiFields">
       <template slot="submit" slot-scope="">
         <b-button variant="success" class="btn-pill" @click="testSlot">提交</b-button>
       </template>
@@ -138,7 +139,7 @@
         sortBy: null,
         sortDesc: false,
         filter: null,
-        selected_items: {}
+        selected_items: {},
       }
     },
     computed: {
@@ -156,6 +157,13 @@
             return { text: f.label, value: f.key }
           })
       }
+    },
+    mounted(){
+      console.log("table处输出开始");
+      console.log(this.usedData);
+      console.log(this.usedData.department);
+      console.log(this.usedData.amount);
+      console.log("table处输出结束");
     },
     methods: {
       getBadge (status) {
@@ -176,16 +184,7 @@
         //将选择性属性 从数值value转换为对应文字
         console.log("转换的是" + field.label);
         let value = item[field.key];
-        console.log(item[field.key]);
-        // let text = {};
-        // for(let i = 0; i < field.options.length; i++){
-        //   if (value === field.options.value){
-        //     text = field.options.text;
-        //   }
-        // }
         return field.options[value-1].text;
-        // const map = {departmentType: {1: '临床', 2: '医技', 3: '财务', 4: '行政', 5: '其他'}};
-        // return map.departmentType[item.departmentType];
       },
       convertFromId(item, field){
         //将根据ID选择的属性，把ID转换为对应属性，并以此属性为列名显示
@@ -194,16 +193,20 @@
           // console.log(res.data);
           if(res.status === 'OK'){
             console.log(res.data[field.to]);
-            // document.getElementById("multi").innerHTML(res.data[field.to]);
             return res.data[field.to];
           }else{
             console.log("加载失败");
           }
         })
       },
+      // queryFromId(row, field){
+      //   let ds = this.usedData[field.key].filter(single => {if(single.id == row[field.key]) return true;});
+      //   console.log("过滤后" + ds[0]);
+      //   if(ds.length > 0) return ds[0][field.to];
+      // },
       selectItem(item){
-        console.log("已选择" + (item[0] != null?item[0].fmedicalItemsName:"未选择"));
-        this.selected_items = item[0];
+        console.log("已选择" + (item[0] != null?item[0].fmedicalItemsName:",其实并未选择"));
+        this.selected_items = JSON.parse(JSON.stringify(item[0]));
       },
       deleteList(){
         alert("删除按钮");

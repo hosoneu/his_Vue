@@ -30,11 +30,10 @@
         :horizontal="true">
         <b-form-select :id="field.label"
                        :plain="true"
-                       v-model="selected_items[field.key]"
-                       @load-data="this.getList(field)"
+                       v-model="selected_items[field.from]"
         >
           <!--options 默认有text value分别代表文本 和 值-->
-          <option v-for="choice in this.options(field)" :value="choice[field.key]" :text="choice[field.to]" :key="choice[field.key]">
+          <option v-for="choice in options[field.table]" :value="choice[field.from]" :label="choice[field.to]" :key="choice[field.from]">
           </option>
         </b-form-select>
       </b-form-group>
@@ -61,16 +60,16 @@
           selected_items: {
             type: Object,
             default: () => {},
-            validator: function (value) {
-              if (value == {} || !value){
-                console.log("验证为空");
-                return {};
-              }
-              else{
-                console.log("验证不为空");
-                return value;
-              }
-            }
+            // validator: function (value) {
+            //   if (value == {} || !value){
+            //     console.log("验证为空");
+            //     return {};
+            //   }
+            //   else{
+            //     console.log("验证不为空");
+            //     return value;
+            //   }
+            // }
           },
           text_fields: {
             type: [Array, Object],
@@ -83,49 +82,35 @@
           multi_fields: {
             type: [Array, Object],
             default: ()=> {}
-          }
+          },
+          usedData: {
+            type: Object,
+            default: () =>{},
+          },
         },
       data: () => {
         return {
           list: {},
+          options: {},
         }
       },
       computed: {
-        options(field){return this.list[field.to]},
+        pageData:function () {
+          return this.usedData;
+        }
       },
       methods:{
         getList(field){
-          //挂载时，对话框中所有下拉框请求列表
-          //请求api全部由父组件的父组件Info结尾的主界面传递而来
-          console.log("请求列表");
-          // for(var i=0; i < this.multi_fields.length; i++){
-          //   this.$get('http://localhost:8080/hoso/' + this.multi_fields[i].listApi).then((res)=> {
-          //     alert(res.status);
-          //     console.log(res.data);
-          //     if(res.status === 'OK'){
-          //       this.list.push(res.data);
-          //       console.log(this.list);
-          //     }else{
-          //       console.log("加载失败");
-          //     }
-          //   })
-          // }
-          this.$get('http://localhost:8080/hoso/' + field.listApi).then((res)=> {
-            console.log(res.data);
-            if(res.status === 'OK'){
-              this.list[field.to] = res.data;
-              console.log(this.list);
-            }else{
-              console.log("加载失败");
-            }
-          })
+          //更新时，对话框中所有下拉框请求列表
+          this.options[field.table] = this.pageData[field.table];
         },
       },
-      mounted() {
-          //挂载时触发事件，使得列表读取数据
-          //至于为什么要这样做，如果
-          this.$emit('load-data');
-      }
+      updated() {
+          //因usedData变化而pageData的变化会引起更新 刷新下拉列表（不然 早早传来的usedData是空的 当时还未请求到数据）
+          for (let i = 0; i < this.multi_fields.length; i++){
+            this.getList(this.multi_fields[i]);
+          }
+      },
     }
 </script>
 
