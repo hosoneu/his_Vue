@@ -235,16 +235,22 @@
         }
       },
       insertList(){
+        //重置 选择项 回归默认状态
+        this.selected_items = {};
+        //重置时，将各个框置为空
+        this.reserve_items = {};
         //添加时，为了清空弹窗中输入框的值，且将其对应到属性上去，需要将selected_items赋值为所有属性存在但为空的状态。
         //相当于this.selected_items = {departmentName: '',departmentCode: ''};
+        //this赋给变量 防止foreach中的this与vue实例的this冲突
+        var that = this;
         this.textFields.forEach(function (field) {
-          this.selected_items[field.key] = '';
+          that.selected_items[field.key] = '';
         });
         this.selectFields.forEach(function (field) {
-          this.selected_items[field.key] = '';
+          that.selected_items[field.key] = '';
         });
         this.multiFields.forEach(function (field) {
-          this.selected_items[field.key] = '';
+          that.selected_items[field.key] = '';
         });
         this.modal_status = "insert";
         this.$bvModal.show('basicModal');
