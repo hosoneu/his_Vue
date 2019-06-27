@@ -65,7 +65,7 @@
         :total-rows="total"
         :per-page="perPage"
         class="my-0"
-        size="sm"
+        size="md"
         align="center"
       ></b-pagination>
     </b-col>
@@ -95,7 +95,7 @@
             {key: 'medicalRecordHomePage.pastHistory', label: '既往史', sortable: true},
             {key: 'medicalRecordHomePage.allergicHistory', label:'过敏史', sortable: true},
             {key: 'medicalRecordHomePage.physicalExamination', label: '体格检查', sortable: true},
-            {key: 'medicalRecordHomePage.assistantExamination', label:'辅助治疗', sortable: true},
+            {key: 'medicalRecordHomePage.assistantExamination', label:'辅助检查', sortable: true},
             {key: 'operate', label:'操作'},
           ],
           isBusy: false,

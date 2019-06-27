@@ -10,7 +10,7 @@
                 <b-col align="right">
                   <b-button-group class="pull-right">
                     <!--检索疾病-->
-                    <b-button id="searchButton" v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
+                    <b-button id="searchButton"  v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
                     <!--常用诊断-->
                     <b-button id="commonlyUsedButton" v-b-modal="computedCommonlyUsedModalId" size="md" variant="outline-dark">常用</b-button>
                     <b-button type="button" @click="onReset" size="md" variant="outline-dark">清空</b-button>
@@ -101,12 +101,11 @@
           </b-row>
         </b-card>
 
-        <b-card>
           <b-row>
             <b-col md="1"></b-col>
             <b-col md="10">
-
-              <b-row>
+<!--              :hidden="!ifSeen"-->
+              <b-row >
                 <b-col
                   align="right"
                 >
@@ -211,7 +210,6 @@
               </b-table>
             </b-col>
           </b-row>
-        </b-card>
       </div>
 </template>
 
@@ -226,6 +224,10 @@
         type:{
           type: Number,//0中医 1西医
           default:()=>{return 0}
+        },
+        defineDiagnosisMark:{
+          type:String,
+          default:()=>{return ''},
         },
         diagnosisItems:{
           type:Array,
@@ -253,7 +255,7 @@
               diseaseId:0,
             },
             onsetDate:'',
-            diagnosisMark:'1',//诊断标志：初诊1 终诊2
+            diagnosisMark:'',//诊断标志：初诊1 终诊2
           },//用来编辑的诊断
           diagnosisForm: {
             diseaseId: 0,
@@ -266,7 +268,7 @@
               diseaseId:0,
             },
             onsetDate:'',
-            diagnosisMark:'1',//诊断标志：初诊1 终诊2
+            diagnosisMark:'',//诊断标志：初诊1 终诊2
           },
           mainDiagnosisOptions: [
             { text: '非主诊', value: '1' },
@@ -296,9 +298,6 @@
               getCommonlyUsedParams:{},},
           ],
       }
-      },
-      mounted:{
-
       },
       computed:{
         ...mapState("doctor",["medicalRecord"]),
@@ -334,6 +333,7 @@
           evt.preventDefault();
           this.diagnosisForm.diseaseId = this.diagnosisForm.disease.diseaseId;
           this.diagnosisForm.medicalRecordId = this.medicalRecord.medicalRecordId;
+          this.diagnosisForm.defineDiagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
           let copyDiagnosisForm = Object.assign({},this.diagnosisForm);
           this.diagnosisItems.push(copyDiagnosisForm);
           this.diagnosisForm.disease={};
@@ -359,18 +359,24 @@
         exitDiagnosis(){//更改诊断
           if(this.selectedIndex>=0){
             this.operateDiagnosisForm = Object.assign({},this.diagnosisItems[this.selectedIndex]);
+            this.operateDiagnosisForm.onsetDate = this.operateDiagnosisForm.onsetDate.split("T")[0];//处理从数据库传输过来的日期
+            console.log("我来了");
             console.log(this.operateDiagnosisForm);
+            console.log("我走了");
             this.$refs["operate-diagnosis-modal"].show();//弹框
           }else{
             alert("请选中诊断条目");
           }
-
         },
         exitOk(){
           this.$set(this.diagnosisItems,this.selectedIndex,Object.assign({},this.operateDiagnosisForm));
         },
         deleteDiagnosis(){//删除诊断
-          this.diagnosisItems.splice(this.selectedIndex,1);
+          if(this.selectedIndex>=0){
+            this.diagnosisItems.splice(this.selectedIndex,1);
+          }else{
+            alert("请选中诊断条目");
+          }
         },
       }
     }

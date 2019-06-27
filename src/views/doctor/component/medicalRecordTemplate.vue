@@ -44,7 +44,6 @@
           :sort-direction="sortDirection"
           @filtered="onFiltered">
           <!-- @filtered当本地筛选导致项目数发生变化时发出。-->
-
           <template slot="operate" slot-scope="row">
             <b-button @click="selectMedicalRecordTemplate(row.item, row.index)" variant="primary"  size="sm" >查看</b-button>
           </template>
@@ -65,7 +64,7 @@
 
       </b-tab>
       <!-- 弹框-->
-      <b-modal  ref="medical-record-template-modal" size="lg" centered title="模板详情">
+      <b-modal  ref="medical-record-template-modal" size="lg" centered title="模板详情" @ok="onCite">
         <medical-record-template-info
           :medical-record-template-info-item=medicalRecordTemplateInfoItem
         >
@@ -135,6 +134,9 @@
           this.currentTab = index;
           this.currentPage = 1;
           await this.getMedicalRecordTemplateList();
+        },
+        onCite(){
+          this.$emit("onCite",this.medicalRecordTemplateInfoItem);
         },
         onFiltered(filteredItems) {
           // Trigger pagination to update the number of buttons/pages due to filtering

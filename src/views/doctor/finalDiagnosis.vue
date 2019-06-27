@@ -1,5 +1,5 @@
 <template>
-  <div class="animated fadeIn">
+  <div class="animated fadeIn" >
     <b-row>
       <b-col lg="12">
         <patient-info
@@ -16,6 +16,18 @@
       </b-col>
       <b-col lg="9">
         <b-card header="填写模块">
+
+          <div slot="header"><!-- slot设置插槽便于模板数据的精准插入-->
+            填写模块
+            <div class="card-header-actions">
+              <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
+                  <b-button size="sm" :disabled="this.ifReadonly" @click="finalDiagnosisReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
+                <b-button size="sm" :disabled="this.ifReadonly" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                <b-button size="sm" :disabled="this.ifReadonly" @click="finalDiagnosisSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
+              </b-button-group>
+            </div>
+          </div>
+
           <b-tabs>
             <b-tab title="中医诊断">
               <chinese-diagnosis
@@ -23,6 +35,7 @@
                 :type=0
                 :diagnosis-items="finalChineseDiagnosisItems"
                 :if-seen="ifSeen"
+                :define-diagnosis-mark="'2'"
               >
               </chinese-diagnosis>
               <!--  体格检查physicalExamination-->
@@ -33,10 +46,25 @@
                 :type=1
                 :diagnosis-items="finalWesternDiagnosisItems"
                 :if-seen="ifSeen"
+                :define-diagnosis-mark="'2'"
               >
               </western-diagnosis>
             </b-tab>
             <b-tab title="辅助检查">
+              <b-row>
+                <b-col md="1">
+
+                </b-col>
+                <b-col md="10 ">
+                  <b-form-group
+                    label="辅助检查"
+                    label-for="assistantExamination"
+                    :label-cols="2"
+                    :horizontal="true">
+                    <b-form-textarea  :readonly="this.ifReadonly" v-model="assistantExamination" id="assistantExamination" placeholder="请输入内容..." rows="3" ></b-form-textarea>
+                  </b-form-group>
+                </b-col>
+              </b-row>
 
             </b-tab>
           </b-tabs>
@@ -60,9 +88,13 @@
           ifSeen:true,
           finalWesternDiagnosisItems:[],
           finalChineseDiagnosisItems:[],
+          assistantExamination:'',
+          ifReadonly:false,
           api:{
             listFirstDiagnosisByMedicalRecordId:"/doctor/homepage/listFirstDiagnosisByMedicalRecordId",
-            listFinalDiagnosisByMedicalRecordId:"/doctor/diagnosis/listFinalDiagnosisByMedicalRecordId"
+            listFinalDiagnosisByMedicalRecordId:"/doctor/diagnosis/listFinalDiagnosisByMedicalRecordId",
+            insertFinalDiagnosis:"/doctor/diagnosis/insertFinalDiagnosis",//插入终诊数据
+            insertAssistantExamination:"/doctor/diagnosis/insertAssistantExamination",//插入辅助检查结果
           }
         }
       },
@@ -76,7 +108,7 @@
           handler(){
             this.getDiagnosisList();
           }
-        }
+        },
       },
       methods:{
         getDiagnosisList(){
@@ -84,21 +116,19 @@
             this.privateGetDiagnosisList('初诊');
           }else {
             if(this.medicalRecordState==='未初诊') {
-              alert('您还没初诊');
+              alert('您还没初诊，不能确诊');
             }else {
+              this.ifReadonly=true;
               this.privateGetDiagnosisList('确诊');
             }
           }
         },
-        selectPatient(){
-
-        },
         privateGetDiagnosisList(type){
           let para = {};
           let reqApi='';
-          if(type==='初诊'){
+          if(type==='初诊'){//如果未确诊
             reqApi=this.api.listFirstDiagnosisByMedicalRecordId;
-          }else{
+          }else{//如果已确诊
             reqApi=this.api.listFinalDiagnosisByMedicalRecordId;
           }
           para.medicalRecordId = this.registration.medicalRecordId;//得到病历号
@@ -107,15 +137,71 @@
             if (res.status === 'OK') {
               if(res.data[0].disease.diseaseTypeId===472){//判断是中医疾病还是西医疾病 472为中医
                 this.finalChineseDiagnosisItems = res.data;
+                for(let i=0;i<this.finalChineseDiagnosisItems.length;i++){
+                  this.finalChineseDiagnosisItems[i].diagnosisMark='2';
+                }
               }else{
                 this.finalWesternDiagnosisItems = res.data;
+                for(let i=0;i<this.finalWesternDiagnosisItems.length;i++){
+                  this.finalWesternDiagnosisItems[i].diagnosisMark='2';
+                }
               }
               this.isBusy = false;
             } else {
               console.log("加载失败");
             }
           });
-        }
+        },
+        selectPatient(){//切换患者
+
+        },
+        finalDiagnosisReset(){//重置确诊信息
+          if(this.medicalRecordState==='已初诊'){
+            this.finalChineseDiagnosisItems=[];
+            this.finalWesternDiagnosisItems=[];
+          }else{
+            if(this.medicalRecordState==='未初诊'){
+              alert("您还没初诊，不能确诊");
+            }else{
+
+              console.log("已确诊");
+            }
+          }
+        },
+        finalDiagnosisSubmit(){//提交确诊信息
+          if(this.finalChineseDiagnosisItems.length===0&&this.finalWesternDiagnosisItems.length===0){//判断是否有诊断信息
+            alert("你不能提交");
+          }else{
+            //插入终诊结果
+            let diagnosisItems = this.finalWesternDiagnosisItems.concat(this.finalChineseDiagnosisItems);
+            this.$post(this.api.insertFinalDiagnosis,JSON.parse(JSON.stringify(diagnosisItems))).then(res=>{
+              console.log(res);
+              if(res.status === "OK"){
+                console.log(res.data);
+                alert(res.message);
+              }else{
+                console.log("插入失败");
+                alert(res.message);
+              }
+            });
+            //录入辅助检查结果
+            let para = {};
+            para.medicalRecordId = this.registration.medicalRecordId;//得到病历号
+            para.assistantExamination = this.assistantExamination;
+            if(!(this.assistantExamination==='')){
+              this.$get(this.api.insertAssistantExamination,JSON.parse(JSON.stringify(para))).then(res=>{
+                console.log(res);
+                if(res.status === "OK"){
+                  console.log(res.data);
+                  console.log(res.message);
+                }else{
+                  console.log(res.message);
+                }
+              });
+            }
+          }
+        },
+
       },
 
     }

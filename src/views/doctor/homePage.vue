@@ -16,7 +16,10 @@
         >
         </registration-list>
         <!--    病历模板-->
-        <medical-record-template>
+        <medical-record-template
+          ref="medical-record-template-cite"
+          @onCite="onCite"
+        >
 
         </medical-record-template>
 
@@ -24,17 +27,41 @@
       <b-col md="9">
         <b-row>
           <b-col lg="12">
+<!--            :disabled="this.ifReadonly"-->
           <b-card header="基本信息">
             <div slot="header"><!-- slot设置插槽便于模板数据的精准插入-->
               填写模块
               <div class="card-header-actions">
                 <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
-                  <b-button size="sm" :disabled="this.ifReadonly" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                  <b-button size="sm" :disabled="this.ifReadonly" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                  <b-button size="sm" @click="medicalRecordReset" :disabled="this.ifReadonly" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
+                  <b-button size="sm"  @click="medicalRecordSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
                   <b-button size="sm" :disabled="this.ifReadonly" @click="medicalRecordSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
                 </b-button-group>
               </div>
             </div>
+
+            <b-modal ref="medical-record-template" size="md" @ok="onSave" centered title="存为模板">
+              <!--  名称 -->
+              <b-form-group
+                label="模板名称"
+                label-for="templateName"
+                :label-cols="3"
+                :horizontal="true">
+                <b-form-input v-model="templateName" id="templateName" type="text" placeholder="请输入内容..."></b-form-input>
+              </b-form-group>
+              <!--  范围 -->
+              <b-form-group
+                label="适用范围"
+                label-for="templateScope"
+                :label-cols="3">
+                <b-form-radio-group
+                  id="templateScope"
+                  v-model="templateScope"
+                  :options="templateScopeOptions"
+                ></b-form-radio-group>
+              </b-form-group>
+            </b-modal>
+
             <b-tabs>
               <!--主模块部分的分菜单栏-->
               <b-tab title = "病史内容">
@@ -105,6 +132,7 @@
                   :type=0
                   :diagnosis-items="firstChineseDiagnosisItems"
                   :if-seen="ifSeen"
+                  :define-diagnosis-mark="'1'"
                 >
                 </chinese-diagnosis>
                 <!--  体格检查physicalExamination-->
@@ -115,6 +143,7 @@
                   :type=1
                   :diagnosis-items="firstWesternDiagnosisItems"
                   :if-seen="ifSeen"
+                  :define-diagnosis-mark="'1'"
                 >
                 </western-diagnosis>
               </b-tab>
@@ -153,6 +182,7 @@
               selectMedicalRecordHomePageParams:{},
               listFirstDiagnosisByMedicalRecordIdApi:"/doctor/homepage/listFirstDiagnosisByMedicalRecordId",//列出所有的初诊信息
               listFirstDiagnosisByMedicalRecordIdParams:{},
+              insertMedicalRecordHomePageTemplateApi:"/doctor/homepage/insertMedicalRecordHomePageTemplate",//存为模板
             },
             ifReadonly:false,//默认为不只读（即可以录入病历首页信息）
             ifSeen:true,//默认为可见
@@ -170,12 +200,19 @@
               physicalExamination:'',
               assistantExamination:'',
             },//传给后台的病历首页对象
-
+            templateScope:'1',
+            templateName:'',
+            templateScopeOptions:[
+              { text: '个人', value: '1' },
+              { text: '科室', value: '2' },
+              { text: '全院', value: '3' },
+            ]
           }
       },
       computed:{
         ...mapState("doctor",["medicalRecord"]),//得到当前的病历内容 得到就诊状态 未选择 未初诊、已初诊、已终诊、诊毕
         ...mapState("doctor",["medicalRecordState"]),
+        ...mapState("doctor",["doctor"]),
       },
       methods:{
         selectPatient(registration){//切换患者时需要更新当前的MedicalRecord的部分
@@ -208,19 +245,7 @@
             this.ifReadonly = true;//如果不是未初诊 则更改为只读
             this.ifSeen = false;//改为不可见
           }else{
-            this.firstChineseDiagnosisItems=[];
-            this.firstWesternDiagnosisItems=[];
-            this.medicalRecordHomePage = {
-              medicalRecordId:this.medicalRecord.medicalRecordId,
-              doctorId:this.medicalRecord.doctorId,
-              chiefComplaint:'',
-              presentHistory:'',
-              presentTreatment:'',
-              pastHistory:'',
-              allergicHistory:'',
-              physicalExamination:'',
-              assistantExamination:'',
-            };
+            this.medicalRecordReset();//清空
             this.ifReadonly = false;//如果未初诊 则改为可编辑
             this.ifSeen = true;//改为可见
           }
@@ -230,30 +255,112 @@
           let chineseDiagnosisItems = this.$refs["chineseDiagnosis"].diagnosisItems;
           let westernDiagnosisItems = this.$refs["westernDiagnosis"].diagnosisItems;
           if(chineseDiagnosisItems.length===0&&westernDiagnosisItems.length===0){//判断是否有诊断信息
-            alert("你不能提交");
+            alert("您还没有诊断");
           }else{
-            this.$post(this.api.insertMedicalRecordHomePageApi,JSON.parse(JSON.stringify(this.medicalRecordHomePage))).then(res=>{
+            if(this.medicalRecordHomePage.chiefComplaint.trim()===''||this.medicalRecordHomePage.allergicHistory.trim()===''||this.medicalRecordHomePage.pastHistory.trim()===''||this.medicalRecordHomePage.physicalExamination.trim()===''||this.medicalRecordHomePage.presentHistory.trim()===''||this.medicalRecordHomePage.presentTreatment.trim()===''){
+                alert("请填写完整病历首页");
+            }else{
+              this.$post(this.api.insertMedicalRecordHomePageApi,JSON.parse(JSON.stringify(this.medicalRecordHomePage))).then(res=>{
+                console.log(res);
+                if(res.status === "OK"){
+                  console.log(res.data);
+                }else{
+                  console.log("插入失败");
+                }
+              });
+              let diagnosisItems = chineseDiagnosisItems.concat(westernDiagnosisItems);
+              this.$post(this.api.insertFirstDiagnosisApi,JSON.parse(JSON.stringify(diagnosisItems))).then(res=>{
+                console.log(res);
+                if(res.status === "OK"){
+                  console.log(res.data);
+                  console.log(res.message);
+                  alert("病历首页录入成功");
+                }else{
+                  console.log(res.message);
+                }
+              });
+            }
+          }
+          this.$refs['registrationList'].getPatientList();
+        },
+        onSave(){
+          if(this.templateName===''){
+            alert("请输入模板名称");
+          }else{
+            let medicalRecordHomePageTemplate = {};
+            let diagnosisItems = this.firstChineseDiagnosisItems.concat(this.firstWesternDiagnosisItems);
+            medicalRecordHomePageTemplate.doctorId = this.doctor.userId;
+            medicalRecordHomePageTemplate.name=this.templateName;
+            medicalRecordHomePageTemplate.scope=this.templateScope;
+            medicalRecordHomePageTemplate.chiefComplaint = this.medicalRecordHomePage.chiefComplaint;
+            medicalRecordHomePageTemplate.presentHistory = this.medicalRecordHomePage.presentHistory;
+            medicalRecordHomePageTemplate.physicalExamination = this.medicalRecordHomePage.physicalExamination;
+            medicalRecordHomePageTemplate.diagnosisTemplateList = diagnosisItems;
+            this.$post(this.api.insertMedicalRecordHomePageTemplateApi,JSON.parse(JSON.stringify(medicalRecordHomePageTemplate))).then(res=>{
               console.log(res);
               if(res.status === "OK"){
+                alert("插入成功");
                 console.log(res.data);
               }else{
+                alert("插入失败");
                 console.log("插入失败");
               }
             });
-            let diagnosisItems = chineseDiagnosisItems.concat(westernDiagnosisItems);
-            this.$post(this.api.insertFirstDiagnosisApi,JSON.parse(JSON.stringify(diagnosisItems))).then(res=>{
-              console.log(res);
-              if(res.status === "OK"){
-                console.log(res.data);
-                console.log(res.message);
-                alert("病历首页录入成功");
-              }else{
-                console.log(res.message);
-              }
-            });
           }
-          this.$refs['registrationList'].getPatientList();
-        }
+        },
+        medicalRecordSave(){//存为模板
+          this.$refs["medical-record-template"].show();
+        },
+        medicalRecordReset(){
+          this.firstChineseDiagnosisItems=[];
+          this.firstWesternDiagnosisItems=[];
+          this.medicalRecordHomePage = {
+            medicalRecordId:this.medicalRecord.medicalRecordId,
+            doctorId:this.medicalRecord.doctorId,
+            chiefComplaint:'',
+            presentHistory:'',
+            presentTreatment:'',
+            pastHistory:'',
+            allergicHistory:'',
+            physicalExamination:'',
+            assistantExamination:'',
+          };
+        },
+        onCite(medicalRecordTemplateInfoItem){//引用模板
+          if(this.medicalRecordState==="未初诊"){//可以引用
+            this.medicalRecordHomePage.chiefComplaint=medicalRecordTemplateInfoItem.chiefComplaint;
+            this.medicalRecordHomePage.presentHistory=medicalRecordTemplateInfoItem.presentHistory;
+            this.medicalRecordHomePage.physicalExamination=medicalRecordTemplateInfoItem.physicalExamination;
+            if(medicalRecordTemplateInfoItem.diagnosisTemplateList[0].disease.diseaseTypeId===472){//判断为中医疾病模板
+              for(let i=0;i<medicalRecordTemplateInfoItem.diagnosisTemplateList.length;i++ ){
+                let templateDiagnosisItem = {};
+                templateDiagnosisItem.diseaseId = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].disease.diseaseId;
+                templateDiagnosisItem.medicalRecordId = this.medicalRecord.medicalRecordId;
+                templateDiagnosisItem.mainDiagnosisMark = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].mainDiagnosisMark;
+                templateDiagnosisItem.suspectMark = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].suspectMark;
+                templateDiagnosisItem.disease = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].disease;
+                templateDiagnosisItem.onsetDate='';
+                templateDiagnosisItem.diagnosisMark='1';//诊断标志：初诊1 终诊2
+                this.firstChineseDiagnosisItems.push(templateDiagnosisItem);
+              }
+            }else{//判断为西医疾病模板
+              for(let i=0;i<medicalRecordTemplateInfoItem.diagnosisTemplateList.length;i++ ){
+                let templateDiagnosisItem = {};
+                templateDiagnosisItem.diseaseId = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].disease.diseaseId;
+                templateDiagnosisItem.medicalRecordId = this.medicalRecord.medicalRecordId;
+                templateDiagnosisItem.mainDiagnosisMark = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].mainDiagnosisMark;
+                templateDiagnosisItem.suspectMark = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].suspectMark;
+                templateDiagnosisItem.disease = medicalRecordTemplateInfoItem.diagnosisTemplateList[i].disease;
+                templateDiagnosisItem.onsetDate='';
+                templateDiagnosisItem.diagnosisMark='1';//诊断标志：初诊1 终诊2
+                this.firstWesternDiagnosisItems.push(templateDiagnosisItem);
+              }
+            }
+
+          }else{
+            alert("患者已经初诊了喔！");
+          }
+        },
       }
     }
 </script>
