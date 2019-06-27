@@ -82,7 +82,7 @@
             console.log("删除科室");
             console.log(index);
             alert(item.departmentId);
-            this.$get('http://localhost:8080/hoso/department/delete', {"departmentId": item.departmentId}).then((res)=> {
+            this.$get('http://localhost:8080/hoso/department/delete', {"id": item.departmentId}).then((res)=> {
               if(res.status === 'OK'){
                 console.log("删除成功");
                 this.items.splice(index, 1);

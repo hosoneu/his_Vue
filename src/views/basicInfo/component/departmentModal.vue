@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="basicModal">
+  <b-modal id="basicModal" data-backdrop="static">
     <template slot="modal-header">
       <h5>编辑{{edit_name}}</h5>
     </template>
@@ -60,16 +60,16 @@
           selected_items: {
             type: Object,
             default: () => {},
-            // validator: function (value) {
-            //   if (value == {} || !value){
-            //     console.log("验证为空");
-            //     return {};
-            //   }
-            //   else{
-            //     console.log("验证不为空");
-            //     return value;
-            //   }
-            // }
+            validator: function (value) {
+              if (JSON.stringify(value) === {} || !value){
+                console.log("验证为空");
+                return {};
+              }
+              else{
+                console.log("验证不为空");
+                return value;
+              }
+            }
           },
           text_fields: {
             type: [Array, Object],

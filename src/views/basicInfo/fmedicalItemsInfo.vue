@@ -148,9 +148,8 @@
           },
           deleteList(index, item) {
             console.log("删除科室");
-            console.log(index);
-            alert(item.departmentId);
-            this.$get('http://localhost:8080/hoso/department/delete', {"departmentId": item.departmentId}).then((res) => {
+            alert(index);
+            this.$get('http://localhost:8080/hoso/fmedicalItems/delete', {"id": item.fmedicalItemsId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.items.splice(index, 1);
@@ -161,12 +160,22 @@
           },
           updateList(item) {
             console.log("更新科室");
-            console.log(item);
-            this.$get('updateDepartment', item).then((res) => {
-              if (res.code === true) {
+            alert(JSON.stringify(item));
+            this.$post('http://localhost:8080/hoso/fmedicalItems/update', JSON.stringify(item)).then((res) => {
+              if (res.status === 'OK') {
                 console.log("更新成功");
               } else {
                 console.log("加载失败");
+              }
+            })
+          },
+          insertList(item){
+            alert(JSON.stringify(item));
+            this.$post('http://localhost:8080/hoso/fmedicalItems/insert', JSON.stringify(item)).then((res) => {
+              if (res.status === 'OK') {
+                console.log("插入成功");
+              } else {
+                console.log("插入失败");
               }
             })
           },
@@ -204,11 +213,6 @@
             })
           },
         },
-      watch:{
-        'this.usedData':function () {
-          alert("你在爷爷这变了 狗子");
-        }
-      },
     }
 </script>
 

@@ -27,7 +27,7 @@
     <b-row>
       <b-col md="9" class="my-1"></b-col>
       <b-col>
-        <b-button variant="success" class="btn-pill" @click="insertList" v-b-modal="'departmentModal'">添加</b-button>
+        <b-button variant="success" class="btn-pill" @click="insertList">添加</b-button>
       </b-col>
       <b-col>
         <b-button variant="danger" class="btn-pill" @click="deleteList">删除</b-button>
@@ -36,7 +36,7 @@
         <b-button variant="info" class="btn-pill" @click="updateList">编辑</b-button>
       </b-col>
     </b-row>
-    <b-table selectable select-mode="single" @row-selected="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"
+    <b-table selectable select-mode="single" @row-clicked="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"
              :current-page="currentPage" :per-page="perPage">
       <template :slot="selectField.key" slot-scope="data" v-for="selectField in selectFields">
         {{convertType(data.item, selectField)}}
@@ -53,13 +53,13 @@
     </nav>
     <DepartmentModal :usedData="usedData" :edit_name="itemType" :selected_items="this.selected_items" :text_fields="textFields" :select_fields="selectFields" :multi_fields="multiFields">
       <template slot="submit" slot-scope="">
-        <b-button variant="success" class="btn-pill" @click="testSlot">提交</b-button>
+        <b-button variant="success" class="btn-pill" @click="submit">提交</b-button>
       </template>
       <template slot="reset" slot-scope="">
-        <b-button variant="warning" class="btn-pill" @click="testSlot">重置</b-button>
+        <b-button variant="warning" class="btn-pill" @click="reset">重置</b-button>
       </template>
-      <template slot="cancel" slot-scope="">
-        <b-button variant="danger" class="btn-pill" @click="testSlot">取消</b-button>
+      <template slot="cancel">
+        <b-button variant="danger" class="btn-pill" @click="cancel">取消</b-button>
       </template>
     </DepartmentModal>
   </b-card>
@@ -140,6 +140,9 @@
         sortDesc: false,
         filter: null,
         selected_items: {},
+        reserve_items: {},
+        selected_index: {},
+        modal_status: "",
       }
     },
     computed: {
@@ -204,33 +207,67 @@
       //   console.log("过滤后" + ds[0]);
       //   if(ds.length > 0) return ds[0][field.to];
       // },
-      selectItem(item){
-        console.log("已选择" + (item[0] != null?item[0].fmedicalItemsName:",其实并未选择"));
-        this.selected_items = JSON.parse(JSON.stringify(item[0]));
+      selectItem(item, index){
+        console.log("已选择" + (item != null?item.fmedicalItemsName:",其实并未选择"));
+        this.selected_items = JSON.parse(JSON.stringify(item));
+        this.reserve_items = JSON.parse(JSON.stringify(item));
+        this.selected_index = index;
       },
       deleteList(){
         alert("删除按钮");
-        if (this.selected_items == null){
+        if (this.selected_items === null){
           alert("您还未选择希望删除的条目！");
         }
         else{
-          // this.$emit('deleteList', this.selected_items);
+          this.$emit('deleteList', this.selected_index, this.selected_items);
         }
       },
       updateList(){
         alert("更新按钮");
-        if (this.selected_items == null){
+        if (this.selected_items === null){
             alert("您还未选择希望编辑的条目！");
         }
         else {
           alert("您已选择更新");
+          this.modal_status = "update";
           this.$bvModal.show('basicModal');
           // this.$emit('updateList', this.selected_items);
         }
       },
       insertList(){
-        this.selected_items={departmentCode: "", departmentName: "", departmentType: "", departmentCategory: ""};
-        alert(this.selected_items);
+        //添加时，为了清空弹窗中输入框的值，且将其对应到属性上去，需要将selected_items赋值为所有属性存在但为空的状态。
+        //相当于this.selected_items = {departmentName: '',departmentCode: ''};
+        this.textFields.forEach(function (field) {
+          this.selected_items[field.key] = '';
+        });
+        this.selectFields.forEach(function (field) {
+          this.selected_items[field.key] = '';
+        });
+        this.multiFields.forEach(function (field) {
+          this.selected_items[field.key] = '';
+        });
+        this.modal_status = "insert";
+        this.$bvModal.show('basicModal');
+      },
+      submit(){
+        if (this.modal_status === "insert"){
+          this.$emit('insertList', this.selected_items);
+        }
+        else if (this.modal_status === "update"){
+          this.$emit('updateList', this.selected_items);
+        }
+        else{
+          alert("模态框状态发生错误！");
+        }
+      },
+      reset(){
+        //利用预留字段 保留最初的值,并通过深拷贝赋值，直接赋值的话，两者引用同一对象，无法多次重置。
+        this.selected_items = JSON.parse(JSON.stringify(this.reserve_items));
+      },
+      cancel(){
+        this.$bvModal.hide('basicModal');
+        this.selected_items = null;
+        this.selected_index = {};
       },
       testSlot(){
         console.log("TestSlot 成功！");
