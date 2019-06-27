@@ -6,7 +6,7 @@
         <VerticalNavs></VerticalNavs>
       </b-col>
       <b-col lg="9">
-        <DepartmentTable :caption="'非药品项目列表'" :textFields="fmedicalItems_text_fields" :selectFields="fmedicalItems_select_fields" :multiFields="fmedicalItems_multi_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
+        <DepartmentTable :caption="'非药品项目列表'" :usedData="usedData" :textFields="fmedicalItems_text_fields" :selectFields="fmedicalItems_select_fields" :multiFields="fmedicalItems_multi_fields" :table-data="items" :perPage="10" :itemType="itemType" @updateList="updateList" @deleteList="deleteList">
         </DepartmentTable>
       </b-col>
     </b-row>
@@ -68,18 +68,34 @@
             ],
             fmedicalItems_multi_fields: [
               {
-                key: 'expenseType.expenseTypeName',
+                key: 'expenseTypeId',
                 sortable: true,
-                label: '费用科目'
+                label: '费用科目',
+                api: 'expenseType/getExpenseTypeById',
+                listApi: 'expenseType/getAllExpenseType',
+                to: 'expenseTypeName'
               },
+              // {
+              //   key: 'department.departmentName',
+              //   sortable: true,
+              //   label: '执行科室'
+              // },
               {
-                key: 'department.departmentName',
+                key: 'departmentId',
                 sortable: true,
-                label: '执行科室'
+                label: '执行科室',
+                api: 'department/getDepartmentById',
+                listApi: 'department/getAllDepartment',
+                to: 'departmentName'
               },
             ],
             items:[],
-            itemType: '非药品项目'
+            itemType: '非药品项目',
+            usedData:{
+              amount: 2,
+              department: [],
+              expenseType: [],
+            },
           }
         },
         mounted: async function(){
@@ -87,6 +103,8 @@
           console.log("mounted");
           await this.getFmedicalItemsList();
           console.log("await this.getFmedicalItemsList");
+          await this.getDepartmentList();
+          await this.getExpenseTypeList();
         },
         methods: {
           getFmedicalItemsList() {
@@ -123,6 +141,32 @@
                 console.log("更新成功");
               } else {
                 console.log("加载失败");
+              }
+            })
+          },
+          getDepartmentList() {
+            console.log("请求科室列表");
+            this.$get('http://localhost:8080/hoso/department/getAllDepartment').then((res) => {
+              alert(res.status);
+              console.log(res.data);
+              if (res.status === 'OK') {
+                this.usedData.department = res.data;
+                console.log(this.usedData.department);
+              } else {
+                console.log("加载科室失败");
+              }
+            })
+          },
+          getExpenseTypeList() {
+            console.log("请求费用科目列表");
+            this.$get('http://localhost:8080/hoso/expenseType/getAllExpenseType').then((res) => {
+              alert(res.status);
+              console.log(res.data);
+              if (res.status === 'OK') {
+                this.usedData.expenseType = res.data;
+                console.log(this.usedData.expenseType);
+              } else {
+                console.log("加载费用科目失败");
               }
             })
           },

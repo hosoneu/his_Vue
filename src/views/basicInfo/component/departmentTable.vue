@@ -33,20 +33,19 @@
         <b-button variant="danger" class="btn-pill" @click="deleteList">删除</b-button>
       </b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="info" class="btn-pill" @click="updateList" v-b-modal="'departmentModal'">编辑</b-button>
+        <b-button variant="info" class="btn-pill" @click="updateList">编辑</b-button>
       </b-col>
     </b-row>
     <b-table selectable select-mode="single" @row-selected="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"
              :current-page="currentPage" :per-page="perPage">
-<!--      <template slot="departmentType" slot-scope="data">-->
-<!--        {{convertType(data.item, currentPage)}}-->
-<!--      </template>-->
-<!--      <template slot="删除" slot-scope="row">-->
-<!--        <b-button variant="danger" class="btn-pill" @click="deleteList(row.index, row.item)">删除</b-button>-->
-<!--      </template>-->
-<!--      <template slot="编辑" slot-scope="row">-->
-<!--        <b-button variant="info" class="btn-pill" @click="updateList(row.item)" v-b-modal="'departmentModal'">编辑</b-button>-->
-<!--      </template>-->
+      <template :slot="selectField.key" slot-scope="data" v-for="selectField in selectFields">
+        {{convertType(data.item, selectField)}}
+      </template>
+      <template :slot="multiField.key" slot-scope="data" v-for="multiField in multiFields">
+        {{convertFromId(data.item, multiField)}}
+      </template>
+
+
     </b-table>
     <nav>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons></b-pagination>
@@ -127,7 +126,11 @@
       itemType: {
         type:String,
         default: ""
-      }
+      },
+      usedData: {
+        type: Object,
+        default: () =>{},
+      },
     },
     data: () => {
       return {
@@ -169,22 +172,58 @@
         this.totalRows = filteredItems.length;
         this.currentPage = 1
       },
-      convertType(item, key){
-        console.log("转换的是" + key);
-        const map = {departmentType: {1: '临床', 2: '医技', 3: '财务', 4: '行政', 5: '其他'}};
-        return map.departmentType[item.departmentType];
+      convertType(item, field){
+        //将选择性属性 从数值value转换为对应文字
+        console.log("转换的是" + field.label);
+        let value = item[field.key];
+        console.log(item[field.key]);
+        // let text = {};
+        // for(let i = 0; i < field.options.length; i++){
+        //   if (value === field.options.value){
+        //     text = field.options.text;
+        //   }
+        // }
+        return field.options[value-1].text;
+        // const map = {departmentType: {1: '临床', 2: '医技', 3: '财务', 4: '行政', 5: '其他'}};
+        // return map.departmentType[item.departmentType];
+      },
+      convertFromId(item, field){
+        //将根据ID选择的属性，把ID转换为对应属性，并以此属性为列名显示
+        console.log(field.key + "请求转换" + item[field.key]);
+        this.$get('http://localhost:8080/hoso/' + field.api, {id: item[field.key]}).then((res)=> {
+          // console.log(res.data);
+          if(res.status === 'OK'){
+            console.log(res.data[field.to]);
+            // document.getElementById("multi").innerHTML(res.data[field.to]);
+            return res.data[field.to];
+          }else{
+            console.log("加载失败");
+          }
+        })
       },
       selectItem(item){
-        console.log("已选择" + item[0].fmedicalItemsName);
+        console.log("已选择" + (item[0] != null?item[0].fmedicalItemsName:"未选择"));
         this.selected_items = item[0];
       },
       deleteList(){
         alert("删除按钮");
-        // this.$emit('deleteList', this.selected_items);
+        if (this.selected_items == null){
+          alert("您还未选择希望删除的条目！");
+        }
+        else{
+          // this.$emit('deleteList', this.selected_items);
+        }
       },
       updateList(){
         alert("更新按钮");
-        // this.$emit('updateList', this.selected_items);
+        if (this.selected_items == null){
+            alert("您还未选择希望编辑的条目！");
+        }
+        else {
+          alert("您已选择更新");
+          this.$bvModal.show('basicModal');
+          // this.$emit('updateList', this.selected_items);
+        }
       },
       insertList(){
         this.selected_items={departmentCode: "", departmentName: "", departmentType: "", departmentCategory: ""};

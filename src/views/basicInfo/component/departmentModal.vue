@@ -1,14 +1,11 @@
 <template>
-  <b-modal id="departmentModal">
+  <b-modal id="basicModal">
     <template slot="modal-header">
       <h5>编辑{{edit_name}}</h5>
     </template>
-    <b-form validated novalidate>
+    <b-form novalidate>
       <b-form-group v-for="field in text_fields" :key="field.key" :label-for="field.label" :label="field.label">
         <b-form-input type="text" class="form-control-success" :id="field.label" v-model="selected_items[field.key]"></b-form-input>
-        <b-form-valid-feedback>
-          Input is not required.
-        </b-form-valid-feedback>
       </b-form-group>
       <b-form-group
         v-for="field in select_fields"
@@ -34,37 +31,15 @@
         <b-form-select :id="field.label"
                        :plain="true"
                        v-model="selected_items[field.key]"
-                       :options="['Please select','Option 1', 'Option 2', 'Option 3']"
-                       value="Please select">
+                       @load-data="this.getList(field)"
+        >
+          <!--options 默认有text value分别代表文本 和 值-->
+          <option v-for="choice in this.options(field)" :value="choice[field.key]" :text="choice[field.to]" :key="choice[field.key]">
+          </option>
         </b-form-select>
       </b-form-group>
     </b-form>
-<!--    <b-form validated novalidate>-->
-<!--      <b-form-group :label-for=edit_fields[0].label :label=edit_fields[0].label>-->
-<!--        <b-form-input type="text" class="form-control-success" :id=edit_fields[0].label v-model="selected_items[edit_fields[0].key]"></b-form-input>-->
-<!--        <b-form-valid-feedback>-->
-<!--          Input is not required.-->
-<!--        </b-form-valid-feedback>-->
-<!--      </b-form-group>-->
-<!--      <b-form-group :label-for=edit_fields[1].label :label=edit_fields[1].label>-->
-<!--        <b-form-input type="text" class="form-control-success" :id=edit_fields[1].label v-model="selected_items.departmentName"></b-form-input>-->
-<!--        <b-form-valid-feedback>-->
-<!--          Input is not required.-->
-<!--        </b-form-valid-feedback>-->
-<!--      </b-form-group>-->
-<!--      <b-form-group label-for="科室分类" label="科室分类">-->
-<!--        <b-form-input type="text" class="form-control-success" id="科室分类" v-model="selected_items.departmentType"></b-form-input>-->
-<!--        <b-form-valid-feedback>-->
-<!--          Input is not required.-->
-<!--        </b-form-valid-feedback>-->
-<!--      </b-form-group>-->
-<!--      <b-form-group label-for="科室类别" label="科室类别">-->
-<!--        <b-form-input type="text" class="form-control-success" id="科室类别" v-model="selected_items.departmentCategory"></b-form-input>-->
-<!--        <b-form-valid-feedback>-->
-<!--          Input is not required.-->
-<!--        </b-form-valid-feedback>-->
-<!--      </b-form-group>-->
-<!--    </b-form>-->
+
     <!--成功按钮 提交添加或编辑 判断是否变化-->
     <template slot="modal-footer">
       <slot name="submit"></slot>
@@ -85,7 +60,17 @@
           },
           selected_items: {
             type: Object,
-            default: () => {}
+            default: () => {},
+            validator: function (value) {
+              if (value == {} || !value){
+                console.log("验证为空");
+                return {};
+              }
+              else{
+                console.log("验证不为空");
+                return value;
+              }
+            }
           },
           text_fields: {
             type: [Array, Object],
@@ -102,27 +87,44 @@
         },
       data: () => {
         return {
-          // edit_item: this.selected_items,
+          list: {},
         }
       },
       computed: {
-          item:{
-            get(){
-              return this.edit_item;
-            },
-            set(newValue){
-              this.edit_item = newValue;
-            }
-          }
+        options(field){return this.list[field.to]},
       },
       methods:{
-          // getFieldsAmount(){
-          //   console.log("属性数量为" + this.edit_fields.length);
-          //   return this.edit_fields.length;
+        getList(field){
+          //挂载时，对话框中所有下拉框请求列表
+          //请求api全部由父组件的父组件Info结尾的主界面传递而来
+          console.log("请求列表");
+          // for(var i=0; i < this.multi_fields.length; i++){
+          //   this.$get('http://localhost:8080/hoso/' + this.multi_fields[i].listApi).then((res)=> {
+          //     alert(res.status);
+          //     console.log(res.data);
+          //     if(res.status === 'OK'){
+          //       this.list.push(res.data);
+          //       console.log(this.list);
+          //     }else{
+          //       console.log("加载失败");
+          //     }
+          //   })
           // }
+          this.$get('http://localhost:8080/hoso/' + field.listApi).then((res)=> {
+            console.log(res.data);
+            if(res.status === 'OK'){
+              this.list[field.to] = res.data;
+              console.log(this.list);
+            }else{
+              console.log("加载失败");
+            }
+          })
+        },
       },
       mounted() {
-        this.getFieldsAmount();
+          //挂载时触发事件，使得列表读取数据
+          //至于为什么要这样做，如果
+          this.$emit('load-data');
       }
     }
 </script>
