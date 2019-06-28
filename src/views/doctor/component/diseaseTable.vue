@@ -27,6 +27,7 @@
         ></b-form-select>
       </b-col>
     </b-row>
+    <br>
     <!-- Main table element -->
     <b-table
       selectable

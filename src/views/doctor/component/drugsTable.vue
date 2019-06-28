@@ -94,7 +94,7 @@
         }
       },
       props:{
-        type:{//0成药 1草药
+        type:{//0成药 1草药 2全部
           type: Number,
           default:()=>{return 0}
         }
