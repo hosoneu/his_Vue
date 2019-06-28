@@ -234,6 +234,13 @@
 
             </b-tab>
             <b-tab title="已开处方">
+              <history-prescription-table
+                :customize-fields="prescriptionFields"
+                :customize-items="historyPrescriptionItems"
+              >
+
+              </history-prescription-table>
+
             </b-tab>
           </b-tabs>
         </b-card>
@@ -248,10 +255,11 @@
   import PatientInfo from "./patientInfo";
   import DrugsTable from "./drugsTable";
   import CommonlyUsedDrugs from "./commonlyUsedItems";
+  import HistoryPrescriptionTable from "./customizeTable";//已开立的处方
   import {mapState} from 'vuex';
     export default {
       name: "prescription",
-      components: {RegistrationList,PatientInfo,DrugsTable,CommonlyUsedDrugs},
+      components: {RegistrationList,PatientInfo,DrugsTable,CommonlyUsedDrugs,HistoryPrescriptionTable},
       props:{
         type:{//类型 成药还是草药 0 成药 1 草药
           type:Number,
@@ -318,11 +326,21 @@
           ],
           api:[
             {
-              insertPrescription:"/doctor/prescription/patent/insertPrescription"
+              insertPrescription:"/doctor/prescription/patent/insertPrescription",
+              listPrescriptionByMedicalRecordId:"/doctor/prescription/patent/listPrescriptionByMedicalRecordId",
+              listPrescriptionByMedicalRecordIdParams:{},
+
             },{
-              insertPrescription:"/doctor/prescription/herbal/insertPrescription"
+              insertPrescription:"/doctor/prescription/herbal/insertPrescription",
+              listPrescriptionByMedicalRecordId:"/doctor/prescription/herbal/listPrescriptionByMedicalRecordId",
+              listPrescriptionByMedicalRecordIdParams:{},
             }
           ],
+          prescriptionFields:[
+            {key: 'submitTime', label:'提交时间', sortable: true},
+            {key: 'validStatus', label:'状态', sortable: true},
+          ],
+          historyPrescriptionItems:[],
 
         }
       },
@@ -330,6 +348,7 @@
         ...mapState("doctor",["patient"]),
         ...mapState("doctor",["doctor"]),
         ...mapState("doctor",["registration"]),
+        ...mapState("doctor",["medicalRecordState"]),
         computedCommonlyUsedModalId(){
           return this.commonlyUsedModalId+this.type;
         },
@@ -341,17 +360,9 @@
         patient:{
           handler(){
             this.prescriptionReset();
+            this.getHistoryPrescription();
           }
         },
-        // prescriptionForm:{
-        //   handler(){
-        //       this.prescriptionSum=0;
-        //     for (let i = 0;i<this.prescriptionForm.prescriptionItemsList.length;i++){
-        //       this.prescriptionSum+=this.prescriptionForm.prescriptionItemsList.get(i).drugs.drugsPrice*this.prescriptionForm.prescriptionItemsList.get(i).quantity;
-        //     }
-        //   }
-        //
-        // }
       },
       methods:{
         transformDrugsUsage(item){
@@ -446,6 +457,24 @@
           console.log(item);
           this.prescriptionItemForm.drugs = item;
         },
+        getHistoryPrescription(){
+          if(!(this.medicalRecordState==='未初诊')){
+            alert("老子正在找");
+            this.api[this.type].listPrescriptionByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
+            this.$get(this.api[this.type].listPrescriptionByMedicalRecordId,this.api[this.type].listPrescriptionByMedicalRecordIdParams).then(res=>{
+              console.log(res);
+              if(res.status === "OK"){
+                this.historyPrescriptionItems = res.data;
+                alert(res.message);
+              }else{
+                console.log(res.message);
+                alert(res.message);
+              }
+            });
+          }else{
+            alert("找个锤子");
+          }
+        }
       }
     }
 </script>

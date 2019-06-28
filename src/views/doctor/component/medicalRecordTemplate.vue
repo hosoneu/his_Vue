@@ -47,6 +47,7 @@
           <template slot="operate" slot-scope="row">
             <b-button @click="selectMedicalRecordTemplate(row.item, row.index)" variant="primary"  size="sm" >查看</b-button>
           </template>
+
         </b-table>
         <!--页码-->
         <b-row>

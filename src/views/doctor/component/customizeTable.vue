@@ -45,7 +45,7 @@
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
       @filtered="onFiltered"
-      @row-selected="selectItem">
+      @row-clicked="selectItem">
     </b-table>
     <!--页码-->
     <b-row>
@@ -87,12 +87,6 @@
           type:Boolean,
           default:()=>{return true}
         },
-        customizeMethods:{
-          type:Object,
-          default:()=>{return {
-            selectItemMethods:"selectItem",}
-          },
-        },
         customizeIsBusy:{
           type:Boolean,
           default:()=>{return false}
@@ -120,7 +114,7 @@
           this.currentPage = 1;
         },
         selectItem(item){//选中某项
-          this.$emit(this.customizeMethods.selectItemMethods,item[0]);
+          this.$emit("selectItem",item[0]);
         },
       },
 
