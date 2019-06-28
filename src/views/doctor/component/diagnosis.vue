@@ -359,6 +359,7 @@
         exitDiagnosis(){//更改诊断
           if(this.selectedIndex>=0){
             this.operateDiagnosisForm = Object.assign({},this.diagnosisItems[this.selectedIndex]);
+
             this.operateDiagnosisForm.onsetDate = this.operateDiagnosisForm.onsetDate.split("T")[0];//处理从数据库传输过来的日期
             console.log("我来了");
             console.log(this.operateDiagnosisForm);

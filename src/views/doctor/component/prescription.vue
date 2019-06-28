@@ -15,7 +15,7 @@
         </registration-list>
       </b-col>
       <b-col lg="9">
-        <b-card header="成药处方">
+        <b-card header="成药处方" >
           <div slot="header"><!-- slot设置插槽便于模板数据的精准插入-->
             填写模块
             <div class="card-header-actions">
@@ -98,9 +98,9 @@
                           <!--    药品名称 drugsName-->
                           <b-form-group
                             label="药品规格"
-                            label-for="drugsName"
+                            label-for="drugsFormat"
                             :label-cols="3">
-                            <b-form-input id="drugsName" disabled v-model="prescriptionItemForm.drugs.drugsFormat" type="text" placeholder="请检索药品"  ></b-form-input>
+                            <b-form-input id="drugsFormat" disabled v-model="prescriptionItemForm.drugs.drugsFormat" type="text" placeholder="请检索药品"  ></b-form-input>
                           </b-form-group>
                         </b-col>
                         <b-col md="6">
@@ -197,37 +197,131 @@
                     align="right"
                   >
                     <b-button-group class="pull-right">
-                      <b-button size="md" variant="outline-dark" >编辑
+                      <b-button size="md" variant="outline-dark"  @click="exitPrescriptionItems" >编辑
                       </b-button>
                       <b-button size="md" variant="outline-dark" @click="deletePrescriptionItems">删除
                       </b-button>
                     </b-button-group>
                   </b-col>
                 </b-row>
+<!--    ******************   编辑界面   *****************          -->
+                    <b-modal ref="operate-prescription-item-modal" size="lg" centered title="修改诊断" @ok="exitOk">
+                      <b-row>
+
+                        <b-col md="6">
+                          <!--    药品编码 drugsCode-->
+                          <b-form-group
+                            label="药品编码"
+                            label-for="operateDrugsCode"
+                            :label-cols="3">
+                            <b-form-input id="operateDrugsCode" required disabled v-model="operatePrescriptionItemForm.drugs.drugsCode" type="text" placeholder="请检索药品"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="药品名称"
+                            label-for="operateDrugsName"
+                            :label-cols="3">
+                            <b-form-input id="operateDrugsName" required disabled v-model="operatePrescriptionItemForm.drugs.drugsName" type="text" placeholder="请检索药品"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="药品规格"
+                            label-for="operateDrugsFormat"
+                            :label-cols="3">
+                            <b-form-input id="operateDrugsFormat" disabled v-model="operatePrescriptionItemForm.drugs.drugsFormat" type="text" placeholder="请检索药品"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="药品价格"
+                            label-for="operateDrugsName"
+                            :label-cols="3">
+                            <b-form-input id="operateDrugsName" disabled v-model="operatePrescriptionItemForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+
+                      <b-row>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="药品用法"
+                            label-for="operateDrugsUsage"
+                            :label-cols="3">
+                            <b-form-select id="operateDrugsUsage" v-model="operatePrescriptionItemForm.drugsUsage" :options="drugsUsageOptions" ></b-form-select>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="用药频次"
+                            label-for="operateTimes"
+                            :label-cols="3">
+                            <b-row>
+                              <b-col md="4">
+                                <b-form-input id="operateDays" required v-model="operatePrescriptionItemForm.days" type="number"  ></b-form-input>
+                              </b-col>
+
+                              <b-col md="2">
+                                <p>天</p>
+                              </b-col>
+                              <b-col md="4">
+                                <b-form-input id="operateTimes" required v-model="operatePrescriptionItemForm.times" type="number"  ></b-form-input>
+                              </b-col>
+                              <b-col md="2">
+                                <p>次</p>
+                              </b-col>
+                            </b-row>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+
+                      <b-row>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="开立数量"
+                            label-for="operateQuantity"
+                            :label-cols="3">
+                            <b-form-input id="operateQuantity" required v-model="operatePrescriptionItemForm.quantity" type="text" placeholder="请输入..."  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="每次用量"
+                            label-for="operateDosage"
+                            :label-cols="3">
+                            <b-form-input id="operateDosage" required v-model="operatePrescriptionItemForm.dosage" type="text" placeholder="请输入..."  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="6">
+                          <!--用药嘱托drugsAdvice-->
+                          <b-form-group
+                            label="用药嘱托"
+                            label-for="operateDrugsAdvice"
+                            :label-cols="3"
+                            :horizontal="true">
+                            <b-form-textarea v-model="operatePrescriptionItemForm.drugsAdvice" id="operateDrugsAdvice" placeholder="请输入..." rows="3" ></b-form-textarea>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+                    </b-modal>
                 <br>
-                <b-table
-                  show-empty
-                  stacked="md"
-                  hover
-                  selectable
-                  select-mode="single"
-                  :items="prescriptionForm.prescriptionItemsList"
-                  :fields="prescriptionItemsFields"
-                  @row-selected="selectPrescriptionItems"
-                >
-
-                  <template slot="drugsUsage" slot-scope="row">
-                    {{transformDrugsUsage(row.item)}}
-                  </template>
-
-                  <template slot="days" slot-scope="row">
-                    {{transformDaysAndTimes(row.item)}}
-                  </template>
-
-                  <template slot="dosage" slot-scope="row">
-                    {{transformDosage(row.item)}}
-                  </template>
-                </b-table>
+                    <prescription-items-table
+                      :prescription-items-list="prescriptionForm.prescriptionItemsList"
+                      @selectPrescription="selectPrescription"
+                    >
+                    </prescription-items-table>
                   </b-col>
                 </b-row>
               </b-card>
@@ -235,10 +329,9 @@
             </b-tab>
             <b-tab title="已开处方">
               <history-prescription-table
-                :customize-fields="prescriptionFields"
-                :customize-items="historyPrescriptionItems"
+                :prescription-items="historyPrescriptionItems"
+                :type="this.type"
               >
-
               </history-prescription-table>
 
             </b-tab>
@@ -255,11 +348,14 @@
   import PatientInfo from "./patientInfo";
   import DrugsTable from "./drugsTable";
   import CommonlyUsedDrugs from "./commonlyUsedItems";
-  import HistoryPrescriptionTable from "./customizeTable";//已开立的处方
+  import HistoryPrescriptionTable from "./prescriptionList";//已开立的处方
+  import PrescriptionItemsTable from "./prescriptionItemsTable";//展示处方详细信息
   import {mapState} from 'vuex';
     export default {
       name: "prescription",
-      components: {RegistrationList,PatientInfo,DrugsTable,CommonlyUsedDrugs,HistoryPrescriptionTable},
+      components: {
+        PrescriptionItemsTable,
+        RegistrationList,PatientInfo,DrugsTable,CommonlyUsedDrugs,HistoryPrescriptionTable},
       props:{
         type:{//类型 成药还是草药 0 成药 1 草药
           type:Number,
@@ -271,8 +367,20 @@
           commonlyUsedModalId:'commonly-prescription-modal',
           modalId:'prescription-modal',
           selectedIndex:-1,
-          prescriptionSum:0,
-          prescriptionItemForm:{
+          operatePrescriptionItemForm:{//编辑处方条目
+            drugs:{},//药品
+            dragsId:-1,//药品ID
+            expenseItemsId:-1,//收费ID
+            drugsUsage:"4",//药品用法：1 静脉滴注 2 静脉可注 3 肌肉注射 4 口服 5 皮试 6 皮下注射
+            dosage:0.0,//药品用量
+            times:3,//次数
+            days:1,//天数 *次*天 如1天3次
+            quantity:1,//开立数量
+            drugsAdvice:'',//药品医嘱
+            drugsDispensingStatus:'',//发药状态
+            actualQuantity:'',//实际数量
+          },
+          prescriptionItemForm:{//新增处方条目
             drugs:{},//药品
             dragsId:-1,//药品ID
             expenseItemsId:-1,//收费ID
@@ -314,16 +422,6 @@
             { value: '5', text: '皮试'},
             { value: '6', text: '皮下注射' },
           ],
-          prescriptionItemsFields:[
-            {key: 'drugs.drugsName', label:'名称', sortable: true},
-            {key: 'drugs.drugsFormat', label:'规格', sortable: true},
-            {key: 'quantity', label:'数量', sortable: true},
-            {key: 'drugsUsage', label:'用法', sortable: true},
-            {key: 'days', label:'频次', sortable: true},
-            {key: 'dosage', label:'用量', sortable: true},
-            {key: 'drugs.drugsPrice', label:'单价', sortable: true},
-            {key: 'drugsAdvice', label:'医嘱'},
-          ],
           api:[
             {
               insertPrescription:"/doctor/prescription/patent/insertPrescription",
@@ -336,12 +434,7 @@
               listPrescriptionByMedicalRecordIdParams:{},
             }
           ],
-          prescriptionFields:[
-            {key: 'submitTime', label:'提交时间', sortable: true},
-            {key: 'validStatus', label:'状态', sortable: true},
-          ],
           historyPrescriptionItems:[],
-
         }
       },
       computed:{
@@ -365,15 +458,6 @@
         },
       },
       methods:{
-        transformDrugsUsage(item){
-          if(item.drugsUsage==='1'){
-            return '发生大';
-          }else if(item.drugsUsage==='4'){
-            return '口服';
-          }else{
-            return 'dsa';
-          }
-        },
         transformType(){
           if(this.type===0){
             return '1';
@@ -381,23 +465,19 @@
             return '2';
           }
         },
-        transformDaysAndTimes(item){
-          return item.days+'天'+item.times+'次';
-        },
-        transformDosage(item){
-          if(item.dosage==0){
-            return "参照说明";
-          }else{
-            return item.dosage;
+        selectPrescription(item){
+          let prescriptionItemsList = this.prescriptionForm.prescriptionItemsList;
+          console.log(prescriptionItemsList[0]);
+          for(let i = 0 ; i< prescriptionItemsList.length;i++){
+            if(prescriptionItemsList[i]===item){
+              this.selectedIndex=i;
+              break;
+            }
           }
-        },
-        selectPrescriptionItems(item,index){
-          this.selectedIndex=index;
         },
         selectPatient(){//选择患者
           //do nothing
         },
-
         prescriptionSubmit(){//提交处方
           this.prescriptionForm.medicalRecordId=this.registration.medicalRecordId;
           this.prescriptionForm.doctorId=this.doctor.userId;
@@ -408,6 +488,7 @@
               console.log(res.data);
               console.log(res.message+res.data);
               alert(res.message);
+              this.getHistoryPrescription();
             }else{
               console.log(res.message);
               alert(res.message);
@@ -423,8 +504,19 @@
             prescriptionItemsList:[],//处方药品数组
           };
         },
-
-        deletePrescriptionItems(){
+        exitPrescriptionItems(){//编辑一个处方条目
+          if(this.selectedIndex>=0){
+            this.operatePrescriptionItemForm = Object.assign({},this.prescriptionForm.prescriptionItemsList[this.selectedIndex]);
+            console.log("目前要编辑的项目");
+            this.$refs["operate-prescription-item-modal"].show();//弹框
+          }else{
+            alert("请选中处方条目");
+          }
+        },
+        exitOk(){
+          this.$set(this.prescriptionForm.prescriptionItemsList,this.selectedIndex,Object.assign({},this.operatePrescriptionItemForm));
+        },
+        deletePrescriptionItems(){//删除一个处方条目
           this.prescriptionForm.prescriptionItemsList.splice(this.selectedIndex,1);
         },
         resetPrescriptionItem(){
@@ -459,15 +551,14 @@
         },
         getHistoryPrescription(){
           if(!(this.medicalRecordState==='未初诊')){
-            alert("老子正在找");
             this.api[this.type].listPrescriptionByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
             this.$get(this.api[this.type].listPrescriptionByMedicalRecordId,this.api[this.type].listPrescriptionByMedicalRecordIdParams).then(res=>{
               console.log(res);
               if(res.status === "OK"){
                 this.historyPrescriptionItems = res.data;
-                alert(res.message);
+                // alert(res.msg);
               }else{
-                console.log(res.message);
+                console.log(res.msg);
                 alert(res.message);
               }
             });
