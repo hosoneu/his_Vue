@@ -26,13 +26,19 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-table show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
+    <b-row>
+      <b-col md="8" class="my-1"></b-col>
+      <b-col md="4" class="my-1">
+        <b-button variant="outline-danger" class="" @click="withdraw">退号</b-button>
+      </b-col>
+    </b-row>
+    <b-table selectable select-mode="single" @row-clicked="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
       <template slot="registrationStatus" slot-scope="row">
         {{getType(row.item)}}
       </template>
     </b-table>
     <nav>
-      <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
+      <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons></b-pagination>
     </nav>
   </b-card>
 </template>
@@ -92,7 +98,8 @@
             sortBy: null,
             sortDesc: false,
             filter: null,
-            selected_items: {}
+            selected_items: {},
+            selected_index: {},
           }
         },
         computed: {
@@ -129,7 +136,21 @@
           getType(item){
             const map = {boolean: {1: '正常', 2: '退号'}};
             return map.boolean[item.registrationStatus];
-          }
+          },
+          selectItem(item, index){
+            console.log("已选择" + (item != null?item.patient.patientName:",其实并未选择"));
+            this.selected_items = JSON.parse(JSON.stringify(item));
+            this.selected_index = index;
+          },
+          withdraw(){
+            if (this.selected_items === null){
+              alert("您还未选择希望退号的条目！");
+            }
+            else {
+              alert("您已选择退号");
+              this.$emit('withdraw', this.selected_items);
+            }
+          },
         }
     }
 </script>

@@ -2,19 +2,21 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col lg="3">
-        <register-table
+        <RegisterTable
           :caption="'挂号信息'"
           :initial-fields="fields"
           :per-page="10"
           :table-data="items"
-        ></register-table>
+          @withdraw="withdraw"
+        ></RegisterTable>
       </b-col>
       <b-col lg="9">
-        <register-form
-
+        <RegisterForm
+          :department-list="departmentList"
+          :doctor-list="doctorList"
         >
 
-        </register-form>
+        </RegisterForm>
       </b-col>
     </b-row>
   </div>
@@ -45,8 +47,8 @@
                 label: '挂号级别'
               },
               {
-                key: 'medicalRecordId',
-                sortable: false,
+                key: 'medicalRecord.medicalRecordId',
+                sortable: true,
                 label: '病历号'
               },
               {
@@ -56,16 +58,54 @@
               },
             ],
             items: [],
+            departmentList: {},
+            doctorList: {},
           }
         },
         mounted: async function(){
           await this.getRegistrationList();
+          await this.getDepartmentList();
+          await this.getDoctorList();
         },
         methods:{
+          getDepartmentList(){
+            console.log("请求科室列表");
+            this.$get('http://localhost:8080/hoso/department/getAllDepartmentWithCategory').then((res)=> {
+              console.log(res.data);
+              if(res.status === 'OK'){
+                this.departmentList = res.data;
+                // return  res.data;
+              }else{
+                console.log("加载科室列表失败");
+              }
+            })
+          },
+          getDoctorList(){
+            console.log("请求医生列表");
+            this.$get('http://localhost:8080/hoso/user/getUserByRole', {roleId: 1}).then((res)=> {
+              console.log(res.data);
+              if(res.status === 'OK'){
+                this.doctorList = res.data;
+                // return res.data;
+              }else{
+                console.log("加载医生列表失败");
+              }
+            })
+          },
           getRegistrationList(){
             console.log("请求挂号列表");
             this.$get('http://localhost:8080/hoso/registration/showRegistration').then((res)=> {
-              alert(res.status);
+              console.log(res.data);
+              if(res.status === 'OK'){
+                this.items = res.data;
+                console.log(this.items);
+              }else{
+                console.log("加载挂号列表失败");
+              }
+            })
+          },
+          withdraw(item){
+            this.$get('http://localhost:8080/hoso/registration/withdraw', {"expenseItemsId": item.expenseItemsId, "userId": this.$store.userId}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.items = res.data;

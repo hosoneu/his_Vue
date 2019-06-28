@@ -5,14 +5,14 @@
     </div>
     <div>
       <span style="font-style: italic"><strong>患者信息</strong></span>
-      <b-button class="pull-right" type="submit" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Submit</b-button>
-      <b-button class="pull-right" type="reset" size="sm" variant="danger"><i class="fa fa-ban"></i> Reset</b-button>
+      <b-button class="pull-right" type="submit" size="sm" variant="primary" @click="submit"><i class="fa fa-dot-circle-o"></i> Submit</b-button>
+      <b-button class="pull-right" type="reset" size="sm" variant="danger" @click="reset"><i class="fa fa-ban"></i> Reset</b-button>
     </div>
     <br/>
     <div style="background:linear-gradient(to left,#efefef,#b6b6b6);height:1px;"></div>
     <br/>
 
-    <b-form>
+    <b-form @submit.prevent="">
       <b-row>
         <b-col md="6">
           <b-form-group
@@ -21,7 +21,7 @@
             label-for="patientName"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input id="patientName" type="text" autocomplete="name"></b-form-input>
+            <b-form-input v-model="patient.patientName" id="patientName" type="text" autocomplete="name"></b-form-input>
           </b-form-group>
           <b-form-group
             label="患者性别"
@@ -29,6 +29,7 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
+              v-model="patient.patientGender"
               id="patientGender"
               name="customRadioInline1">
               <div class="custom-control custom-radio custom-control-inline">
@@ -49,7 +50,7 @@
             label="患者生日" label-for="patientBirth"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input type="date" id="patientBirth"></b-form-input>
+            <b-form-input v-model="patient.patientBirth" type="date" id="patientBirth"></b-form-input>
           </b-form-group>
           <b-form-group
             description=""
@@ -57,7 +58,7 @@
             label-for="patientIdentity"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input id="patientIdentity" type="text"></b-form-input>
+            <b-form-input v-model="patient.patientIdentity" id="patientIdentity" type="text"></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
@@ -79,8 +80,8 @@
             <b-form-select id="selectDepartment"
                            size="lg"
                            :plain="true"
-                           :options="['Please select','Option 1', 'Option 2', 'Option 3']"
-                           value="Please select">
+                           v-model="registration.departmentId">
+              <option v-for="department in departmentList" :key="department.departmentId" :value="department.departmentId" :label="department.departmentName"></option>
             </b-form-select>
           </b-form-group>
           <b-form-group
@@ -91,8 +92,8 @@
             <b-form-select id="selectDoctor"
                            size="lg"
                            :plain="true"
-                           :options="['Please select','Option 1', 'Option 2', 'Option 3']"
-                           value="Please select">
+                           v-model="registration.doctorId">
+              <option v-for="doctor in doctorList" :key="doctor.userId" :value="doctor.userId" :label="doctor.userName"></option>
             </b-form-select>
           </b-form-group>
         </b-col>
@@ -106,6 +107,7 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
+              v-model="registration.calculationTypeId"
               id="calculationType"
               name="customRadioInline2">
               <div class="custom-control custom-radio custom-control-inline">
@@ -117,7 +119,7 @@
                 <label class="custom-control-label" for="medicalInsurance">医保</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="nrcms" name="customRadioInline1" class="custom-control-input" value="2">
+                <input type="radio" id="nrcms" name="customRadioInline1" class="custom-control-input" value="3">
                 <label class="custom-control-label" for="nrcms">新农合</label>
               </div>
             </b-form-radio-group>
@@ -128,6 +130,7 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
+              v-model="registration.registrationLevelId"
               id="registrationLevel"
               name="customRadioInline1">
               <div class="custom-control custom-radio custom-control-inline">
@@ -139,7 +142,7 @@
                 <label class="custom-control-label" for="expert">专家</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="emergency" name="customRadioInline1" class="custom-control-input" value="2">
+                <input type="radio" id="emergency" name="customRadioInline1" class="custom-control-input" value="3">
                 <label class="custom-control-label" for="emergency">急诊</label>
               </div>
             </b-form-radio-group>
@@ -155,15 +158,16 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
+              v-model="registration.buyMedicalRecord"
               id="buyMedical"
               name="customRadioInline1">
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="yes" name="customRadioInline1" class="custom-control-input" value="1" checked>
-                <label class="custom-control-label" for="yes">是</label>
+                <label class="custom-control-label" for="yes">否</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="no" name="customRadioInline1" class="custom-control-input" value="2">
-                <label class="custom-control-label" for="no">否</label>
+                <label class="custom-control-label" for="no">是</label>
               </div>
             </b-form-radio-group>
           </b-form-group>
@@ -180,7 +184,44 @@
 
 <script>
     export default {
-        name: "registerForm"
+        name: "registerForm",
+        props: {
+          departmentList: {
+            type: [Array, Object],
+            default: () => []
+          },
+          doctorList: {
+            type: [Array, Object],
+            default: () => []
+          },
+        },
+        data: () => {
+            return{
+              patient: {
+                patientName:'',
+                patientGender: '',
+                patientBirth: '',
+                patientIdentity: '',
+              },
+              registration: {
+                registrationLevelId: '',
+                departmentId: '',
+                calculationTypeId: '',
+                //doctorId可谓不填项，则insertSelective不更新
+                doctorId: null,
+                buyMedicalRecord: 1,
+              },
+            }
+          },
+      methods:{
+        submit(){
+          alert(this.doctorList);
+          alert(this.departmentList);
+        },
+        reset(){
+
+        }
+      },
     }
 </script>
 
