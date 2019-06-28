@@ -14,6 +14,7 @@
         <RegisterForm
           :department-list="departmentList"
           :doctor-list="doctorList"
+          :patient-list="patientList"
         >
 
         </RegisterForm>
@@ -60,12 +61,14 @@
             items: [],
             departmentList: {},
             doctorList: {},
+            patientList:{},
           }
         },
         mounted: async function(){
           await this.getRegistrationList();
           await this.getDepartmentList();
           await this.getDoctorList();
+          await this.getPatientList();
         },
         methods:{
           getDepartmentList(){
@@ -99,6 +102,20 @@
               if(res.status === 'OK'){
                 this.items = res.data;
                 console.log(this.items);
+              }else{
+                console.log("加载挂号列表失败");
+              }
+            })
+          },
+          getPatientList(){
+            this.$get('http://localhost:8080/hoso/registration/getPatient').then((res)=> {
+              console.log(res.data);
+              if(res.status === 'OK'){
+                let that = this;
+                this.patientList = res.data;
+                this.patientList.forEach(function (patient) {
+                  patient.patientBirth = that.$moment(patient.patientBirth).format("YYYY-MM-DD");
+                });
               }else{
                 console.log("加载挂号列表失败");
               }

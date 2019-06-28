@@ -10,10 +10,13 @@ import { post, fetch }  from "./config/axios"
 import VeeValidate from "vee-validate"
 import Vuex from 'vuex'
 import store from './store'
+import moment from 'moment'
 
 
 Vue.prototype.$get=fetch;
 Vue.prototype.$post=post;
+
+Vue.prototype.$moment = moment;
 
 
 Vue.use(BootstrapVue);
