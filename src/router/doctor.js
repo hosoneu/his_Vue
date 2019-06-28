@@ -8,6 +8,8 @@ const Workload = () => import('../views/doctor/workload');
 const WorkloadChart = () => import('../views/doctor/workloadChart');
 const DayCalculate = () => import('../views/doctor/daycalculate');
 const UserTable = () => import('../views/doctor/userTable');
+const personalWorkload = () => import('../views/doctor/personalworkload');
+const dayCalHistory = () => import('../views/doctor/dayCalHistory');
 export default {
   path:'/doctor',
     redirect:'/doctor/doctorHome',
@@ -30,13 +32,23 @@ export default {
       component: Workload
     },
     {
+      path: 'dayCalHistory',
+      name: 'dayCalHistory',
+      component: dayCalHistory,
+    },
+    {
+      path: 'personalworkload',
+      name: 'personalworkload',
+      component: personalWorkload
+    },
+    {
       path: 'daycalculate',
       name: 'daycalculate',
       component: DayCalculate
     },
     {
-      path: 'uerTable',
-      name: 'uerTable',
+      path: 'userTable',
+      name: 'userTable',
       component: UserTable
     },
     {
