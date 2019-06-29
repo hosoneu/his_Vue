@@ -319,7 +319,7 @@
                 <br>
                     <prescription-items-table
                       :prescription-items-list="prescriptionForm.prescriptionItemsList"
-                      @selectPrescription="selectPrescription"
+                      @selectPrescriptionItems="selectPrescriptionItems"
                     >
                     </prescription-items-table>
                   </b-col>
@@ -465,7 +465,7 @@
             return '2';
           }
         },
-        selectPrescription(item){
+        selectPrescriptionItems(item){
           let prescriptionItemsList = this.prescriptionForm.prescriptionItemsList;
           console.log(prescriptionItemsList[0]);
           for(let i = 0 ; i< prescriptionItemsList.length;i++){

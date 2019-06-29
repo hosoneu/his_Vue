@@ -38,7 +38,7 @@
 
 <script>
     export default {
-        name: "treatmentItemsTable",
+      name: "treatmentItemsTable",
       data(){
           return{
             selectedTreatmentItem:{},

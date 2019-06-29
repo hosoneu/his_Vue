@@ -40,13 +40,13 @@
                       >
                         <b-button-group class="pull-right">
                           <!--检索处置非药品-->
-                          <b-button id="searchFmedicalButton" v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
+                          <b-button id="searchFmedicalButton" :disabled="showAdditionDrugs" v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
                           <!--常用处置非药品-->
-                          <b-button id="commonlyUsedFmedicalButton" v-b-modal="computedCommonlyUsedModalId" size="md" variant="outline-dark">常用</b-button>
+                          <b-button id="commonlyUsedFmedicalButton" :disabled="showAdditionDrugs" v-b-modal="computedCommonlyUsedModalId" size="md" variant="outline-dark">常用</b-button>
                           <!--重置当前处置条目-->
-                          <b-button id="resetFmedicalButton" @click="resetExaminationFmedicalItem" size="md" variant="outline-dark">重置</b-button>
+                          <b-button id="resetFmedicalButton" :disabled="showAdditionDrugs" @click="resetExaminationFmedicalItem" size="md" variant="outline-dark">重置</b-button>
                           <!--新增当前处置条目-->
-                          <b-button id="addFmedicalButton" @click="addExaminationFmedicalItem" size="md" variant="outline-dark">新增</b-button>
+                          <b-button id="addFmedicalButton" :disabled="showAdditionDrugs" @click="addExaminationFmedicalItem" size="md" variant="outline-dark">新增</b-button>
                         </b-button-group>
                       </b-col>
                     </b-row>
@@ -147,17 +147,80 @@
                         align="right"
                       >
                         <b-button-group class="pull-right">
-                          <b-button variant="outline-dark" size="md" @click="additionExaminationFmedicalItems()">加药
+                          <b-button :disabled="showAdditionDrugs" variant="outline-dark" size="md" @click="additionExaminationFmedicalItems()">加药
                           </b-button>
-                          <b-button variant="outline-dark" size="md" @click="exitExaminationFmedicalItems()">编辑
+                          <b-button :disabled="showAdditionDrugs" variant="outline-dark" size="md" @click="exitExaminationFmedicalItems()">编辑
                           </b-button>
-                          <b-button variant="outline-dark" size="md" @click="deleteExaminationFmedicalItems()">删除
+                          <b-button :disabled="showAdditionDrugs" variant="outline-dark" size="md" @click="deleteExaminationFmedicalItems()">删除
                           </b-button>
                         </b-button-group>
                       </b-col>
                     </b-row>
-                    <br>
+                    <!--      *********************  编辑非药品页面  ************************     -->
+                    <b-modal ref="operate-examination-fmedical-item-modal" size="lg" centered title="修改处置" @ok="exitExaminationFmedicalItemsOk">
+                      <b-row>
+                        <b-col md="6">
+                          <!--    药品编码 drugsCode-->
+                          <b-form-group
+                            label="非药品编码"
+                            label-for="operateExaminationFmedicalItemsCode"
+                            :label-cols="3">
+                            <b-form-input id="operateExaminationFmedicalItemsCode" required disabled v-model="operateExaminationFmedicalItemsForm.fmedicalItems.fmedicalItemsCode" type="text" placeholder="请检索项目"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="非药品名称"
+                            label-for="operateExaminationFmedicalItemsName"
+                            :label-cols="3">
+                            <b-form-input id="operateExaminationFmedicalItemsName" required disabled v-model="operateExaminationFmedicalItemsForm.fmedicalItems.fmedicalItemsName" type="text" placeholder="请检索项目"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
 
+                      <b-row>
+                        <b-col md="6">
+                          <!--    药品编码 drugsCode-->
+                          <b-form-group
+                            label="非药品规格"
+                            label-for="operateExaminationFmedicalItemsFormat"
+                            :label-cols="3">
+                            <b-form-input id="operateExaminationFmedicalItemsFormat" required disabled v-model="operateExaminationFmedicalItemsForm.fmedicalItems.fmedicalItemsFormat" type="text" placeholder="请检索项目"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品名称 drugsName-->
+                          <b-form-group
+                            label="非药品价格"
+                            label-for="operateExaminationFmedicalItemsPrice"
+                            :label-cols="3">
+                            <b-form-input id="operateExaminationFmedicalItemsPrice" required disabled v-model="operateExaminationFmedicalItemsForm.fmedicalItems.fmedicalItemsPrice" type="text" placeholder="请检索项目"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="6">
+                          <!--    药品编码 drugsCode-->
+                          <b-form-group
+                            label="开立数量"
+                            label-for="operateExaminationQuantity"
+                            :label-cols="3">
+                            <b-form-input id="operateExaminationQuantity" required v-model="operateExaminationFmedicalItemsForm.quantity" type="number" placeholder="请添加数量"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                          <!--    药品编码 drugsCode-->
+                          <b-form-group
+                            label="目的或要求"
+                            label-for="operateExaminationPurposeRequirements"
+                            :label-cols="3">
+                            <b-form-input id="operateExaminationPurposeRequirements" required v-model="operateExaminationFmedicalItemsForm.purposeRequirements" type="text" placeholder="请输入"  ></b-form-input>
+                          </b-form-group>
+                        </b-col>
+                      </b-row>
+                    </b-modal>
+                    <br>
                     <b-table
                       show-empty
                       stacked="md"
@@ -171,57 +234,16 @@
                     </b-table>
                   </b-col>
                 </b-row>
-
               </b-card>
+              <examination-drugs-table
+                :hidden="!showAdditionDrugs"
+                :examination-fmedical-items-form="examinationFmedicalItemsForm"
+                @saveExaminationDrugsItems="saveExaminationDrugsItems"
+              >
 
-              <b-card header="附加药品" :hidden="!showAdditionDrugs">
-                <b-row>
-                  <b-col md="1"></b-col>
-                  <b-col md="10">
-                    <b-row>
-                      <b-col
-                        align="right"
-                      >
-                        <b-button-group class="pull-right">
-                          <!-- 检索中药    -->
-                          <b-button id="searchPatentDrugsButton" v-b-modal="computedDrugsModalId+'patent'" size="md" variant="outline-dark">成药</b-button>
-                          <!-- 检索西药   -->
-                          <b-button id="searchHerbalDrugsButton" v-b-modal="computedDrugsModalId+'herbal'" size="md" variant="outline-dark">草药</b-button>
-                          <!--常用药品-->
-                          <b-button id="commonlyUsedDrugsButton" v-b-modal="computedCommonlyUsedDrugsModalId" size="md" variant="outline-dark">常用</b-button>
-                          <!--重置当前药品条目-->
-                          <b-button id="resetDrugsButton" @click="resetExaminationDrugsItem" size="md" variant="outline-dark">重置</b-button>
-                          <!--新增当前药品条目-->
-                          <b-button id="addDrugsButton" @click="addExaminationDrugsItem" size="md" variant="outline-dark">新增</b-button>
-                        </b-button-group>
-                      </b-col>
-                    </b-row>
-                    <!--   ***********************     检索草药的弹框  ************************          -->
-                    <b-modal :id="computedDrugsModalId+'herbal'" size="lg" centered title="检索草药">
-                      <herbal-drugs-table
-                        @selectDrugs="selectDrugs"
-                        :type=1>
-                      </herbal-drugs-table>
-                    </b-modal>
-                    <!--   ***********************     检索成药的弹框  ************************          -->
-                    <b-modal :id="computedDrugsModalId+'patent'" size="lg" centered title="检索成药">
-                      <patent-drugs-table
-                        @selectDrugs="selectDrugs"
-                        :type=0>
-                      </patent-drugs-table>
-                    </b-modal>
-                    <!--   ***********************     检索常用药品的弹框  ************************          -->
-                    <b-modal :id="computedCommonlyUsedDrugsModalId" size="lg" centered title="常用药品">
-                      <commonly-used-drugs
-                        @selectCommonlyUsedItem="selectCommonlyUsedItem"
-                        :commonly-used-type=0
-                        :commonly-used-api=this.commonlyUsedDrugsApi
-                        :commonly-used-fields=this.commonlyUsedDrugsFields
-                      ></commonly-used-drugs>
-                    </b-modal>
-                  </b-col>
-                </b-row>
-              </b-card>
+              </examination-drugs-table>
+
+
             </b-tab>
             <b-tab :title="computedTitle2">
 
@@ -239,12 +261,11 @@
   import PatientInfo from "./patientInfo";
   import FmedicalTable from "./fmedicalTable";
   import CommonlyUsedExamination from "./commonlyUsedItems";
-  import HerbalDrugsTable from "./drugsTable";
-  import PatentDrugsTable from "./drugsTable";
-  import CommonlyUsedDrugs from "./commonlyUsedItems";
+  import ExaminationDrugsTable from "./examinationDrugsTable";
+  import {mapState} from 'vuex';
     export default {
       name: "examination",
-      components: {RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedExamination,HerbalDrugsTable,PatentDrugsTable,CommonlyUsedDrugs},
+      components: {RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedExamination,ExaminationDrugsTable},
       props:{
         type:{
           type:Number,//0 检查 1 检验
@@ -269,37 +290,37 @@
               getCommonlyUsedParams:{},
             },
           ],
-          commonlyUsedDrugsFields:[
-            {key: 'drugs.drugsCode', label:'编码', sortable: true},
-            {key: 'drugs.drugsName', label:'名称', sortable: true},
-            {key: 'drugs.drugsFormat', label:'规格', sortable: true},
-            {key: 'drugs.drugsUnit', label:'单位', sortable: true},
-            {key: 'drugs.drugsPrice', label:'价格', sortable: true},
-          ],
-          commonlyUsedDrugsApi:[//获取常用药品
+
+          api:[//定义需要用到的api
             {
-              getCommonlyUsedListApi:"/doctor/common/listCommonlyUsedDrugsByUserId",
-              getCommonlyUsedParams:{},
+              insertExaminationApi:"/doctor/examination/insertExamination"
+            },
+            {
+              insertExaminationApi:"/doctor/examination/insertExamination"
             }
           ],
-          api:[//定义需要用到的api
-
-
-          ],
-          examinationForm:{
+          examinationForm:{//当前的检查检验条目
             medicalRecordId:-1,
             doctorId:-1,
             doctorAdvice:'',//提交时添加医嘱
             examinationFmedicalItemsList:[],
+            examinationMark:''//1检查2检验
           },
-          examinationFmedicalItemsForm:{//检查检验非药品条目
+          examinationFmedicalItemsForm:{//当前的非药品条目
             doctorId:0,
             purposeRequirements:'',
             quantity:1,
             fmedicalItems:{},
             examinationDrugsItemsList:[],
           },
-          examinationFmedicalItemsFields:[
+          operateExaminationFmedicalItemsForm:{//当前编辑的非药品条目
+            doctorId:0,
+            purposeRequirements:'',
+            quantity:1,
+            fmedicalItems:{},
+            examinationDrugsItemsList:[],
+          },
+          examinationFmedicalItemsFields:[//非药品列表
             {key: 'fmedicalItems.fmedicalItemsCode', label:'编码', sortable: true},
             {key: 'fmedicalItems.fmedicalItemsName', label:'名称', sortable: true},
             {key: 'fmedicalItems.fmedicalItemsFormat', label:'规格', sortable: true},
@@ -307,11 +328,17 @@
             {key: 'quantity', label:'数量', sortable: true},
             {key: 'purposeRequirements', label:'目的或要求', sortable: true},
           ],
+
           selectedExaminationFmedcalItems:{},//当前选中的ExaminationFmedical
           showAdditionDrugs:false,//是否添加药品
+          selectedExaminationFmedicalItemsIndex:-1,//当前选中的检查检验非药品项目的索引
         }
       },
       computed:{
+        ...mapState("doctor",["patient"]),
+        ...mapState("doctor",["doctor"]),
+        ...mapState("doctor",["registration"]),
+        ...mapState("doctor",["medicalRecordState"]),
         computedTitle1(){
           return ((this.type===0)?'开立检查':'开立检验');
         },
@@ -324,13 +351,6 @@
         computedCommonlyUsedModalId(){//常用非药品弹框
           return this.commonlyUsedModalId+this.type+"fmedical";
         },
-        computedDrugsModalId(){//药品弹框
-          return this.modalId+this.type+"drugs";
-        },
-        computedCommonlyUsedDrugsModalId(){//常用药品弹框
-          return this.commonlyUsedModalId+this.type+"drugs";
-        },
-
       },
       methods:{
         selectPatient(){//选择患者
@@ -340,33 +360,88 @@
 
         },
         examinationSubmit(){//提交检查检验单
-
+          if(this.type===0){
+            this.examinationForm.examinationMark = '1';//检查
+          }else{
+            this.examinationForm.examinationMark = '2';//检验
+          }
+          this.examinationForm.doctorId=this.doctor.userId;
+          this.examinationForm.medicalRecordId=this.registration.medicalRecordId;
+          this.$post(this.api[this.type].insertExaminationApi,JSON.parse(JSON.stringify(this.examinationForm))).then(res=>{
+            if(res.status==="OK"){
+              alert(res.msg);
+            }else{
+              alert(res.msg);
+            }
+          });
+        },
+        selectFmedical(item){//在检索表单中选择一个非药品
+          this.examinationFmedicalItemsForm.fmedicalItems = item;
+        },
+        selectCommonlyUsedItem(item){//选中常用非药品
+          this.examinationFmedicalItemsForm.fmedicalItems = item.fmedicalItems;
         },
         resetExaminationFmedicalItem(){//重置非药品检查检验条目
-
+          this.examinationFmedicalItemsForm.fmedicalItems={};
+          this.examinationFmedicalItemsForm.quantity = 1;
+          this.examinationFmedicalItemsForm.purposeRequirements='';
         },
-        addExaminationFmedicalItem(){//新增药品检查检验条目
-
+        addExaminationFmedicalItem(){//新增非药品检查检验条目
+          this.examinationFmedicalItemsForm.fmedicalItemsId = this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId;
+          this.examinationForm.examinationFmedicalItemsList.push( JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm)));
+          this.examinationFmedicalItemsForm.fmedicalItems={};
+          this.examinationFmedicalItemsForm.fmedicalItemsId=-1;
+          this.examinationFmedicalItemsForm.quantity=1;
+          this.examinationFmedicalItemsForm.purposeRequirement='';
+          this.resetExaminationFmedicalItem();
         },
-        resetExaminationDrugsItem(){//重置当前非药品项目的附加药品
-
+        selectExaminationFmedicalItems(item){//选中非药品项目
+          let examinationFmedicalItemsList = this.examinationForm.examinationFmedicalItemsList;
+          for(let i = 0 ; i< examinationFmedicalItemsList.length;i++){
+            if(examinationFmedicalItemsList[i]===item[0]){
+              this.selectedExaminationFmedicalItemsIndex=i;
+              break;
+            }
+          }
         },
-        addExaminationDrugsItem(){//为非药品项目附加药品
-
+        exitExaminationFmedicalItems(){//编辑非药品
+          if(this.selectedExaminationFmedicalItemsIndex>=0){
+            this.operateExaminationFmedicalItemsForm = Object.assign(this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex]);
+            console.log("目前要编辑的项目");
+            this.$refs["operate-examination-fmedical-item-modal"].show();//弹框
+          }else{
+            alert("请选中非药品条目");
+          }
         },
-        selectExaminationFmedicalItems(){//选中非药品项目
-
+        exitExaminationFmedicalItemsOk(){//确认编辑
+          this.$set(this.examinationForm.examinationFmedicalItemsList,this.selectedExaminationFmedicalItemsIndex,Object.assign({},this.operateExaminationFmedicalItemsForm));
+          this.selectedExaminationFmedicalItemsIndex = -1;
         },
-        exitExaminationFmedicalItems(){//编辑药品
-
+        deleteExaminationFmedicalItems(){//删除非药品
+          if(this.selectedExaminationFmedicalItemsIndex>=0){
+            this.examinationForm.examinationFmedicalItemsList.splice(this.selectedExaminationFmedicalItemsIndex,1);
+          }else{
+            alert("请选中非药品条目");
+          }
         },
-        deleteExaminationFmedicalItems(){//删除药品
+        additionExaminationFmedicalItems(){//加非药品
+          this.showAdditionDrugs = true;
+          if(this.selectedExaminationFmedicalItemsIndex>=0){
+            this.examinationFmedicalItemsForm = this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex];
 
+          }else{
+            alert("请选中非药品条目");
+          }
         },
-        additionExaminationFmedicalItems(){//加药
-          this.showAdditionDrugs = !this.showAdditionDrugs;
+        saveExaminationDrugsItems(form){//保存药品
+          if(this.selectedExaminationFmedicalItemsIndex>=0){
+            this.examinationForm.examinationFmedicalItemsList.splice(this.selectedExaminationFmedicalItemsIndex,1,form);
+            this.showAdditionDrugs=false;
+            console.log(this.examinationForm);
+          }else{
+            alert("您正在进行错误操作");
+          }
         },
-
       }
     }
 </script>
