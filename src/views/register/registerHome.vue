@@ -58,6 +58,7 @@
                 label: '挂号状态'
               },
             ],
+            //items一般都是刚创建vue时接收的主列表 这里是挂号列表registrationList
             items: [],
             departmentList: {},
             doctorList: {},
@@ -108,7 +109,7 @@
             })
           },
           getPatientList(){
-            this.$get('http://localhost:8080/hoso/registration/getPatient').then((res)=> {
+            this.$get('http://localhost:8080/hoso/registration/getAllPatient').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 let that = this;
@@ -121,12 +122,12 @@
               }
             })
           },
-          withdraw(item){
-            this.$get('http://localhost:8080/hoso/registration/withdraw', {"expenseItemsId": item.expenseItemsId, "userId": this.$store.userId}).then((res)=> {
+          withdraw(item, index){
+            this.$get('http://localhost:8080/hoso/registration/withdraw', {"expenseItemsId": item.expenseItems.expenseItemsId, "userId": this.$store.state.register.cashier.userId}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
-                this.items = res.data;
-                console.log(this.items);
+                alert("退号成功！");
+                this.items.splice(index, 1);
               }else{
                 console.log("加载挂号列表失败");
               }

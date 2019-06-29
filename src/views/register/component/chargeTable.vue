@@ -45,8 +45,8 @@
 
 <script>
     export default {
-        name: "registerTable",
-        props: {
+        name: "ChargeTable",
+        props:{
           caption: {
             type: String,
             default: 'Table'
@@ -90,75 +90,12 @@
           dark: {
             type: Boolean,
             default: false
-          }
+          },
+          expenseItemsListForPatient:{
+            type: [Array, Object],
+            default: () => []
+          },
         },
-        data: () => {
-          return {
-            currentPage: 1,
-            sortBy: null,
-            sortDesc: false,
-            filter: null,
-            selected_items: null,
-            selected_index: null,
-          }
-        },
-        computed: {
-          items: function() {
-            const items =  this.tableData;
-            return Array.isArray(items) ? items : items()
-          },
-          totalRows: function () { return this.getRowCount() },
-          captions: function() { return this.initialFields },
-          sortOptions() {
-            // Create an options list from our fields
-            return this.initialFields
-              .filter(f => f.sortable)
-              .map(f => {
-                return { text: f.label, value: f.key }
-              })
-          }
-        },
-        methods: {
-          getBadge (status) {
-            return status === 'Active' ? 'success'
-              : status === 'Inactive' ? 'secondary'
-                : status === 'Pending' ? 'warning'
-                  : status === 'Banned' ? 'danger' : 'primary'
-          },
-          getRowCount: function () {
-            return this.items.length
-          },
-          onFiltered(filteredItems) {
-            // Trigger pagination to update the number of buttons/pages due to filtering
-            this.totalRows = filteredItems.length;
-            this.currentPage = 1
-          },
-          getType(item){
-            const map = {boolean: {1: '正常', 2: '退号'}};
-            return map.boolean[item.registrationStatus];
-          },
-          selectItem(item, index){
-            alert("已选择" + this.selected_index);
-            alert("选择" + index);
-            if (this.selected_index === index) {
-              this.selected_items = null;
-              this.selected_index = null;
-            }
-            else{
-              this.selected_items = JSON.parse(JSON.stringify(item));
-              this.selected_index = index;
-            }
-          },
-          withdraw(){
-            if (this.selected_items === null){
-              alert("您还未选择希望退号的条目！");
-            }
-            else {
-              alert("您已选择退号");
-              this.$emit('withdraw', this.selected_items, this.selected_index);
-            }
-          },
-        }
     }
 </script>
 

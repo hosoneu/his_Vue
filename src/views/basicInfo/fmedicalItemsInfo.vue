@@ -65,14 +65,6 @@
               },
             ],
             fmedicalItems_multi_fields: [
-              // {
-              //   key: 'expenseTypeId',
-              //   sortable: true,
-              //   label: '费用科目',
-              //   api: 'expenseType/getExpenseTypeById',
-              //   listApi: 'expenseType/getAllExpenseType',
-              //   to: 'expenseTypeName'
-              // },
               {
                 key: 'expenseType.expenseTypeName',
                 sortable: true,
@@ -89,22 +81,10 @@
                 to: 'departmentName',
                 table: 'department',
               },
-              // {
-              //   key: 'departmentId',
-              //   sortable: true,
-              //   label: '执行科室',
-              //   api: 'department/getDepartmentById',
-              //   listApi: 'department/getAllDepartment',
-              //   to: 'departmentName'
-              // },
             ],
             items:[],
             itemType: '非药品项目',
-            // department: [],
-            // expenseType: [],
             usedData:{
-              amount: 2,
-              to: [{'1': 'departmentName'},{'2': 'expenseTypeName'}],
               department: [],
               expenseType: [],
             },
@@ -113,21 +93,10 @@
         mounted: async function(){
           console.log("mounted");
           this.$store.commit('common/set_curr_user_type', 'basicInfo');
-          // this.departmentData = this.getDepartmentList();
-          // this.expenseTypeData = this.getExpenseTypeList();
           await this.getDepartmentList();
           await this.getExpenseTypeList();
           await this.getFmedicalItemsList();
-          console.log("await this.getFmedicalItemsList");
 
-          console.log("Info处输出开始");
-          // console.log(this.department);
-          // console.log(this.expenseType);
-          // console.log(this.items);
-          // console.log(this.usedData);
-          // console.log(this.usedData.department.get(0));
-          // console.log(this.usedData.amount);
-          console.log("Info处输出结束");
         },
         methods: {
           getFmedicalItemsList() {
@@ -183,12 +152,7 @@
             this.$get('http://localhost:8080/hoso/department/getAllDepartment').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.department = res.data;
-                // console.log("a="+a);
-                // this.usedData.department.concat(a);
-                // this.usedData.department = JSON.parse(JSON.stringify(res.data));
-                console.log("请求打印");
                 console.log(this.usedData.department);
-                // return res.data;
               } else {
                 console.log("加载科室失败");
               }
@@ -199,11 +163,7 @@
             this.$get('http://localhost:8080/hoso/expenseType/getAllExpenseType').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.expenseType = res.data;
-                // this.usedData.expenseType.concat(res.data);
-                // this.usedData.expenseType = res.data;
-                console.log("请求打印");
                 console.log(this.usedData.expenseType);
-                // return res.data;
               } else {
                 console.log("加载费用科目失败");
               }

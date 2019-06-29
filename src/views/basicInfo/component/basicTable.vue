@@ -203,14 +203,22 @@
         })
       },
       selectItem(item, index){
-        console.log("已选择" + (item != null?item.fmedicalItemsName:",其实并未选择"));
-        this.selected_items = JSON.parse(JSON.stringify(item));
-        this.reserve_items = JSON.parse(JSON.stringify(item));
-        this.selected_index = index;
+        alert("已选择" + this.selected_index);
+        alert("选择" + index);
+        if (this.selected_index === index) {
+          this.selected_items = {};
+          this.selected_index = {};
+        }
+        else {
+          console.log("已选择" + (item != null?item.fmedicalItemsName:",其实并未选择"));
+          this.selected_items = JSON.parse(JSON.stringify(item));
+          this.reserve_items = JSON.parse(JSON.stringify(item));
+          this.selected_index = index;
+        }
       },
       deleteList(){
         alert("删除按钮");
-        if (this.selected_items === null){
+        if (JSON.stringify(this.selected_items) === "{}"){
           alert("您还未选择希望删除的条目！");
         }
         else{
@@ -219,7 +227,7 @@
       },
       updateList(){
         alert("更新按钮");
-        if (this.selected_items === null){
+        if (JSON.stringify(this.selected_items) === "{}"){
             alert("您还未选择希望编辑的条目！");
         }
         else {
@@ -254,14 +262,20 @@
         if (this.modal_status === "insert"){
           this.$emit('insertList', this.selected_items);
           this.$bvModal.hide('basicModal');
+          this.selected_items = {};
+          this.selected_index = {};
         }
         else if (this.modal_status === "update"){
           this.$emit('updateList', this.selected_items);
           this.$bvModal.hide('basicModal');
+          this.selected_items = {};
+          this.selected_index = {};
         }
         else{
           alert("模态框状态发生错误！");
           this.$bvModal.hide('basicModal');
+          this.selected_items = {};
+          this.selected_index = {};
         }
       },
       reset(){
@@ -270,7 +284,7 @@
       },
       cancel(){
         this.$bvModal.hide('basicModal');
-        this.selected_items = null;
+        this.selected_items = {};
         this.selected_index = {};
       },
     }

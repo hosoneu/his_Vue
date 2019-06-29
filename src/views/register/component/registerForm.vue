@@ -12,7 +12,7 @@
     <div style="background:linear-gradient(to left,#efefef,#b6b6b6);height:1px;"></div>
     <br/>
 
-    <b-form @submit.prevent="">
+    <b-form>
       <b-row>
         <b-col md="6">
           <b-form-group
@@ -21,7 +21,10 @@
             label-for="patientIdentity"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input v-model="patient.patientIdentity" id="patientIdentity" type="text"></b-form-input>
+            <b-form-input :state="idState" v-model="patient.patientIdentity" id="patientIdentity" type="text" placeholder="请输入患者身份证号"></b-form-input>
+            <b-form-invalid-feedback id="patientIdentity">
+              请正确输入18位身份证号
+            </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
         <b-col md="1">
@@ -36,7 +39,10 @@
             label-for="patientName"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input v-model="patient.patientName" id="patientName" type="text" autocomplete="name"></b-form-input>
+            <b-form-input :state="nameState" v-model="patient.patientName" id="patientName" type="text" autocomplete="name" placeholder="请输入患者姓名"></b-form-input>
+            <b-form-invalid-feedback id="patientIdentity">
+              请输入两字以上姓名
+            </b-form-invalid-feedback>
           </b-form-group>
           <b-form-group
             label="患者性别"
@@ -91,6 +97,7 @@
             </b-form-select>
           </b-form-group>
           <b-form-group
+            description="选填"
             label="选择医生"
             label-for="selectDoctor"
             :label-cols="3"
@@ -113,19 +120,18 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
-              v-model="registration.calculationTypeId"
               id="calculationType"
               name="calculationType">
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="ownExpense" name="calculationType" class="custom-control-input" value="1" checked>
+                <input v-model="registration.calculationTypeId" type="radio" id="ownExpense" name="calculationType" class="custom-control-input" value="1" checked>
                 <label class="custom-control-label" for="ownExpense">自费</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="medicalInsurance" name="calculationType" class="custom-control-input" value="2">
+                <input v-model="registration.calculationTypeId" type="radio" id="medicalInsurance" name="calculationType" class="custom-control-input" value="2">
                 <label class="custom-control-label" for="medicalInsurance">医保</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="nrcms" name="calculationType" class="custom-control-input" value="3">
+                <input v-model="registration.calculationTypeId" type="radio" id="nrcms" name="calculationType" class="custom-control-input" value="3">
                 <label class="custom-control-label" for="nrcms">新农合</label>
               </div>
             </b-form-radio-group>
@@ -136,15 +142,14 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
-              v-model="registration.registrationLevelId"
               id="registrationLevel"
               name="registrationLevel">
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="general" name="registrationLevel" class="custom-control-input" value="1" checked>
+                <input v-model="registration.registrationLevelId" type="radio" id="general" name="registrationLevel" class="custom-control-input" value="1" checked>
                 <label class="custom-control-label" for="general">普通</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="expert" name="registrationLevel" class="custom-control-input" value="2">
+                <input v-model="registration.registrationLevelId" type="radio" id="expert" name="registrationLevel" class="custom-control-input" value="2">
                 <label class="custom-control-label" for="expert">专家</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
@@ -164,33 +169,31 @@
             :label-cols="3"
             :horizontal="true">
             <b-form-radio-group
-              v-model="registration.buyMedicalRecord"
               id="buyMedical"
               name="customRadioInline1">
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="yes" name="customRadioInline1" class="custom-control-input" value="1" checked>
+                <input v-model="registration.buyMedicalRecord" type="radio" id="yes" name="customRadioInline1" class="custom-control-input" value="1" checked>
                 <label class="custom-control-label" for="yes">否</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="no" name="customRadioInline1" class="custom-control-input" value="2">
+                <input v-model="registration.buyMedicalRecord" type="radio" id="no" name="customRadioInline1" class="custom-control-input" value="2">
                 <label class="custom-control-label" for="no">是</label>
               </div>
             </b-form-radio-group>
           </b-form-group>
         </b-col>
       </b-row>
-
-<!--      <div slot="footer">-->
-<!--        <b-button type="submit" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Submit</b-button>-->
-<!--        <b-button type="reset" size="sm" variant="danger"><i class="fa fa-ban"></i> Reset</b-button>-->
-<!--      </div>-->
     </b-form>
+    <RegisterModal   @register="register" :total-cost="totalCost" :registration="registration" :patient="patient" :medicalRecord="medicalRecord" :expenseItems="expenseItems">
+    </RegisterModal>
   </b-card>
 </template>
 
 <script>
+    import RegisterModal from "./registerModal"
     export default {
         name: "registerForm",
+        components:{RegisterModal},
         props: {
           departmentList: {
             type: [Array, Object],
@@ -210,19 +213,36 @@
               patient: {
                 patientName:'',
                 patientGender: '',
-                patientBirth: '',
+                patientBirth: '2019-06-29',
                 patientIdentity: '',
               },
               registration: {
-                registrationLevelId: '',
-                departmentId: '',
-                calculationTypeId: '',
+                registrationLevelId: 1,
+                departmentId: 1,
+                calculationTypeId: 1,
                 //doctorId可谓不填项，则insertSelective不更新
                 doctorId: null,
                 buyMedicalRecord: 1,
+                registrationStatus: 1,
               },
+              medicalRecord: {
+                //后端拼写错误 用Treament
+                isTreamentOver: 1,
+              },
+              expenseItems: {
+                payStatus: 1,
+              },
+              totalCost: 0,
             }
           },
+      computed:{
+        idState(){
+          return this.patient.patientIdentity.length === 18;
+        },
+        nameState(){
+          return this.patient.patientName.length > 1;
+        },
+      },
       methods:{
         getPatient(){
           let ds = this.patientList.filter(patient => {if(patient.patientIdentity === this.patient.patientIdentity) return true;});
@@ -233,12 +253,37 @@
             alert("此患者尚未在本医院就诊过！");
           }
         },
-        submit(){
-          alert(this.doctorList);
-          alert(this.departmentList);
-        },
-        reset(){
+        submit:(async function () {
+          //检查表单是否填充
 
+          await this.getRegistrationCost();
+          this.$bvModal.show('registerModal');
+        }),
+        reset(){
+          this.patient = {};
+          this.registration = {};
+        },
+        getRegistrationCost:(function () {
+           this.$get('http://localhost:8080/hoso/registrationLevel/getRegistrationLevelById', {"id": this.registration.registrationLevelId}).then((res) => {
+            if (res.status === 'OK') {
+              this.totalCost = parseFloat(res.data.registrationCost) + parseFloat(this.registration.buyMedicalRecord);
+            } else {
+              console.log("挂号失败");
+            }
+          })
+        }),
+        register(payModeId){
+          this.$post('http://localhost:8080/hoso/registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.state.register.cashier.userId, "payModeId": payModeId}).then((res) => {
+            if (res.status === 'OK') {
+              payModeId = 51;
+              //改变父组件props属性 破坏了单项数据流
+              //改变自身数据
+              this.totalCost = 0;
+              this.reset();
+            } else {
+              console.log("挂号失败");
+            }
+          })
         }
       },
     }
