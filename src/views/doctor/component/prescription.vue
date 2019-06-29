@@ -107,9 +107,9 @@
                           <!--    药品名称 drugsName-->
                           <b-form-group
                             label="药品价格"
-                            label-for="drugsName"
+                            label-for="drugsPrice"
                             :label-cols="3">
-                            <b-form-input id="drugsName" disabled v-model="prescriptionItemForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
+                            <b-form-input id="drugsPrice" disabled v-model="prescriptionItemForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
                           </b-form-group>
                         </b-col>
                       </b-row>
@@ -241,9 +241,9 @@
                           <!--    药品名称 drugsName-->
                           <b-form-group
                             label="药品价格"
-                            label-for="operateDrugsName"
+                            label-for="operateDrugsPrice"
                             :label-cols="3">
-                            <b-form-input id="operateDrugsName" disabled v-model="operatePrescriptionItemForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
+                            <b-form-input id="operateDrugsPrice" disabled v-model="operatePrescriptionItemForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
                           </b-form-group>
                         </b-col>
                       </b-row>

@@ -1,15 +1,15 @@
 <template>
-  <examination
+  <first-examination
     :type="this.type">
-  </examination>
+  </first-examination>
 
 </template>
 
 <script>
-  import Examination from "./component/examination";
+  import FirstExamination from "./component/examination";
     export default {
-      name: "firstExamination",
-      components:{Examination},
+      name: "examination1",
+      components:{FirstExamination},
       data(){
           return{
             type:0

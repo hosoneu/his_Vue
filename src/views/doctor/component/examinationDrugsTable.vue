@@ -82,7 +82,7 @@
               label="药品价格"
               label-for="drugsName"
               :label-cols="3">
-              <b-form-input id="drugsName" disabled v-model="examinationDrugsItemsForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
+              <b-form-input id="drugsPrice" disabled v-model="examinationDrugsItemsForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
             </b-form-group>
           </b-col>
         </b-row>
@@ -207,7 +207,7 @@
                 label="药品价格"
                 label-for="operateDrugsName"
                 :label-cols="3">
-                <b-form-input id="operateDrugsName" disabled v-model="operateExaminationDrugsItemsForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
+                <b-form-input id="operateDrugsPrice" disabled v-model="operateExaminationDrugsItemsForm.drugs.drugsPrice" type="text" placeholder="请检索药品"  ></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
@@ -306,7 +306,7 @@
   import HerbalDrugsTable from "./drugsTable";
   import PatentDrugsTable from "./drugsTable";
   import CommonlyUsedDrugs from "./commonlyUsedItems";
-  import mapState from "vuex";
+  import {mapState} from "vuex";
     export default {
       name: "examinationDrugsTable",
       components:{HerbalDrugsTable,PatentDrugsTable,CommonlyUsedDrugs},
