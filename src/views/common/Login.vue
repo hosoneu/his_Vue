@@ -26,7 +26,7 @@
                   <b-row>
                     <b-col cols="12">
                       <b-alert :show="dismissCountDown" dismissible variant="danger" @dismissed="dismissCountdown=0" @dismiss-count-down="countDownChanged">
-                        用户名或密码错误
+                        {{message}}
                       </b-alert>
                     </b-col>
                     <b-col cols="6">
@@ -67,6 +67,7 @@
     password:undefined,
     dismissCountDown: 0,
     defaultDismissDes:3,
+    message:""
   };
 
 },
@@ -106,8 +107,12 @@ computed:{
           this.set_curr_role(res.data.role);
           this.$router.push("/" + this.curr_user_type);
         }else{
+          this.message="用户名或密码错误";
           this.alertLoginFail();
         }
+      }).catch(()=>{
+        this.message = "网络连接异常";
+        this.alertLoginFail();
       });
     },
     forgetPass(){
