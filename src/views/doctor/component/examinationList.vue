@@ -6,6 +6,8 @@
       </b-col>
       <b-col md="10">
         <b-row>
+          <b-col md="5">
+          </b-col>
           <b-col md="4" class="my-1">
             <b-input-group>
               <b-form-input
@@ -30,22 +32,8 @@
               size="md"
             ></b-form-select>
           </b-col>
-          <b-col md="5">
-            <b-button-group class="pull-right">
-              <b-button id="checkButton" @click="checkTreatmentItem" size="md" variant="outline-dark">查看</b-button>
 
-            </b-button-group>
-          </b-col>
         </b-row>
-        <!--  处置单详情  -->
-        <b-modal  ref="treatment-info-modal" size="lg" centered title="处置单详情" >
-          <treatment-info
-            :treatment-items-list="this.selectedTreatment.treatmentItemsList"
-          >
-          </treatment-info>
-
-        </b-modal>
-
         <br>
         <!-- Main table element -->
         <b-table
@@ -55,8 +43,8 @@
           hover
           stacked="md"
           :aria-busy="isBusy"
-          :items="treatmentItems"
-          :fields="treatmentFields"
+          :items="historyExaminationList"
+          :fields="examinationFields"
           :current-page="currentPage"
           :per-page="perPage"
           :filter="filter"
@@ -64,14 +52,13 @@
           :sort-desc.sync="sortDesc"
           :sort-direction="sortDirection"
           @filtered="onFiltered"
-          @row-selected="selectTreatment">
+          @row-selected="selectExamination">
           <template slot="sum" slot-scope="row">
             {{treatmentSum(row.item)+'元'}}
           </template>
           <template slot="submitTime" slot-scope="row">
             {{transformSubmitTime(row.item)}}
           </template>
-
         </b-table>
         <!--页码-->
         <b-row>
@@ -85,19 +72,25 @@
               align="center"
             ></b-pagination>
           </b-col>
+          <br>
         </b-row>
+        <br>
+        <examination-fmedical-items-table
+          :examination-fmedical-items-list="selectedExamination.examinationFmedicalItemsList"
+        >
+        </examination-fmedical-items-table>
       </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-  import TreatmentInfo from "./treatmentItemsTable";
+  import ExaminationFmedicalItemsTable from "./examinationFmedicalItemsTable";
     export default {
-      name: "treatmentList",
-      components:{TreatmentInfo},
+      name: "examinationList",
+      components:{ExaminationFmedicalItemsTable},
       props:{
-        treatmentItems:{
+        historyExaminationList:{
           type:Array,
           default:()=>{return []}
         },
@@ -113,25 +106,18 @@
           sortDirection: 'asc',
           filter: null,
           isBusy:false,
-          selectedTreatment:{},
-          treatmentFields:[
-            {key: 'treatmentId', label:'申请单号', sortable: true},
+          selectedExamination:{//被选中的检查检验单
+            medicalRecordId:-1,
+            doctorId:-1,
+            doctorAdvice:'',//提交时添加医嘱
+            examinationFmedicalItemsList:[],
+            examinationMark:''//1检查2检验
+          },
+          examinationFields:[
+            {key: 'examinationId', label:'申请单号', sortable: true},
             {key: 'submitTime', label:'提交时间', sortable: true},
             {key: 'sum', label:'总计', sortable: true},
           ],
-        }
-      },
-      mounted: function () {
-        this.total = this.treatmentItems.length;
-      },
-      watch:{
-        treatmentItems:{
-          handler(){
-            this.total = this.treatmentItems.length;
-            this.selectedTreatment={
-              treatmentItemsList : [],
-            };
-          }
         }
       },
       methods:{
@@ -140,27 +126,29 @@
           this.total = filteredItems.length;
           this.currentPage = 1;
         },
-        selectTreatment(item){//选中某项
-          this.selectedTreatment = item[0];
-          this.$emit("selectTreatment",item[0]);
+        selectExamination(item){//选择一个检查检验单
+          console.log("选择一个检查检验单");
+          if(item.length===0){//选中相同的了
+            console.log("选中相同的了");
+            //被选中的检查检验单
+          }else{
+            this.selectedExamination = item[0];
+          }
+        },
+        selectExaminationFmedicalItems(){
+
         },
         transformSubmitTime(item){
-          console.log("我来打印提交时间");
-          console.log(item);
           return item.submitTime.split("T")[0]+' '+item.submitTime.split("T")[1].split(".")[0];
         },
-        treatmentSum(item){//计算处方总价值
-          let treatmentItemsList = item.treatmentItemsList;
-          let sum = 0.0;
-          for(let i=0;i<treatmentItemsList.length;i++){
-            sum+=treatmentItemsList[i].actualQuantity * treatmentItemsList[i].fmedicalItems.fmedicalItemsPrice;
-          }
-          return sum;
-        },
-        checkTreatmentItem(){//查看处置条目
-          this.$refs["treatment-info-modal"].show();
-        },
-      },
+        treatmentSum(){
+          return 0;
+        }
+        // checkExamination(){//查看检查检验单
+        //
+        // }
+      }
+
     }
 </script>
 

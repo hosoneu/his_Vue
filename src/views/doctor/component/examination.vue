@@ -237,7 +237,7 @@
               </b-card>
               <examination-drugs-table
                 :hidden="!showAdditionDrugs"
-                :examination-fmedical-items-form="examinationFmedicalItemsForm"
+                :examination-drugs-items-list="currentExaminationDrugsItemsList"
                 @saveExaminationDrugsItems="saveExaminationDrugsItems"
               >
 
@@ -246,7 +246,9 @@
 
             </b-tab>
             <b-tab :title="computedTitle2">
-
+              <history-examination-list
+               :history-examination-list="this.historyExaminationList"
+              ></history-examination-list>
             </b-tab>
 
           </b-tabs>
@@ -262,10 +264,11 @@
   import FmedicalTable from "./fmedicalTable";
   import CommonlyUsedExamination from "./commonlyUsedItems";
   import ExaminationDrugsTable from "./examinationDrugsTable";
+  import HistoryExaminationList from "./examinationList";
   import {mapState} from 'vuex';
     export default {
       name: "examination",
-      components: {RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedExamination,ExaminationDrugsTable},
+      components: {RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedExamination,ExaminationDrugsTable,HistoryExaminationList},
       props:{
         type:{
           type:Number,//0 检查 1 检验
@@ -293,10 +296,14 @@
 
           api:[//定义需要用到的api
             {
-              insertExaminationApi:"/doctor/examination/insertExamination"
+              insertExaminationApi:"/doctor/examination/insertExamination",
+              listExaminationByMedicalRecordIdApi:"/doctor/examination/listExaminationByMedicalRecordId",
+              listExaminationByMedicalRecordIdParams:{},
             },
             {
-              insertExaminationApi:"/doctor/examination/insertExamination"
+              insertExaminationApi:"/doctor/examination/insertExamination",
+              listExaminationByMedicalRecordIdApi:"/doctor/examination/listExaminationByMedicalRecordId",
+              listExaminationByMedicalRecordIdParams:{},
             }
           ],
           examinationForm:{//当前的检查检验条目
@@ -328,10 +335,11 @@
             {key: 'quantity', label:'数量', sortable: true},
             {key: 'purposeRequirements', label:'目的或要求', sortable: true},
           ],
-
           selectedExaminationFmedcalItems:{},//当前选中的ExaminationFmedical
           showAdditionDrugs:false,//是否添加药品
           selectedExaminationFmedicalItemsIndex:-1,//当前选中的检查检验非药品项目的索引
+          currentExaminationDrugsItemsList:[],
+          historyExaminationList:[],//历史检查检查检验单记录
         }
       },
       computed:{
@@ -352,7 +360,16 @@
           return this.commonlyUsedModalId+this.type+"fmedical";
         },
       },
+      watch:{
+        patient:{
+          handler(){
+
+            this.getHistoryExamination();
+          }
+        }
+      },
       methods:{
+
         selectPatient(){//选择患者
 
         },
@@ -367,6 +384,8 @@
           }
           this.examinationForm.doctorId=this.doctor.userId;
           this.examinationForm.medicalRecordId=this.registration.medicalRecordId;
+          console.log("来了来了");
+          console.log(this.examinationForm);
           this.$post(this.api[this.type].insertExaminationApi,JSON.parse(JSON.stringify(this.examinationForm))).then(res=>{
             if(res.status==="OK"){
               alert(res.msg);
@@ -387,13 +406,13 @@
           this.examinationFmedicalItemsForm.purposeRequirements='';
         },
         addExaminationFmedicalItem(){//新增非药品检查检验条目
+          this.examinationFmedicalItemsForm.doctorId = this.doctor.userId;
           this.examinationFmedicalItemsForm.fmedicalItemsId = this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId;
-          this.examinationForm.examinationFmedicalItemsList.push( JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm)));
+          this.examinationForm.examinationFmedicalItemsList.push( Object.assign({},this.examinationFmedicalItemsForm));
           this.examinationFmedicalItemsForm.fmedicalItems={};
           this.examinationFmedicalItemsForm.fmedicalItemsId=-1;
           this.examinationFmedicalItemsForm.quantity=1;
           this.examinationFmedicalItemsForm.purposeRequirement='';
-          this.resetExaminationFmedicalItem();
         },
         selectExaminationFmedicalItems(item){//选中非药品项目
           let examinationFmedicalItemsList = this.examinationForm.examinationFmedicalItemsList;
@@ -425,23 +444,51 @@
           }
         },
         additionExaminationFmedicalItems(){//加非药品
-          this.showAdditionDrugs = true;
           if(this.selectedExaminationFmedicalItemsIndex>=0){
-            this.examinationFmedicalItemsForm = this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex];
-
+            this.showAdditionDrugs = true;
+            this.currentExaminationDrugsItemsList = JSON.parse(JSON.stringify(this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex].examinationDrugsItemsList));
+            // this.examinationFmedicalItemsForm = Object.assign({},this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex]);
           }else{
             alert("请选中非药品条目");
           }
         },
         saveExaminationDrugsItems(form){//保存药品
           if(this.selectedExaminationFmedicalItemsIndex>=0){
-            this.examinationForm.examinationFmedicalItemsList.splice(this.selectedExaminationFmedicalItemsIndex,1,form);
+            this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex].examinationDrugsItemsList= Object.assign([],form);
             this.showAdditionDrugs=false;
             console.log(this.examinationForm);
           }else{
             alert("您正在进行错误操作");
           }
         },
+        getHistoryExamination(){//获取历史检查/检验
+          console.log("获取历史检查");
+          if (!(this.medicalRecordState === '未初诊')) {
+            console.log("进了");
+            this.api[this.type].listExaminationByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
+            if (this.type === 0) {//检查
+              this.api[this.type].listExaminationByMedicalRecordIdParams.type = '1';
+            } else {//检验
+              this.api[this.type].listExaminationByMedicalRecordIdParams.type = '2';
+            }
+            this.$get(this.api[this.type].listExaminationByMedicalRecordIdApi, this.api[this.type].listExaminationByMedicalRecordIdParams).then(res => {
+              console.log("请求了");
+              if (res.status === "OK") {
+                console.log("OK");
+                console.log(this.historyExaminationList);
+                this.historyExaminationList = res.data;
+              } else {
+                console.log(res.msg);
+                alert(res.message);
+              }
+              console.log(res.data);
+            });
+          } else {
+            console.log("每斤");
+            alert("找个锤子");
+          }
+          console.log("获取历史检查成果");
+        }
       }
     }
 </script>

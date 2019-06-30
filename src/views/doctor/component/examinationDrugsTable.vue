@@ -289,16 +289,13 @@
           hover
           selectable
           select-mode="single"
-          :items="examinationFmedicalItemsForm.examinationDrugsItemsList"
+          :items="examinationDrugsItemsList"
           :fields="examinationDrugsItemsFields"
           @row-selected="selectExaminationDrugsItems"
         >
-
         </b-table>
       </b-col>
     </b-row>
-
-
   </b-card>
 </template>
 
@@ -311,9 +308,9 @@
       name: "examinationDrugsTable",
       components:{HerbalDrugsTable,PatentDrugsTable,CommonlyUsedDrugs},
       props:{
-        examinationFmedicalItemsForm:{
-          type:Object,
-          default:()=>{return {}}
+        examinationDrugsItemsList:{
+          type:Array,
+          default:()=>{return []}
         },
       },
       data(){
@@ -383,12 +380,10 @@
         },
       },
       watch:{
-        examinationFmedicalItemsForm:{
+        examinationDrugsItemsList:{
           handler(){
-            this.total = this.examinationFmedicalItemsForm.examinationDrugsItemsList.length;
-            this.$set(this.examinationFmedicalItemsForm,"examinationDrugsItemsList",this.examinationFmedicalItemsForm.examinationDrugsItemsList)
+            this.total = this.examinationDrugsItemsList.length;
           },
-          // deep: true,//无法监听数组的变化
         }
       },
       methods:{
@@ -404,7 +399,7 @@
         addExaminationDrugsItem(){//为非药品项目附加药品
           this.examinationDrugsItemsForm.drugsId = this.examinationDrugsItemsForm.drugs.drugsId;
           this.examinationDrugsItemsForm.doctorId = this.doctor.userId;
-          this.examinationFmedicalItemsForm.examinationDrugsItemsList.push(JSON.parse(JSON.stringify(this.examinationDrugsItemsForm)));
+          this.examinationDrugsItemsList.push(JSON.parse(JSON.stringify(this.examinationDrugsItemsForm)));
           this.examinationDrugsItemsForm.drugs={};
           this.examinationDrugsItemsForm.drugsUsage="4";//药品用法：1 静脉滴注 2 静脉可注 3 肌肉注射 4 口服 5 皮试 6 皮下注射
           this.examinationDrugsItemsForm.dosage=0.0;//药品用量
@@ -415,13 +410,12 @@
         },
         saveExaminationDrugsItems(){//保存当前药品
           console.log("现在要保存当前药品列表");
-          console.log(this.examinationFmedicalItemsForm);
-          this.$emit("saveExaminationDrugsItems",this.examinationFmedicalItemsForm);
+          this.$emit("saveExaminationDrugsItems",this.examinationDrugsItemsList);
         },
         selectExaminationDrugsItems(item){//选中检查检验药品条目
-          let examinationDrugsItemsList = this.examinationFmedicalItemsForm.examinationDrugsItemsList;
-          for(let i = 0 ; i< examinationDrugsItemsList.length;i++){
-            if(examinationDrugsItemsList[i]===item[0]){
+          let currentExaminationDrugsItemsList = this.examinationDrugsItemsList;
+          for(let i = 0 ; i< currentExaminationDrugsItemsList.length;i++){
+            if(currentExaminationDrugsItemsList[i]===item[0]){
               this.selectedIndex = i;
               break;
             }
@@ -430,16 +424,16 @@
         exitExaminationDrugsItems(){//编辑检查检验药品项目
           if(this.selectedIndex>=0){
             this.$refs["operate-examination-drugs-item-modal"].show();//弹框
-            this.operateExaminationDrugsItemsForm = JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm.examinationDrugsItemsList[this.selectedIndex]));
+            this.operateExaminationDrugsItemsForm = JSON.parse(JSON.stringify(this.examinationDrugsItemsList[this.selectedIndex]));
           }else{
             alert("请选中药品条目");
           }
         },
         exitOk(){
-          this.examinationFmedicalItemsForm.examinationDrugsItemsList.splice(this.selectedIndex,1,JSON.parse(JSON.stringify(this.operateExaminationDrugsItemsForm)));
+          this.examinationDrugsItemsList.splice(this.selectedIndex,1,JSON.parse(JSON.stringify(this.operateExaminationDrugsItemsForm)));
         },
         deleteExaminationDrugsItems(){//删除检查检验药品项目
-          this.examinationFmedicalItemsForm.examinationDrugsItemsList.splice(this.selectedIndex,1);
+          this.examinationDrugsItemsList.splice(this.selectedIndex,1);
         },
       }
     }
