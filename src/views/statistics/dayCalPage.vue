@@ -77,6 +77,11 @@
               </b-col>
             </b-row>
           </template>
+          <b-row style="float: right">
+          <b-button size="sm" :disabled="selected.length===0" :variant="isAllRowSelected ? 'warning':'primary'" @click="AllRowSelected()" class="mr-2">
+            {{isAllRowSelected ? '取消' : '全选'}}
+          </b-button>
+          </b-row>
           <b-table
             :items="invoiceitems"
             :fields="invoicefields"
@@ -168,8 +173,8 @@
         </b-card>
       </b-col>
     </b-row>
-<!--    {{ invoiceselected }}-->
-<!--    {{invoiceIDselected}}-->
+    {{ invoiceselected }}
+    {{invoiceIDselected}}
 <!--    {{userID}}-->
 <!--    {{historyuserID}}-->
   </div>
@@ -181,70 +186,71 @@
   import axios from 'axios/index'
   import dayCalHistory from './component/dayCalHistory'
   export default {
-    name:'userTable',
+    name: 'userTable',
     components: {dayCalHistory},
-    watch:{
-      'historyselected':'fillHistoryUser',
-      'currentTab':'getHistoryORDayCal',
-      'detailworkload':'DayCalculate',
-      'items':'CaltotalRows',
-      'invoiceselected':'fillCalData',
-      'invoiceitems':'CalTotalInvoicesRows',
-      'invoiceIDselected':'CalculateWorkload'
+    watch: {
+      'historyselected': 'fillHistoryUser',
+      'currentTab': 'getHistoryORDayCal',
+      'detailworkload': 'DayCalculate',
+      'items': 'CaltotalRows',
+      'invoiceselected': 'fillCalData',
+      'invoiceitems': 'CalTotalInvoicesRows',
+      'invoiceIDselected': 'CalculateWorkload'
     },
-    computed:{
-      ...mapState("statistics",["userID"])
+    computed: {
+      ...mapState("statistics", ["userID"])
     },
     data() {
       return {
-          historyuserID:null,
-        daycalfields:[
-          { key: 'GH_Total',label:'挂号费'},
-          { key: 'YF_Total',label:'药费'},
-          { key: 'CL_Total',label:'材料费'},
-          { key: 'JC_Total',label:'检查费'},
-          { key: 'CZ_Total',label:'处置（含麻醉）费'},
-          { key: 'QT_Total',label:'其他费用'},
-          { key: 'Day_Cal_Total',label:'总计'},
+        isAllRowSelected: false,
+        historyuserID: null,
+        daycalfields: [
+          {key: 'GH_Total', label: '挂号费'},
+          {key: 'YF_Total', label: '药费'},
+          {key: 'CL_Total', label: '材料费'},
+          {key: 'JC_Total', label: '检查费'},
+          {key: 'CZ_Total', label: '处置（含麻醉）费'},
+          {key: 'QT_Total', label: '其他费用'},
+          {key: 'Day_Cal_Total', label: '总计'},
           'show_details'
         ],
-        daycalitems:[],
-        detailworkload:{
-          GH_Total:0.0,
-          YF_Total:0.0,
-          CL_Total:0.0,
-          JC_Total:0.0,
-          CZ_Total:0.0,
-          QT_Total:0.0,
-          Day_Cal_Total:0.0,
-          invoiceNumber:0,
-          qt:0.0,
-          csclf:0.0,
-          mzssf:0.0,
-          zlf:0.0,
-          ghf:0.0,
-          fsjcf:0.0,
-          mrijcf:0.0,
-          csjcf:10.0,
-          fsclf:0.0,
-          ctclf:0.0,
-          xyf:0.0,
-          czclf:0.0,
-          zcpyf:0.0,
-          jyf:0.0,
-          jyclf:0.0,
-          zcyf:0.0,
-          mriclf:0.0,
-          mzf:0.0,
-          czf:0.0,
-          mzyf:0.0,
-          ctjcf:0.0,
+        daycalitems: [],
+        detailworkload: {
+          GH_Total: 0.0,
+          YF_Total: 0.0,
+          CL_Total: 0.0,
+          JC_Total: 0.0,
+          CZ_Total: 0.0,
+          QT_Total: 0.0,
+          Day_Cal_Total: 0.0,
+          invoiceNumber: 0,
+          qt: 0.0,
+          csclf: 0.0,
+          mzssf: 0.0,
+          zlf: 0.0,
+          ghf: 0.0,
+          fsjcf: 0.0,
+          mrijcf: 0.0,
+          csjcf: 10.0,
+          fsclf: 0.0,
+          ctclf: 0.0,
+          xyf: 0.0,
+          czclf: 0.0,
+          zcpyf: 0.0,
+          jyf: 0.0,
+          jyclf: 0.0,
+          zcyf: 0.0,
+          mriclf: 0.0,
+          mzf: 0.0,
+          czf: 0.0,
+          mzyf: 0.0,
+          ctjcf: 0.0,
           // paitents:0,
           // itemID:0,
           // itemname:0,
         },
-        currentTab:0,
-        invoiceitems:[],
+        currentTab: 0,
+        invoiceitems: [],
         invoicetotalRows: 1,
         invoicecurrentPage: 1,
         invoiceperPage: 5,
@@ -252,12 +258,12 @@
         invoicesortDesc: false,
         invoicesortDirection: 'asc',
         invoicefilter: null,
-        invoicefields:[{ key: 'invoiceNo',label:'发票编号', sortable: true },
-          { key: 'payTime',label:'时间', sortable: true },
-          { key: 'totalCost',label:'总金额', sortable: true },
-          { key: 'isselected',label:'选择'}],
+        invoicefields: [{key: 'invoiceNo', label: '发票编号', sortable: true},
+          {key: 'payTime', label: '时间', sortable: true},
+          {key: 'totalCost', label: '总金额', sortable: true},
+          {key: 'isselected', label: '选择'}],
         invoiceselected: [],
-        invoiceIDselected:[],
+        invoiceIDselected: [],
         totalRows: 1,
         currentPage: 1,
         perPage: 5,
@@ -265,8 +271,8 @@
         sortDesc: false,
         sortDirection: 'asc',
         filter: null,
-        fields:[{ key: 'userId',label:'工作编号', sortable: true },
-          { key: 'userName',label:'职员姓名', sortable: true },],
+        fields: [{key: 'userId', label: '工作编号', sortable: true},
+          {key: 'userName', label: '职员姓名', sortable: true},],
         items: [],
         selected: [],
         historyitems: [],
@@ -278,8 +284,8 @@
         historysortDesc: false,
         historysortDirection: 'asc',
         historyfilter: null,
-        historyfields:[{ key: 'userId',label:'工作编号', sortable: true },
-          { key: 'userName',label:'职员姓名', sortable: true },],
+        historyfields: [{key: 'userId', label: '工作编号', sortable: true},
+          {key: 'userName', label: '职员姓名', sortable: true},],
       }
     },
     mounted() {
@@ -288,60 +294,70 @@
       this.DayCalculate();
       // Set the initial number of items
     },
-    inject:['reload'],
+    inject: ['reload'],
     methods: {
-      fillHistoryUser(){
-        if (this.historyselected.length===0){
-          this.historyuserID=null
-        }else {
-          this.historyuserID=this.historyselected[0]['userId']
+      fillHistoryUser() {
+        if (this.historyselected.length === 0) {
+          this.historyuserID = null
+        } else {
+          this.historyuserID = this.historyselected[0]['userId']
         }
 
       },
-      DODaycal(){
+      DODaycal() {
         var qs = require('qs');
         //console.log(qs.stringify({usrID:this.userID,date:new Date(),drugCost:this.detailworkload.YF_Total,registrateCost:this.detailworkload.GH_Total,materialCost:this.detailworkload.CL_Total,examinateCost:this.detailworkload.JC_Total,treatCost:this.detailworkload.CZ_Total,qtCost:this.detailworkload.QT_Total ,totalCost:this.detailworkload.Day_Cal_Total,invoiceIDs: this.invoiceIDselected}, {indices: false}))
-        axios.post("http://localhost:8080/hoso/dayCalculate/personalDayCalculate", qs.stringify({usrID:this.userID,date:new Date(),drugCost:this.detailworkload.YF_Total,registrateCost:this.detailworkload.GH_Total,materialCost:this.detailworkload.CL_Total,examinateCost:this.detailworkload.JC_Total,treatCost:this.detailworkload.CZ_Total,qtCost:this.detailworkload.QT_Total ,totalCost:this.detailworkload.Day_Cal_Total,invoiceIDs: this.invoiceIDselected}, {indices: false})).then(function (result) {
+        this.$post("dayCalculate/personalDayCalculate", qs.stringify({
+          usrID: this.userID,
+          date: new Date(),
+          drugCost: this.detailworkload.YF_Total,
+          registrateCost: this.detailworkload.GH_Total,
+          materialCost: this.detailworkload.CL_Total,
+          examinateCost: this.detailworkload.JC_Total,
+          treatCost: this.detailworkload.CZ_Total,
+          qtCost: this.detailworkload.QT_Total,
+          totalCost: this.detailworkload.Day_Cal_Total,
+          invoiceIDs: this.invoiceIDselected
+        }, {indices: false})).then(res=> {
           // result是所有的返回回来的数据
           // 包括了响应报文行
           // 响应报文头
           // 响应报文体
-          if (result.data.status==="OK"){
+          if (res.status === "OK") {
             alert("成功");
             this.reload();
           }
-        }.bind(this));
+        });
       },
-      async changeTab(index){
+      async changeTab(index) {
         this.currentTab = index;
         this.getHistoryORDayCal()
       },
-      DayCalculate(){
-        this.daycalitems=[];
+      DayCalculate() {
+        this.daycalitems = [];
         this.daycalitems.push(this.detailworkload)
       },
-      findNotCalInvoices(){
+      findNotCalInvoices() {
         var qs = require('qs');
         console.log(this.selected[0]['userId'])
-        axios.post("http://localhost:8080/hoso/dayCalculate/findInvoices",qs.stringify({userID:this.selected[0]['userId']})).then(function(result) {
+        this.$post("dayCalculate/findInvoices", qs.stringify({userID: this.selected[0]['userId']})).then(res=> {
           // result是所有的返回回来的数据
           // 包括了响应报文行
           // 响应报文头
           // 响应报文体
-          this.invoiceitems=[];
-          console.log(result.data.data)
-          this.invoiceitems=result.data.data;
-          for (let item of this.invoiceitems){
-            this.$set(item,"isselected",false)
+          this.invoiceitems = [];
+          console.log(res.data)
+          this.invoiceitems = res.data;
+          for (let item of this.invoiceitems) {
+            this.$set(item, "isselected", false)
           }
-        }.bind(this));
+        });
       },
       fillCalData() {
         let result = [];
-        if(this.invoiceselected.length===0){
+        if (this.invoiceselected.length === 0) {
           this.invoiceIDselected = result;
-        }
-        else {
+        } else {
           for (var item of this.invoiceselected) {
             result.push(item['invoiceId'])
           }
@@ -350,45 +366,45 @@
           this.CalculateWorkload();
         }
       },
-      CalculateWorkload(){
-        if (this.invoiceIDselected.length===0){
-          this.detailworkload={
-            GH_Total:0.0,
-              YF_Total:0.0,
-              CL_Total:0.0,
-              JC_Total:0.0,
-              CZ_Total:0.0,
-              QT_Total:0.0,
-              Day_Cal_Total:0.0,
-              invoiceNumber:0,
-              qt:0.0,
-              csclf:0.0,
-              mzssf:0.0,
-              zlf:0.0,
-              ghf:0.0,
-              fsjcf:0.0,
-              mrijcf:0.0,
-              csjcf:10.0,
-              fsclf:0.0,
-              ctclf:0.0,
-              xyf:0.0,
-              czclf:0.0,
-              zcpyf:0.0,
-              jyf:0.0,
-              jyclf:0.0,
-              zcyf:0.0,
-              mriclf:0.0,
-              mzf:0.0,
-              czf:0.0,
-              mzyf:0.0,
-              ctjcf:0.0,
+      CalculateWorkload() {
+        if (this.invoiceIDselected.length === 0) {
+          this.detailworkload = {
+            GH_Total: 0.0,
+            YF_Total: 0.0,
+            CL_Total: 0.0,
+            JC_Total: 0.0,
+            CZ_Total: 0.0,
+            QT_Total: 0.0,
+            Day_Cal_Total: 0.0,
+            invoiceNumber: 0,
+            qt: 0.0,
+            csclf: 0.0,
+            mzssf: 0.0,
+            zlf: 0.0,
+            ghf: 0.0,
+            fsjcf: 0.0,
+            mrijcf: 0.0,
+            csjcf: 10.0,
+            fsclf: 0.0,
+            ctclf: 0.0,
+            xyf: 0.0,
+            czclf: 0.0,
+            zcpyf: 0.0,
+            jyf: 0.0,
+            jyclf: 0.0,
+            zcyf: 0.0,
+            mriclf: 0.0,
+            mzf: 0.0,
+            czf: 0.0,
+            mzyf: 0.0,
+            ctjcf: 0.0,
             // paitents:0,
             // itemID:0,
             // itemname:0,
           }
         } else {
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/dayCalculate/userDayCalculate", qs.stringify({invoiceIDs: this.invoiceIDselected}, {indices: false})).then(function (result) {
+          this.$post("dayCalculate/userDayCalculate", qs.stringify({invoiceIDs: this.invoiceIDselected}, {indices: false})).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
@@ -400,8 +416,8 @@
             this.detailworkload.JC_Total = 0.0;
             this.detailworkload.CL_Total = 0.0;
             this.detailworkload.QT_Total = 0.0;
-            for (var item in result.data.data) {
-              var temp = result.data.data[item];
+            for (var item in res.data) {
+              var temp = res.data[item];
               switch (item) {
                 case'invoiceNumber':
                   this.detailworkload.invoiceNumber = temp;
@@ -495,40 +511,40 @@
             }
             this.detailworkload.Day_Cal_Total = this.detailworkload.YF_Total + this.detailworkload.CZ_Total + this.detailworkload.GH_Total + this.detailworkload.JC_Total + this.detailworkload.CL_Total + this.detailworkload.QT_Total;
             console.log(this.detailworkload.Day_Cal_Total);
-          }.bind(this));
+          });
         }
       },
-      getHistoryORDayCal(){
-        if (this.currentTab===0){
+      getHistoryORDayCal() {
+        if (this.currentTab === 0) {
           this.findNotCalUsers();//请求未日结user
           this.CaltotalRows();//计算table行数
           this.DayCalculate();//更新右侧日结
-        }
-        else{
+        } else {
           this.getHistory();//请求历史数据
-        }},
-      getHistory(){
-        axios.post("http://localhost:8080/hoso/dayCalculate/findHistoryCalUsers").then(function(result) {
+        }
+      },
+      getHistory() {
+        this.$post("dayCalculate/findHistoryCalUsers").then(res=> {
           // result是所有的返回回来的数据
           // 包括了响应报文行
           // 响应报文头
           // 响应报文体
-          this.historyitems=result.data.data;
-        }.bind(this));
+          this.historyitems = res.data;
+        });
       },
-      findNotCalUsers(){
-        axios.post("http://localhost:8080/hoso/dayCalculate/findNotCalUsers").then(function(result) {
+      findNotCalUsers() {
+        this.$post("dayCalculate/findNotCalUsers").then(res=> {
           // result是所有的返回回来的数据
           // 包括了响应报文行
           // 响应报文头
           // 响应报文体
-          this.items=result.data.data;
-        }.bind(this));
+          this.items = res.data;
+        });
       },
-      CaltotalRows(){
+      CaltotalRows() {
         this.totalRows = this.items.length;
       },
-      CalTotalInvoicesRows(){
+      CalTotalInvoicesRows() {
         this.invoicetotalRows = this.invoiceitems.length;
       },
       onFiltered(filteredItems) {
@@ -542,58 +558,74 @@
         this.invoicecurrentPage = 1
       },
       HistoryonFiltered(filteredItems) {
-    // Trigger pagination to update the number of buttons/pages due to filtering
-    this.historytotalRows = filteredItems.length
-    this.historycurrentPage = 1
-  },
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.historytotalRows = filteredItems.length
+        this.historycurrentPage = 1
+      },
       rowSelected(items) {
-        if(items.length===0){
-          this.invoiceitems=[];
+        if (items.length === 0) {
+          this.invoiceitems = [];
           this.selected = items
-        }else{
+        } else {
           this.selected = items;
           this.findNotCalInvoices();
         }
-        this.invoiceselected=[];
-        this.invoiceIDselected=[];
+        this.invoiceselected = [];
+        this.invoiceIDselected = [];
         this.CalculateWorkload();
       },
-      HistoryrowSelected(items){
-          this.historyselected = items;
+      HistoryrowSelected(items) {
+        this.historyselected = items;
+      },
+      AllRowSelected() {
+        if (this.isAllRowSelected) {
+          for (var j in this.invoiceitems) {//找到items中的所有改为false
+            this.invoiceitems[j]['isselected'] = false;
+          }
+          this.invoiceselected=[]
+          this.invoiceIDselected=[]
+          this.isAllRowSelected = false
+        } else {
+          //添加他
+          for (var n in this.invoiceitems) {//找到items中的他，并改为true
+            this.invoiceselected.push(this.invoiceitems[n]);
+            this.invoiceitems[n]['isselected'] = true;
+          }
+          this.fillCalData();
+          this.isAllRowSelected = true
+        }
       },
       InvoiceRowSelected(ite) {//选择条目得到对应数据，更新itemSelected数组
-        var item=JSON.parse(JSON.stringify(ite));
-        if (item['isselected']===true){//如果已经被选中就找到他并删除
-          for(var i in this.invoiceselected){
-            if (this.invoiceselected[i]["invoiceId"]===item['invoiceId']){
-              this.invoiceselected.splice(i,1)
+        var item = JSON.parse(JSON.stringify(ite));
+        if (item['isselected'] === true) {//如果已经被选中就找到他并删除
+          for (var i in this.invoiceselected) {
+            if (this.invoiceselected[i]["invoiceId"] === item['invoiceId']) {
+              console.log("删除"+i+'号元素')
+              this.invoiceselected.splice(i, 1)
             }
           }
-          for(var j in this.invoiceitems){//找到items中的他，并改为false
-            if (this.invoiceitems[j]===null){
-              break;
+          for (var j in this.invoiceitems) {//找到items中的他，并改为false
+            if (this.invoiceitems[j] === null) {
             }
-            if (this.invoiceitems[j]["invoiceId"]===item['invoiceId']){
-              this.invoiceitems[j]['isselected']=false;
+            if (this.invoiceitems[j]["invoiceId"] === item['invoiceId']) {
+              this.invoiceitems[j]['isselected'] = false;
             }
           }
-        } else{//添加他
+        } else {//添加他
           console.log(item);
           this.invoiceselected.push(item);//插入到已选择数组
           console.log("更改items中的isselected值");
-          for(var n in this.invoiceitems){//找到items中的他，并改为true
+          for (var n in this.invoiceitems) {//找到items中的他，并改为true
             //console.log("元素"+this.invoiceitems[n]['invoiceId']);
-            if (this.invoiceitems[n]["invoiceId"]===item['invoiceId']){
-              this.invoiceitems[n]['isselected']=true;
-              break;
+            if (this.invoiceitems[n]["invoiceId"] === item['invoiceId']) {
+              this.invoiceitems[n]['isselected'] = true;
             }
           }
 
         }
         console.log(this.invoiceselected)
         this.fillCalData();
-      },
-
+      }
     }
   }
 </script>

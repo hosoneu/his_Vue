@@ -132,18 +132,18 @@
     methods: {
       //需要一个方法当点击department的时候用传来的departmentID请求doctor列表的数据
       findAll(){
-        var url  = "http://localhost:8080/hoso/department/findAll";
+        var url  = "department/findAll";
                     // 发送请求:将数据返回到一个回到函数中
                     // 并且响应成功以后会执行then方法中的回调函数
-                    axios.get(url).then(function(result) {
+                    this.$get(url).then(res=> {
                           // result是所有的返回回来的数据
                           // 包括了响应报文行
                           // 响应报文头
                           // 响应报文体
-                      this.departmentitems=result.data.data
-                      this.currentdepartmentitems.push(result.data.data[0])
-                      //console.log(result.data.data);
-                    }.bind(this));
+                      this.departmentitems=res.data
+                      this.currentdepartmentitems.push(res.data[0])
+                      //console.log(res.data);
+                    });
       },
       findModel(){
        // console.log(this.currentDepartment)
@@ -168,14 +168,14 @@
           this.departmentselected= items;
           console.log(items[0]['departmentId'])
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/department/findUser",qs.stringify({ 'departmentID': items[0]['departmentId'] })).then(function(result) {
+          this.$post("department/findUser",qs.stringify({ 'departmentID': items[0]['departmentId'] })).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
-            this.personalitems=result.data.data
-            console.log("result.data.data:"+this.personalitems);
-          }.bind(this));
+            this.personalitems=res.data
+            console.log("res.data:"+this.personalitems);
+          });
           console.log(this.departmentitems)
         this.isShow = true;
        // console.log(this.currentDepartment)

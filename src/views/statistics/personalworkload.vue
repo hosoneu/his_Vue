@@ -260,18 +260,18 @@
       // },
       selectItems(){//从数据库搜索items
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.doctorID})).then(function(result) {
+          this.$post("workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.doctorID})).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
             this.items=[];
-            this.items.push(result.data.data);
+            this.items.push(res.data);
             for (let item of this.items){
               this.$set(item,"isselected",false)
             }
             //console.log(result);
-          }.bind(this));
+          });
         this.CaltotalRows();
       },
     }

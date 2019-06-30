@@ -323,46 +323,46 @@
         if(this.testID==='0'){//所有科室
           //console.log("testID"+this.testID)
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/workload/findAllDepartmentWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate })).then(function(result) {
+          this.$post("workload/findAllDepartmentWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate })).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
-            this.items=result.data.data
+            this.items=res.data;
             for (let item of this.items){
               this.$set(item,"isselected",false)
             }
-            //console.log("result"+result.data.data);
-          }.bind(this));
+            //console.log("result"+res.data);
+          });
         }else if(this.testID==='1'){//某科室
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/workload/findAllDoctorsWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'departmentID':this.currentdepartment})).then(function(result) {
+          this.$post("workload/findAllDoctorsWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'departmentID':this.currentdepartment})).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
-            this.items=result.data.data;
+            this.items=res.data;
             for (let item of this.items){
               this.$set(item,"isselected",false)
             }
-            //console.log("result"+result.data.data);
-          }.bind(this));
+            //console.log("result"+res.data);
+          });
         }else {//某医生
             //console.log('p'+this.currentperson)
           //console.log('d'+this.currentdepartment)
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.currentperson})).then(function(result) {
+          this.$post("workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.currentperson})).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
             this.items=[];
-            this.items.push(result.data.data);
+            this.items.push(res.data);
             for (let item of this.items){
               this.$set(item,"isselected",false)
             }
             //console.log(result);
-          }.bind(this));
+          });
         }
         this.CaltotalRows();
       },

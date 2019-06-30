@@ -247,22 +247,22 @@
         if(this.userID===null){
         }else {
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/dayCalculate/userDayCalculateHistory", qs.stringify({
+          this.$post("dayCalculate/userDayCalculateHistory", qs.stringify({
             'sdate': this.sdate,
             'edate': this.edate,
             'userID': this.userID
-          })).then(function (result) {
+          })).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
             this.items = [];
-            this.items = result.data.data;
+            this.items = res.data;
             for (let item of this.items) {
               this.$set(item, "isselected", false)
             }
             //console.log(result);
-          }.bind(this));
+          });
           this.CaltotalRows();
         }
       },

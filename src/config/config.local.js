@@ -1,3 +1,3 @@
 module.exports = {
-  developUrl:"/api"
+  developUrl:"http://localhost:8080/hoso/"
 };
