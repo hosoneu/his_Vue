@@ -81,6 +81,10 @@ computed:{
 },
   methods:{
     ...mapMutations('common',['set_curr_user_type']),
+    ...mapMutations('common',['set_curr_user']),
+    ...mapMutations('common',['set_curr_user_id']),
+    ...mapMutations('common',['set_curr_dept']),
+    ...mapMutations('common',['set_curr_role']),
     countDownChanged (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
@@ -88,14 +92,18 @@ computed:{
     submitLogin(){
       console.log("click");
       let data= {
-        username: this.userName,
+        userLoginName: this.userName,
         password: this.password
       };
       console.log(data);
-      this.$post('/login', data).then(res=>{
+      this.$get('/login/LoginUser', data).then(res=>{
         console.log(res);
-        if(res.code === true && res.user_type >=0 && res.user_type <= userType.length){
-          this.set_curr_user_type(userType[res.user_type]);
+        if(res.status === "OK" && res.data.role.roleId >=0 && res.data.role.roleId <= userType.length){
+          this.set_curr_user_type(userType[res.data.role.roleId]);
+          this.set_curr_user(res.data.user);
+          this.set_curr_user_id(res.data.user.userId);
+          this.set_curr_dept(res.data.department);
+          this.set_curr_role(res.data.role);
           this.$router.push("/" + this.curr_user_type);
         }else{
           this.alertLoginFail();
