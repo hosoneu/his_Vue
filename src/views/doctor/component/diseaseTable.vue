@@ -99,7 +99,6 @@
             type: Number,
             default:()=>{return 0}
           }
-
       },//标识中医还是西医
       mounted: async function(){//挂载之后才开始填充数据
         await this.getDiseaseList();

@@ -12,13 +12,13 @@ const ExaminatonSecond = () => import('../views/doctor/examination2');
 
 export default {
   path:'/doctor',
-  redirect:'/doctor/doctorHome',
+  redirect:'/doctor/homePage',
   name:'Doctor',
   component: DefaultContainer,
   children: [
     {
-      path: 'doctorHome',
-      name: 'doctorHome',
+      path: 'homePage',
+      name: 'homePage',
       component: DoctorHome
     },
     {

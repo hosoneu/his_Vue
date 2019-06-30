@@ -313,7 +313,11 @@
           this.selectedIndex=index;
         },
         transformOnsetDate(item){//得到发病日期
-          return item.onsetDate.split("T")[0];
+          if(item.onsetDate==''){
+            return '';
+          }else{
+            return item.onsetDate.split("T")[0];
+          }
         },
         transformMainDiagnosisMark(item){//得到主诊标志
           if(item.mainDiagnosisMark==='1'){

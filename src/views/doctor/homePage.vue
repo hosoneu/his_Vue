@@ -27,8 +27,7 @@
       <b-col md="9">
         <b-row>
           <b-col lg="12">
-<!--            :disabled="this.ifReadonly"-->
-          <b-card header="基本信息">
+          <b-card header="基本信息"  disabled="true">
             <div slot="header"><!-- slot设置插槽便于模板数据的精准插入-->
               填写模块
               <div class="card-header-actions">
@@ -62,13 +61,13 @@
               </b-form-group>
             </b-modal>
 
-            <b-tabs>
+            <b-tabs >
               <!--主模块部分的分菜单栏-->
               <b-tab title = "病史内容">
                 <br>
                 <b-row>
                   <b-col md="1"></b-col>
-                  <b-col md="8">
+                  <b-col md="10">
                     <b-form>
                       <!--  主诉chiefComplaint -->
                       <b-form-group
@@ -120,7 +119,7 @@
                       </b-form-group>
                     </b-form>
                   </b-col>
-                  <b-col md="3">
+                  <b-col md="1">
 
                   </b-col>
                 </b-row>

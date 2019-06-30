@@ -224,10 +224,7 @@
               </b-card>
             </b-tab>
             <b-tab title="已开处置">
-              <history-treatment-table
-                :treatment-items="historyTreatmentItems"
-                @selectItem="selectTreatment"
-              >
+              <history-treatment-table>
               </history-treatment-table>
             </b-tab>
           </b-tabs>
@@ -291,8 +288,6 @@
               },
             ],
             api:{
-              listTreatmentByMedicalRecordIdApi:"/doctor/treatment/listTreatmentByMedicalRecordId",
-              listTreatmentByMedicalRecordIdParams:{},
               insertTreatmentApi:"/doctor/treatment/insertTreatment"
             },
             treatmentItemsFields:[
@@ -412,23 +407,7 @@
             alert("请选中处置条目");
           }
         },
-        getHistoryTreatment(){//获取历史处置
-          console.log("正在查找");
-          if(!(this.medicalRecordState==='未初诊')){
-            this.api.listTreatmentByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
-            this.$get(this.api.listTreatmentByMedicalRecordIdApi,this.api.listTreatmentByMedicalRecordIdParams).then(res=>{
-              if(res.status === "OK"){
-                this.historyTreatmentItems = res.data;
-              }else{
-                console.log(res.msg);
-                alert(res.message);
-              }
-              console.log(res.data);
-            });
-          }else{
-            alert("找个锤子");
-          }
-        },
+
       }
     }
 </script>

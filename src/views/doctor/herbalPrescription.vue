@@ -9,7 +9,7 @@
 <script>
   import PrescriptionHerbal from './component/prescription';
     export default {
-        name: "herbalPrescription",
+      name: "herbalPrescription",
       components:{PrescriptionHerbal},
       data(){
         return{

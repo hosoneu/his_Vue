@@ -31,21 +31,8 @@
             ></b-form-select>
           </b-col>
           <b-col md="5">
-            <b-button-group class="pull-right">
-              <b-button id="checkButton" @click="checkTreatmentItem" size="md" variant="outline-dark">查看</b-button>
-
-            </b-button-group>
           </b-col>
         </b-row>
-        <!--  处置单详情  -->
-        <b-modal  ref="treatment-info-modal" size="lg" centered title="处置单详情" >
-          <treatment-info
-            :treatment-items-list="this.selectedTreatment.treatmentItemsList"
-          >
-          </treatment-info>
-
-        </b-modal>
-
         <br>
         <!-- Main table element -->
         <b-table
@@ -54,7 +41,7 @@
           show-empty
           hover
           stacked="md"
-          :aria-busy="isBusy"
+          :busy="isBusy"
           :items="treatmentItems"
           :fields="treatmentFields"
           :current-page="currentPage"
@@ -81,27 +68,27 @@
               :total-rows="total"
               :per-page="perPage"
               class="my-0"
-              size="md"
+              size="sm"
               align="center"
             ></b-pagination>
           </b-col>
         </b-row>
       </b-col>
     </b-row>
+    <br>
+        <treatment-info
+          :treatment-items-list="this.selectedTreatment.treatmentItemsList"
+        >
+        </treatment-info>
   </div>
 </template>
 
 <script>
   import TreatmentInfo from "./treatmentItemsTable";
+  import {mapState} from "vuex";
     export default {
       name: "treatmentList",
       components:{TreatmentInfo},
-      props:{
-        treatmentItems:{
-          type:Array,
-          default:()=>{return []}
-        },
-      },
       data(){
         return{
           perPage: 5,//每页的个数
@@ -119,20 +106,28 @@
             {key: 'submitTime', label:'提交时间', sortable: true},
             {key: 'sum', label:'总计', sortable: true},
           ],
-        }
-      },
-      mounted: function () {
-        this.total = this.treatmentItems.length;
-      },
-      watch:{
-        treatmentItems:{
-          handler(){
-            this.total = this.treatmentItems.length;
-            this.selectedTreatment={
-              treatmentItemsList : [],
-            };
+          api:{
+            listTreatmentByMedicalRecordIdApi:"/doctor/treatment/listTreatmentByMedicalRecordId",
+            listTreatmentByMedicalRecordIdParams:{},
           }
         }
+      },
+      mounted: async function(){//挂载之后才开始填充数据
+        console.log("mounted");
+        this.getHistoryTreatment();
+        console.log("await this.getHistoryTreatment");
+      },
+      watch:{
+        patient:{
+          handler(){
+            this.getHistoryTreatment();
+          }
+        }
+      },
+      computed:{
+        ...mapState("doctor",["patient"]),
+        ...mapState("doctor",["registration"]),
+        ...mapState("doctor",["medicalRecordState"]),
       },
       methods:{
         onFiltered(filteredItems) {
@@ -141,8 +136,11 @@
           this.currentPage = 1;
         },
         selectTreatment(item){//选中某项
-          this.selectedTreatment = item[0];
-          this.$emit("selectTreatment",item[0]);
+          if(item.length===0){
+            this.selectedTreatment = [];
+          }else{
+            this.selectedTreatment = item[0];
+          }
         },
         transformSubmitTime(item){
           console.log("我来打印提交时间");
@@ -157,9 +155,28 @@
           }
           return sum;
         },
-        checkTreatmentItem(){//查看处置条目
-          this.$refs["treatment-info-modal"].show();
+        getHistoryTreatment(){//获取历史处置
+          console.log("正在查找");
+          if(!(this.medicalRecordState==='未初诊')){
+            this.api.listTreatmentByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
+            this.$get(this.api.listTreatmentByMedicalRecordIdApi,this.api.listTreatmentByMedicalRecordIdParams).then(res=>{
+              if(res.status === "OK"){
+                this.treatmentItems = res.data;
+                this.total = this.treatmentItems.length;
+              }else{
+                console.log(res.msg);
+                alert(res.message);
+              }
+              console.log(res.data);
+            });
+          }else{
+            alert("找个锤子");
+          }
         },
+
+        // checkTreatmentItem(){//查看处置条目
+        //   this.$refs["treatment-info-modal"].show();
+        // },
       },
     }
 </script>

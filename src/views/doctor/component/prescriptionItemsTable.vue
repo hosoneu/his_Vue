@@ -9,7 +9,6 @@
     :fields="prescriptionItemsFields"
     @row-selected="selectPrescriptionItems"
   >
-
     <template slot="drugsUsage" slot-scope="row">
       {{transformDrugsUsage(row.item)}}
     </template>
@@ -66,9 +65,6 @@
             return item.dosage;
           }
         },
-        selectPrescriptionItems(item){
-          this.$emit("selectPrescriptionItems",item[0]);
-        }
       }
     }
 </script>

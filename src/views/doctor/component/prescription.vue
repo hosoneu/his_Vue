@@ -329,7 +329,7 @@
             </b-tab>
             <b-tab title="已开处方">
               <history-prescription-table
-                :prescription-items="historyPrescriptionItems"
+                ref="history-prescription-table"
                 :type="this.type"
               >
               </history-prescription-table>
@@ -425,16 +425,10 @@
           api:[
             {
               insertPrescription:"/doctor/prescription/patent/insertPrescription",
-              listPrescriptionByMedicalRecordId:"/doctor/prescription/patent/listPrescriptionByMedicalRecordId",
-              listPrescriptionByMedicalRecordIdParams:{},
-
             },{
               insertPrescription:"/doctor/prescription/herbal/insertPrescription",
-              listPrescriptionByMedicalRecordId:"/doctor/prescription/herbal/listPrescriptionByMedicalRecordId",
-              listPrescriptionByMedicalRecordIdParams:{},
             }
           ],
-          historyPrescriptionItems:[],
         }
       },
       computed:{
@@ -453,7 +447,6 @@
         patient:{
           handler(){
             this.prescriptionReset();
-            this.getHistoryPrescription();
           }
         },
       },
@@ -488,7 +481,7 @@
               console.log(res.data);
               console.log(res.message+res.data);
               alert(res.message);
-              this.getHistoryPrescription();
+              this.$refs["history-prescription-table"].getHistoryPrescription();
             }else{
               console.log(res.message);
               alert(res.message);
@@ -549,23 +542,7 @@
           console.log(item);
           this.prescriptionItemForm.drugs = item;
         },
-        getHistoryPrescription(){
-          if(!(this.medicalRecordState==='未初诊')){
-            this.api[this.type].listPrescriptionByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
-            this.$get(this.api[this.type].listPrescriptionByMedicalRecordId,this.api[this.type].listPrescriptionByMedicalRecordIdParams).then(res=>{
-              console.log(res);
-              if(res.status === "OK"){
-                this.historyPrescriptionItems = res.data;
-                // alert(res.msg);
-              }else{
-                console.log(res.msg);
-                alert(res.message);
-              }
-            });
-          }else{
-            alert("找个锤子");
-          }
-        }
+
       }
     }
 </script>

@@ -242,12 +242,10 @@
               >
 
               </examination-drugs-table>
-
-
             </b-tab>
             <b-tab :title="computedTitle2">
               <history-examination-list
-               :history-examination-list="this.historyExaminationList"
+               :type="type"
               ></history-examination-list>
             </b-tab>
 
@@ -297,13 +295,9 @@
           api:[//定义需要用到的api
             {
               insertExaminationApi:"/doctor/examination/insertExamination",
-              listExaminationByMedicalRecordIdApi:"/doctor/examination/listExaminationByMedicalRecordId",
-              listExaminationByMedicalRecordIdParams:{},
             },
             {
               insertExaminationApi:"/doctor/examination/insertExamination",
-              listExaminationByMedicalRecordIdApi:"/doctor/examination/listExaminationByMedicalRecordId",
-              listExaminationByMedicalRecordIdParams:{},
             }
           ],
           examinationForm:{//当前的检查检验条目
@@ -360,14 +354,6 @@
           return this.commonlyUsedModalId+this.type+"fmedical";
         },
       },
-      watch:{
-        patient:{
-          handler(){
-
-            this.getHistoryExamination();
-          }
-        }
-      },
       methods:{
 
         selectPatient(){//选择患者
@@ -384,7 +370,6 @@
           }
           this.examinationForm.doctorId=this.doctor.userId;
           this.examinationForm.medicalRecordId=this.registration.medicalRecordId;
-          console.log("来了来了");
           console.log(this.examinationForm);
           this.$post(this.api[this.type].insertExaminationApi,JSON.parse(JSON.stringify(this.examinationForm))).then(res=>{
             if(res.status==="OK"){
@@ -461,34 +446,7 @@
             alert("您正在进行错误操作");
           }
         },
-        getHistoryExamination(){//获取历史检查/检验
-          console.log("获取历史检查");
-          if (!(this.medicalRecordState === '未初诊')) {
-            console.log("进了");
-            this.api[this.type].listExaminationByMedicalRecordIdParams.medicalRecordId = this.registration.medicalRecordId;
-            if (this.type === 0) {//检查
-              this.api[this.type].listExaminationByMedicalRecordIdParams.type = '1';
-            } else {//检验
-              this.api[this.type].listExaminationByMedicalRecordIdParams.type = '2';
-            }
-            this.$get(this.api[this.type].listExaminationByMedicalRecordIdApi, this.api[this.type].listExaminationByMedicalRecordIdParams).then(res => {
-              console.log("请求了");
-              if (res.status === "OK") {
-                console.log("OK");
-                console.log(this.historyExaminationList);
-                this.historyExaminationList = res.data;
-              } else {
-                console.log(res.msg);
-                alert(res.message);
-              }
-              console.log(res.data);
-            });
-          } else {
-            console.log("每斤");
-            alert("找个锤子");
-          }
-          console.log("获取历史检查成果");
-        }
+
       }
     }
 </script>
