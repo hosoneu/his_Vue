@@ -1,18 +1,41 @@
-<svg width="3096" height="1024" xmlns="http://www.w3.org/2000/svg" class="icon">
+<svg width="100" height="50" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
  <defs>
-  <style type="text/css"/>
+  <filter id="svg_17_blur" x="-50%" y="-50%" width="200%" height="200%">
+   <feGaussianBlur stdDeviation="0"/>
+  </filter>
+  <linearGradient y2="0" x2="1" y1="0" x1="0" id="svg_4">
+   <stop offset="0" stop-color="#000000"/>
+   <stop offset="1" stop-color="#ffffff"/>
+  </linearGradient>
  </defs>
  <g>
   <title>background</title>
-  <rect fill="none" id="canvas_background" height="1026" width="3098" y="-1" x="-1"/>
+  <rect x="-1" y="-1" width="24.779095" height="13.389547" id="canvas_background" fill="#fff"/>
+  <g id="canvasGrid" display="none">
+   <rect id="svg_2" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+  </g>
  </g>
  <g>
   <title>Layer 1</title>
-  <path id="svg_1" fill="#1FA8D7" d="m599.63272,434.59599c0.40644,0.47418 0.76772,1.01609 1.17416,1.53543c2.34831,3.00313 4.58373,6.02884 6.61592,9.25777c0.27096,0.4516 0.60966,0.7903 0.88062,1.19674l95.55828,-165.51091a296.24873,296.24873 0 0 0 -195.13579,-73.20415c-13.63828,0 -26.96044,1.2419 -40.10196,3.02571l125.00251,216.51899c2.1451,2.25799 4.04181,4.7192 6.00626,7.18042zm-191.02624,-209.09019a298.39383,298.39383 0 0 0 -174.81384,165.82703l270.55276,0l-95.73892,-165.82703zm337.50227,100.90972l-135.23122,234.26682l190.34884,0c3.31925,-17.86073 5.28371,-36.21822 5.28371,-55.04988c0,-67.37852 -22.64768,-129.2927 -60.40133,-179.21694zm-328.24449,250.36631l-1.26448,-1.67092a109.96428,109.96428 0 0 1 -6.57076,-9.21261c-0.27096,-0.40644 -0.58708,-0.74514 -0.85804,-1.19673l-95.55828,165.53349a296.24873,296.24873 0 0 0 195.13579,73.18157c13.63828,0 26.93786,-1.2419 40.10196,-3.00314l-125.02509,-216.54156c-2.12252,-2.23541 -4.01923,-4.67405 -5.9611,-7.0901zm-201.61623,-126.17667a300.74214,300.74214 0 0 0 -5.28371,55.04988c0,67.37852 22.64768,129.36044 60.37875,179.23951l135.23122,-234.26681l-190.32626,0l0,-0.02258zm392.59731,335.2217a298.43899,298.43899 0 0 0 174.83642,-165.8722l-270.57534,0l95.73892,165.8722z"/>
-  <path id="svg_2" fill="#1FA8D7" d="m512.02258,94.9712c-229.97663,0 -417.05138,187.07475 -417.05138,417.0288s187.07475,417.0288 417.05138,417.0288c229.95405,0 417.0288,-187.07475 417.0288,-417.0288s-187.09733,-417.0288 -417.0288,-417.0288zm0,769.61447c-194.43581,0 -352.60825,-158.17244 -352.60825,-352.58567s158.14986,-352.58567 352.60825,-352.58567c194.39065,0 352.58567,158.17244 352.58567,352.58567s-158.19502,352.58567 -352.58567,352.58567z"/>
-  <text stroke="#000" transform="matrix(2.5678948736813143,0,0,2.424072293108707,-1646.4029064902036,-631.4002251282602) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="250" id="svg_3" y="560.265546" x="1040.004433" stroke-width="0" fill="#000000">H</text>
-  <text transform="matrix(2.5678948736813143,0,0,2.424072293108707,-1646.4029064902036,-631.4002251282602) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="250" id="svg_4" y="560.265546" x="1234.733974" stroke-width="0" fill="#1FA8D7">O</text>
-  <text style="cursor: move;" stroke="#000" transform="matrix(2.5678948736813143,0,0,2.424072293108707,-1646.4029064902036,-631.4002251282602) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="250" id="svg_5" y="560.265546" x="1439.199992" stroke-width="0" fill="#000000">S</text>
-  <text transform="matrix(2.5678948736813143,0,0,2.424072293108707,-1646.4029064902036,-631.4002251282602) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="250" id="svg_6" y="560.265546" x="1615.847504" stroke-width="0" fill="#1FA8D7">O</text>
+  <line fill="none" stroke-opacity="null" fill-opacity="null" x1="43.187659" y1="41.124619" x2="98.436353" y2="41.124619" id="svg_5" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" stroke="#FABA6F"/>
+  <rect rx="2" stroke="#000000" id="svg_32" height="16.624775" width="14.374805" y="6.812747" x="14.156396" fill-opacity="null" stroke-width="null" fill="none"/>
+  <rect id="svg_34" height="7.0625" width="5.6875" y="4.375" x="27.03125" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#ffffff"/>
+  <rect rx="2" id="svg_24" height="18.999743" width="10.437359" y="20.062567" x="5.469014" fill-opacity="null" stroke-width="null" stroke="#000000" fill="none"/>
+  <rect id="svg_33" height="3.499953" width="7.624897" y="21.062553" x="11.593931" stroke-width="null" stroke="#ffffff" fill="#ffffff"/>
+  <rect id="svg_31" height="10.624857" width="6.749909" y="15.625127" x="15.156388" stroke-width="null" stroke="#ffffff" fill="#ffffff"/>
+  <rect id="svg_27" height="3.624951" width="13.812313" y="36.87484" x="2.594053" stroke-width="null" stroke="#ffffff" fill="#ffffff"/>
+  <rect stroke="#6D97AB" rx="3" fill="#84D3DB" stroke-width="0" x="35.437481" y="30.125061" width="12.062463" height="11.499939" id="svg_25"/>
+  <rect rx="1" fill="url(#svg_4)" stroke-width="0" x="17.124957" y="9.187501" width="13.75" height="32.624993" id="svg_1" stroke="#000"/>
+  <ellipse stroke="#000" fill="#ffffff" stroke-width="0" stroke-opacity="null" cx="26.187456" cy="29.5625" id="svg_12" rx="5.8125" ry="12.9375">S</ellipse>
+  <ellipse fill="#ffffff" stroke="#000" stroke-width="0" stroke-opacity="null" fill-opacity="null" cx="31.499956" cy="40.5625" id="svg_16" rx="3" ry="3.6875"/>
+  <text fill="#999999" stroke-width="2" x="30.747385" y="47.30236" id="svg_14" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(0.758746 0 0 0.619392 1.54159 11.6807)" stroke="#999999">S</text>
+  <path fill="#ff0000" stroke-width="0" d="m37.403606,26.463518l3.750004,-3.58145l3.749996,3.58145l-3.749996,3.58147l-3.750004,-3.58147z" id="svg_17" filter="url(#svg_17_blur)" opacity="0.5" stroke="#FABA6F"/>
+  <path fill="#ffffff" stroke="#FABA6F" stroke-width="0" d="m39.431728,25.784822l1.156712,0l0,-1.15671l1.186569,0l0,1.15671l1.156719,0l0,1.186569l-1.156719,0l0,1.156721l-1.186569,0l0,-1.156721l-1.156712,0l0,-1.186569z" id="svg_18"/>
+  <ellipse stroke="#ffffff" fill="none" cx="41.59369" cy="36.125025" id="svg_28" rx="3.781277" ry="3.687496">S</ellipse>
+  <rect fill="#999999" stroke-width="2" x="7.937494" y="22.5" width="8.874963" height="19.25" id="svg_29"/>
+  <rect stroke="#000" fill="#ffffff" stroke-width="0" stroke-opacity="null" x="9.687492" y="23.937506" width="5.437465" height="3.937487" id="svg_30"/>
+  <rect stroke="#000" fill="#ffffff" stroke-width="0" stroke-opacity="null" x="9.687492" y="28.999938" width="5.437465" height="3.937487" id="svg_8"/>
+  <text fill="#999999" stroke-width="2" fill-opacity="null" x="51.804228" y="41.288589" id="svg_3" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(0.619898,0,0,0.565769,20.0682,17.4175) " stroke="#FABA6F" stroke-opacity="null">HOSO</text>
  </g>
 </svg>
