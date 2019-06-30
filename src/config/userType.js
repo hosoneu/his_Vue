@@ -1,1 +1,1 @@
-export default ["home", "doctor", "common", "basicInfo", "register", "pharmacy", "tech"]
+export default ["home", "doctor", "common", "basicInfo", "register", "pharmacy", "tech","statistics"]
