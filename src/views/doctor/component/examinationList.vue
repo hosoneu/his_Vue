@@ -174,9 +174,6 @@
             this.selectedExamination = item[0];
           }
         },
-        selectExaminationFmedicalItems(){
-
-        },
         transformSubmitTime(item){
           return item.submitTime.split("T")[0]+' '+item.submitTime.split("T")[1].split(".")[0];
         },

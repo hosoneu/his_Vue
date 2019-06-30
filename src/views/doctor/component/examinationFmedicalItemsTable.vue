@@ -4,6 +4,7 @@
       <b-col align="right">
         <b-button-group class="pull-right">
           <b-button id="checkButton" @click="checkExaminationItem" size="md" variant="outline-dark">查看</b-button>
+          <b-button id="resultButton" @click="resultExaminationItem" size="md" variant="outline-dark">结果</b-button>
           <b-button id="cancelButton" @click="cancelExaminationItem" size="md" variant="outline-dark">废除</b-button>
         </b-button-group>
 
@@ -34,7 +35,16 @@
     <template slot="validStatus" slot-scope="row">
       {{row.value==='1'?'有效':'无效'}}
     </template>
+      <template slot="examinationResultId" slot-scope="row">
+        {{row.value==0?'未出':'已出'}}
+      </template>
     </b-table>
+    <b-modal ref="examination-result" size="lg" title="检查结果" >
+      <!--    <examination-result-->
+      <!--      :examination-result="selectedExaminationFmedicalItemsResult"-->
+      <!--    >-->
+      <!--    </examination-result>-->
+    </b-modal>
 
   </div>
 
@@ -42,7 +52,7 @@
 
 <script>
   import ExaminationDrugsInfo from "./examinationDrugsInfo";
-
+  // import ExaminationResult from "./examinationResult";
   export default {
     name: "examinationFmedicalItemsTable",
     components: {ExaminationDrugsInfo},
@@ -66,7 +76,7 @@
           {key: 'department.departmentName', label: '执行科室', sortable: true},
           {key: 'purposeRequirements', label: '目的或要求', sortable: true},
           {key: 'validStatus', label: '状态', sortable: true},
-
+          {key: 'examinationResultId', label: '结果', sortable: true},
         ],
         api:
           {
@@ -74,14 +84,17 @@
             ifExaminationItemsCanCancelParams:{},
             cancelExaminationItemsApi:"/doctor/examination/cancelExaminationItems",
             cancelExaminationItemsParams:{},
+            selectExaminationResultByIdApi:"/doctor/examination/selectExaminationResultById",
+            selectExaminationResultByIdParams:{},
           },
         selectedExaminationFmedicalItems: {},//选中的检查检验非药品条目
+        selectedExaminationFmedicalItemsResult:{},//选中的检查检验非药品条目的结果
       }
     },
     methods: {
       selectExaminationFmedicalItems(item) {//选中检查检验非药品条目
         if (item.length === 0) {
-          this.selectedExaminationFmedicalItems = [];
+          this.selectedExaminationFmedicalItems = {};
         } else {
           this.selectedExaminationFmedicalItems = item[0];
         }
@@ -89,8 +102,29 @@
       checkExaminationItem() {
         this.$refs["examination-drugs-info"].show();
       },
+      resultExaminationItem(){
+        if(JSON.stringify(this.selectedExaminationFmedicalItems) =='{}'){
+          alert("请选中项目");
+        }else{
+          if(this.examinationResultId==0){//如果结果未出
+            alert("还未出结果，请您耐心等待");
+          }else{
+            this.api.selectExaminationResultByIdParams.examinationResultId = this.selectedExaminationFmedicalItems.examinationResultId;
+            this.$get(this.api.selectExaminationResultByIdApi, this.api.selectExaminationResultByIdParams).then(res => {
+              if (res.status === "OK") {
+                this.selectedExaminationFmedicalItemsResult = res.data;
+                //todo传值
+                console.log(res.msg + res.data);
+              } else {
+                console.log(res.msg);
+                alert(res.msg);
+              }
+            });
+          }
+        }
+      },
       cancelExaminationItem() {
-        if (this.selectedExaminationFmedicalItems === {}) {
+        if (JSON.stringify(this.selectedExaminationFmedicalItems) =='{}' ) {
           alert("请先选中项目");
         } else {
           this.api.ifExaminationItemsCanCancelParams.examinationFmedicalItemsId= this.selectedExaminationFmedicalItems.examinationFmedicalItemsId;

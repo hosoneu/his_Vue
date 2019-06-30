@@ -187,7 +187,7 @@
       },
       selectPrescription(item) {//选中某项
         if (item.length === 0) {
-          this.selectedPrescription = [];
+          this.selectedPrescription = {};
         } else {
           this.selectedPrescription = item[0];
         }
@@ -226,7 +226,7 @@
       cancelPrescriptionItem() {//废除处方
         //首先判断是否可以废除
         //然后进行废除操作
-        if (!(this.selectedPrescription === [])) {
+        if (!(JSON.stringify(this.selectedPrescription == "{}"))) {
           this.api[this.type].ifPrescriptionCanCancelParams.prescriptionId = this.selectedPrescription.prescriptionId;
           this.$get(this.api[this.type].ifPrescriptionCanCancelApi, this.api[this.type].ifPrescriptionCanCancelParams).then(res => {
             console.log(res);

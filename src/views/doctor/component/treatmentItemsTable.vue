@@ -74,7 +74,7 @@
           }
         },
         cancelTreatmentItem() {//废除项目
-          if (this.selectedTreatmentItem === {}) {
+          if (JSON.stringify(this.selectedTreatmentItem) == "{}") {
             alert("请先选中项目");
           } else {
             this.api.ifTreatmentItemsCanCancelParams.treatmentItemsId = this.selectedTreatmentItem.treatmentItemsId;
