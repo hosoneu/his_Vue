@@ -1,7 +1,7 @@
 <template>
   <b-modal id="registerModal">
     <template slot="modal-header">
-      <h5>挂号收费</h5>
+      <h5>收费</h5>
     </template>
     <b-form>
       <b-row>
@@ -63,22 +63,6 @@
             type: Number,
             default: 0,
           },
-          registration: {
-            type: Object,
-            default: () => {},
-          },
-          patient: {
-            type: Object,
-            default: () => {},
-          },
-          medicalRecord: {
-            type: Object,
-            default: () => {},
-          },
-          expenseItems: {
-            type: Object,
-            default: () => {},
-          },
         },
         data: () => {
           return {
@@ -106,16 +90,6 @@
           this.$bvModal.hide('registerModal');
           this.actualCost = 0;
           this.$emit('register', this.payModeId);
-          // this.$post('http://localhost:8080/hoso/registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.userId, "payModeId": this.payModeId}).then((res) => {
-          //   if (res.status === 'OK') {
-          //     this.payModeId = 51;
-          //     //改变父组件props属性 破坏了单项数据流
-          //     this.patient = {};
-          //     this.registration = {};
-          //   } else {
-          //     console.log("挂号失败");
-          //   }
-          // })
         },
         cancel(){
           this.$bvModal.hide('registerModal');

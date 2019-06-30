@@ -143,10 +143,14 @@
             if (this.selected_index === index) {
               this.selected_items = null;
               this.selected_index = null;
+              //未选择 传null
+              this.$emit('showExpenseItems', null);
             }
             else{
               this.selected_items = JSON.parse(JSON.stringify(item));
               this.selected_index = index;
+              //传递患者病历号给父组件 用于chargeHome 不用于registerHome
+              this.$emit('showExpenseItems', this.selected_items.medicalRecord.medicalRecordId);
             }
           },
           withdraw(){

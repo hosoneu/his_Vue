@@ -184,7 +184,7 @@
         </b-col>
       </b-row>
     </b-form>
-    <RegisterModal   @register="register" :total-cost="totalCost" :registration="registration" :patient="patient" :medicalRecord="medicalRecord" :expenseItems="expenseItems">
+    <RegisterModal   @register="register" :total-cost="totalCost">
     </RegisterModal>
   </b-card>
 </template>

@@ -7,6 +7,7 @@
           :initial-fields="registrationFields"
           :per-page="10"
           :table-data="registrationList"
+          @showExpenseItems="showExpenseItems"
         ></RegisterTable>
       </b-col>
       <b-col lg="9">
@@ -26,7 +27,7 @@
     import RegisterTable from "./component/registerTable";
     import ChargeTable from "./component/chargeTable";
     export default {
-        name: "ChargeHome",
+        name: "chargeHome",
         components:{RegisterTable,ChargeTable},
         data: () => {
           return{
@@ -60,9 +61,35 @@
             expenseItemsFields: [
               //是药品就显示药品名 是非药品就显示非药品名  如何实现？ 插槽？
               {
-                key: 'registrationStatus',
+                key: 'expenseItemsName',
                 sortable: true,
-                label: '挂号状态'
+                label: '项目名称'
+              },
+              {
+                key: 'quantity',
+                sortable: true,
+                label: '开立数量'
+              },
+              //缴费时 实际肯定=开立（缴费前改处方 直接废除 开新的） 退费时检查 开立-实际
+           {
+                key: 'actualQuantity',
+                sortable: true,
+                label: '实际数量'
+              },
+              {
+                key: 'totalCost',
+                sortable: true,
+                label: '项目费用(/元)'
+              },
+              {
+                key: 'expenseType.expenseTypeName',
+                sortable: true,
+                label: '费用科目名称'
+              },
+              {
+                key: 'payStatus',
+                sortable: true,
+                label: '缴费状态'
               },
             ],
             registrationList: [],
@@ -91,9 +118,22 @@
               if(res.status === 'OK'){
                 this.expenseItemsList = res.data;
               }else{
-                console.log("加载挂号列表失败");
+                console.log("加载费用项目列表失败");
               }
             })
+          },
+          showExpenseItems(medicalRecordId){
+            //每次改变选择时，清空患者费用项目列表，重新赋值
+            this.expenseItemsListForPatient = [];
+            if (medicalRecordId != null){
+              let that = this;
+              this.expenseItemsList.forEach(function (expenseItems) {
+                if (expenseItems.medicalRecordId === medicalRecordId){
+                  //此处是否使用深拷贝？
+                  that.expenseItemsListForPatient.push(expenseItems);
+                }
+              })
+            }
           },
         }
     }
