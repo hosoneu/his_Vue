@@ -3,13 +3,12 @@ const DefaultContainer = () => import('../containers/DefaultContainer');
 
 //Doctors
 const DoctorHome = () => import('../views/doctor/doctorHome');
-const DepartmentTable = () => import('../views/doctor/departmentTable');
-const Workload = () => import('../views/doctor/workload');
-const WorkloadChart = () => import('../views/doctor/workloadChart');
-const DayCalculate = () => import('../views/doctor/daycalculate');
-const UserTable = () => import('../views/doctor/userTable');
-const personalWorkload = () => import('../views/doctor/personalworkload');
-const dayCalHistory = () => import('../views/doctor/dayCalHistory');
+const DepartmentTable = () => import('../views/statistics/workloadPage');
+const Workload = () => import('../views/statistics/component/workload');
+const WorkloadChart = () => import('../views/statistics/component/workloadChart');
+const UserTable = () => import('../views/statistics/dayCalPage');
+const personalWorkload = () => import('../views/statistics/personalworkload');
+const dayCalHistory = () => import('../views/statistics/component/dayCalHistory');
 export default {
   path:'/doctor',
     redirect:'/doctor/doctorHome',
@@ -40,11 +39,6 @@ export default {
       path: 'personalworkload',
       name: 'personalworkload',
       component: personalWorkload
-    },
-    {
-      path: 'daycalculate',
-      name: 'daycalculate',
-      component: DayCalculate
     },
     {
       path: 'userTable',

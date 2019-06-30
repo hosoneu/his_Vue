@@ -20,7 +20,7 @@ export default new Router({
     home,
     common,
     doctor,
-    // statistics,
+    statistics,
     // basicInfo,
     // tech,
     // register,

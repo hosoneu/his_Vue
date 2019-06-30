@@ -15,6 +15,6 @@ export default {
     pharmacy: pharmacy,
     register: register,
     tech: tech,
-    //statistics:statistics,
+    statistics:statistics,
   }
 }

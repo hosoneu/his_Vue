@@ -2,18 +2,23 @@
   <b-container fluid>
     <!-- User Interface controls -->
     <b-row>
-
       <b-col lg="3">
+        <b-input-group prepend="日期">
         <b-form-input   type="date" v-model="sdate"></b-form-input>
+        </b-input-group>
       </b-col>
       <b-col lg="3">
+        <b-input-group prepend="日期">
         <b-form-input type="date" v-model="edate"></b-form-input>
+        </b-input-group>
       </b-col>
       <b-col lg="4">
+        <b-input-group >
         <b-form-input v-model="filter" placeholder="请输入关键字" ></b-form-input>
-      </b-col>
-      <b-col lg="2">
+          <b-input-group-append>
         <b-button type="button"  variant="primary" @click="selectItems" >搜索</b-button>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
     </b-row>
     <!-- Main table element -->
@@ -30,14 +35,14 @@
       @filtered="onFiltered"
     >
       <template slot="isselected" slot-scope="row">
-        <b-button size="sm" @click="itemSelected(row.item)" class="mr-2">
-          {{ row.item.isselected ? 'NO' : 'DO'}} Comparing
+        <b-button  :variant="row.item.isselected ?  'warning':'primary'" size="sm" @click="itemSelected(row.item)" class="mr-2">
+          {{ row.item.isselected ? '取消比较' : '进行比较'}}
         </b-button>
       </template>
     </b-table>
-    {{totalRows}}
-    {{chartdatasets}}
-    {{items.length}}
+<!--    {{totalRows}}-->
+<!--    {{chartdatasets}}-->
+<!--    {{items.length}}-->
       <b-col class="my-1" >
         <b-pagination
           v-model="currentPage"
@@ -49,13 +54,17 @@
       </b-col>
     </b-row>
     <b-row>
-      <workload-chart v-if="datacollection.datasets.length" :chart-data="datacollection"></workload-chart>
+      <b-card header="Chart"  v-if="datacollection.datasets.length" >
+      <div class="chart-wrapper" >
+      <workload-chart width="900px" :chart-data="datacollection"></workload-chart>
+      </div>
+      </b-card>
     </b-row>
   </b-container>
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from 'axios/index'
   import WorkloadChart from './workloadChart'
   export default {
     components: {WorkloadChart},
@@ -67,9 +76,10 @@
     },
     data() {
       return {
+        colorArr:['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'],
         datacollection: { labels: [], datasets: [] },
         chartdatasets: [],
-        chartlabels: [ 0, 40, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 10, 0, 20, 0, 0, 10, 10, 7777, 9 ],
+        chartlabels: [],
         sdate:'2019-06-09',
         edate:'2019-06-10',
         testID:'0',
@@ -78,29 +88,29 @@
         fields: [
           { key: "itemID",label:'编号', sortable: true },
           { key: "itemname",label:'姓名', sortable: true },
-          { key: "ghf",label:'挂号费', sortable: true },
-          { key: "zlf",label:'诊疗费', sortable: true },
-          {key: "jyf",label:'检验费', sortable: true },
-          {key:"isselected",label:'比较',sortable:false}
-          // {key: 4,label:'检验材料费', sortable: true },
-          // {key: 5,label:'超声检查费', sortable: true },
-          // {key: 6,label:'超声材料费', sortable: true },
-          // {key: 7,label:'放射检查费', sortable: true },
-          // {key: 8,label:'放射材料费', sortable: true },
-          // {key: 9,label:'MRI检查费', sortable: true },
-          // {key: 10,label:'MRI材料费', sortable: true },
-          // {key: 11,label:'CT检查费', sortable: true },
-          // {key: 12,label:'CT材料费', sortable: true },
-          // {key: 13,label:'西药费', sortable: true },
-          // {key: 14,label:'中成药费', sortable: true },
-          // {key: 15,label:'中草药费', sortable: true },
-          // {key: 16,label:'处置费', sortable: true },
-          // {key: 17,label:'处置材料费', sortable: true },
-          // {key: 18,label:'麻醉费', sortable: true },
-          // {key: 19,label:'麻醉药费', sortable: true },
-          // {key: 20,label:'门诊手术费', sortable: true },
-          // {key: 21,label:'其他', sortable: true },
-          // {key: 22,label:'病人数', sortable: true },
+          {key: "paitents",label:'病人', sortable: true },
+          { key: "ghf",label:'挂号', sortable: true },
+          { key: "zlf",label:'诊疗', sortable: true },
+          {key: "jyf",label:'检验', sortable: true },
+          // {key: "jyclf",label:'检验材料费', sortable: true },
+          {key: "csjcf",label:'超声', sortable: true },
+          // {key: "csclf",label:'超声材料费', sortable: true },
+          {key: "fsjcf",label:'放射', sortable: true },
+          // {key: "fsclf",label:'放射材料费', sortable: true },
+          {key:"mrijcf",label:'MRI', sortable: true },
+          // {key: "mriclf",label:'MRI材料费', sortable: true },
+          {key: "ctjcf",label:'CT', sortable: true },
+          // {key: "ctclf",label:'CT材料费', sortable: true },
+          {key: "xyf",label:'西药', sortable: true },
+          // {key: "zcpyf",label:'中成药费', sortable: true },
+          // {key: "zcyf",label:'中草药费', sortable: true },
+          {key: "czf",label:'处置', sortable: true },
+          // {key: "czclf",label:'处置材料费', sortable: true },
+          {key: "mzf",label:'麻醉', sortable: true },
+         // {key: "mzyf",label:'麻醉药费', sortable: true },
+          {key: "mzssf",label:'门诊手术', sortable: true },
+          {key: "qt",label:'其他', sortable: true },
+          {key:"isselected",label:'比较',sortable:false},
         ],
         totalRows: 1,
         currentPage: 1,
@@ -122,6 +132,24 @@
       // Set the initial number of items
     },
     methods: {
+      random(min,max){
+        if(isNaN(min) || isNaN(max)){
+          return null;
+        }
+        if(min > max){
+          min ^= max;
+          max ^= min;
+          min ^= max;
+        }
+        return (Math.random() * (max - min) | 0) + min;
+      },
+      RandomColor(){
+        var color="#";
+        for(var i=0;i<6;i++){
+          color += this.colorArr[this.random(0,16)];
+        }
+        return color;
+      },
       fillData() {
         let result = {
           labels: this.chartlabels,
@@ -130,6 +158,7 @@
         for(var item of this.chartdatasets){
             var temp ={
               label:item['label'],
+              backgroundColor: item['backgroundColor'],
               data:item['data']
             }
             result.datasets.push(temp)
@@ -160,10 +189,14 @@
             console.log("正在添加");
             var tempitem={
               label: '',
+              backgroundColor: this.RandomColor(),
               itemID:null,
               data:[]
             };
             for (var m in item) {//遍历一行对象,初始化tempitem数据
+              console.log("####")
+              console.log(m)
+              console.log("####")
               var temp =item[m]
               switch (m) {
                 case'itemname':
@@ -173,66 +206,91 @@
                   tempitem.itemID = temp;
                   break;
                 case'invoiceNumber':
+                  this.chartlabels.push("发票数")
                   tempitem.data.push(temp);
                   break;
                 case'paitents':
+                  this.chartlabels.push("病人数")
                   tempitem.data.push(temp);
                   break;
                 case'csclf':
+                  this.chartlabels.push("超声材料费")
                   tempitem.data.push(temp);
                   break;
                 case'csjcf':
+                  this.chartlabels.push("超声检查费")
                   tempitem.data.push(temp);
                   break;
                 case'ctclf':
+                  this.chartlabels.push("CT材料费")
                   tempitem.data.push(temp);
                   break;
                 case'ctjcf':
+                  this.chartlabels.push("CT检查费")
                   tempitem.data.push(temp);
                   break;
                 case'czclf':
+                  this.chartlabels.push("处置材料费")
                   tempitem.data.push(temp);
                   break;
                 case'czf':
+                  this.chartlabels.push("处置费")
                   tempitem.data.push(temp);
                   break;
                 case'fsclf':
+                  this.chartlabels.push("放射材料费")
                   tempitem.data.push(temp);
                   break;
                 case'fsjcf':
+                  this.chartlabels.push("放射检查费")
                   tempitem.data.push(temp);
                   break;
                 case'ghf':
+                  this.chartlabels.push("挂号费")
                   tempitem.data.push(temp);
                   break;
                 case'jyclf':
+                  this.chartlabels.push("检验材料费")
                   tempitem.data.push(temp);
                   break;
                 case'mriclf':
+                  this.chartlabels.push("MRI材料费")
                   tempitem.data.push(temp);
                   break;
                 case'mrijcf':
+                  this.chartlabels.push("MRI检查费")
                   tempitem.data.push(temp);
                   break;
                 case'mzf':
+                  this.chartlabels.push("麻醉费")
                   tempitem.data.push(temp);
                   break;
                 case'mzssf':
+                  this.chartlabels.push("门诊手术费")
                   tempitem.data.push(temp);
                   break;
                 case'xyf':
+                  this.chartlabels.push("西药费")
                   tempitem.data.push(temp);
                   break;
                 case'zcpyf':
+                  this.chartlabels.push("中成药费")
                   tempitem.data.push(temp);
                   break;
                 case'zcyf':
+                  this.chartlabels.push("中草药费")
                   tempitem.data.push(temp);
                   break;
                 case'zlf':
+                  this.chartlabels.push("诊疗费")
+                  tempitem.data.push(temp);
+                  break;
+                case'jyf':
+                  this.chartlabels.push("检验费")
                   tempitem.data.push(temp);
                   break;
                 case'qt':
+                  this.chartlabels.push("其他")
                   tempitem.data.push(temp);
                   break;
                 default:
@@ -316,3 +374,5 @@
     }
   }
 </script>
+
+

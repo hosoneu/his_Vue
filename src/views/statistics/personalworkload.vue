@@ -50,30 +50,29 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import WorkloadChart from './workloadChart'
+  import axios from 'axios/index'
+  import WorkloadChart from './component/workloadChart'
   export default {
     components: {WorkloadChart},
-    name:'dayCalHistory',
+    name:'personalworkload',
     props: {
-      userID:{
+      doctorID:{
         type: Number,
+        default: 1
       },
       chartlabels:{
         type:Array,
-        default:['挂号费','药费','材料费','检查费','处置费（含麻醉）','其他费用','总计']
+        default:['zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd',]
       },
       fields:{
         type: Array,
         default: [
-          { key: "ghTotal",label:'挂号费', sortable: true },
-          { key: "yfTotal",label:'药费', sortable: true },
-          { key: "clTotal",label:'材料费', sortable: true },
-          { key: "jcTotal",label:'检查费', sortable: true },
-          {key: "czTotal",label:'处置费', sortable: true },
-          {key:"qtTotal",label:'其他',sortable:true},
-          {key:"dayCalTotal",label:'总计',sortable:true},
-          {key:"isselected",label:'选择',sortable:false},
+          { key: "itemID",label:'编号', sortable: true },
+          { key: "itemname",label:'姓名', sortable: true },
+          { key: "ghf",label:'挂号费', sortable: true },
+          { key: "zlf",label:'诊疗费', sortable: true },
+          {key: "jyf",label:'检验费', sortable: true },
+          {key:"isselected",label:'比较',sortable:false}
           // {key: 4,label:'检验材料费', sortable: true },
           // {key: 5,label:'超声检查费', sortable: true },
           // {key: 6,label:'超声材料费', sortable: true },
@@ -100,8 +99,8 @@
       return {
         datacollection: { labels: [], datasets: [] },
         chartdatasets: [],
-        sdate:'2019-06-27',
-        edate:'2019-06-29',
+        sdate:'2019-06-09',
+        edate:'2019-06-10',
         items: [],
         totalRows: 1,
         currentPage: 1,
@@ -112,7 +111,6 @@
       }
     },
     watch:{
-      'userID':'reload',
       'items':'CaltotalRows',
       'chartdatasets':'fillData',
     },
@@ -121,9 +119,6 @@
       // Set the initial number of items
     },
     methods: {
-      reload(){
-        this.selectItems();
-      },
       fillData() {
         let result = {
           labels: this.chartlabels,
@@ -146,7 +141,7 @@
         var item=JSON.parse(JSON.stringify(ite));
         if (item['isselected']===true){//如果在比较就找到他并删除
           for(var i in this.chartdatasets){
-            if (this.chartdatasets[i]["dayCalId"]===item['dayCalId']){
+            if (this.chartdatasets[i]["itemID"]===item['itemID']){
               this.chartdatasets.splice(i,1)
             }
           }
@@ -154,7 +149,7 @@
             if (this.items[j]===null){
               break;
             }
-            if (this.items[j]["dayCalId"]===item['dayCalId']){
+            if (this.items[j]["itemID"]===item['itemID']){
               this.items[j]['isselected']=false;
             }
           }
@@ -162,39 +157,79 @@
           console.log("正在添加");
           var tempitem={
             label: '',
-            dayCalId:null,
-            Day_Cal_Date:null,
+            itemID:null,
             data:[]
           };
           for (var m in item) {//遍历一行对象,初始化tempitem数据
             var temp =item[m]
             switch (m) {
-              case'dayCalId':
+              case'itemname':
                 tempitem.label = temp;
-                tempitem.dayCalId=temp;
                 break;
-              case'dayCalDate':
-                tempitem.Day_Cal_Date = temp;
+              case'itemID':
+                tempitem.itemID = temp;
                 break;
-              case'ghTotal':
+              case'invoiceNumber':
                 tempitem.data.push(temp);
                 break;
-              case'yfTotal':
+              case'paitents':
                 tempitem.data.push(temp);
                 break;
-              case'clTotal':
+              case'csclf':
                 tempitem.data.push(temp);
                 break;
-              case'jcTotal':
+              case'csjcf':
                 tempitem.data.push(temp);
                 break;
-              case'czTotal':
+              case'ctclf':
                 tempitem.data.push(temp);
                 break;
-              case'qtTotal':
+              case'ctjcf':
                 tempitem.data.push(temp);
                 break;
-              case'dayCalTotal':
+              case'czclf':
+                tempitem.data.push(temp);
+                break;
+              case'czf':
+                tempitem.data.push(temp);
+                break;
+              case'fsclf':
+                tempitem.data.push(temp);
+                break;
+              case'fsjcf':
+                tempitem.data.push(temp);
+                break;
+              case'ghf':
+                tempitem.data.push(temp);
+                break;
+              case'jyclf':
+                tempitem.data.push(temp);
+                break;
+              case'mriclf':
+                tempitem.data.push(temp);
+                break;
+              case'mrijcf':
+                tempitem.data.push(temp);
+                break;
+              case'mzf':
+                tempitem.data.push(temp);
+                break;
+              case'mzssf':
+                tempitem.data.push(temp);
+                break;
+              case'xyf':
+                tempitem.data.push(temp);
+                break;
+              case'zcpyf':
+                tempitem.data.push(temp);
+                break;
+              case'zcyf':
+                tempitem.data.push(temp);
+                break;
+              case'zlf':
+                tempitem.data.push(temp);
+                break;
+              case'qt':
                 tempitem.data.push(temp);
                 break;
               default:
@@ -207,7 +242,7 @@
           console.log("更改items中的isselected值");
           for(var n in this.items){//找到items中的他，并改为true
             //console.log("元素"+this.items[n]['itemID']);
-            if (this.items[n]["dayCalId"]===item['dayCalId']){
+            if (this.items[n]["itemID"]===item['itemID']){
               //console.log("isselected为"+this.items[n]['isselected']);
               this.items[n]['isselected']=true;
               //console.log(this.items[n]);
@@ -220,28 +255,24 @@
         console.log(this.chartdatasets)
         this.fillData()
       },
+      // test(){
+      //   console.log(this.sdate)
+      // },
       selectItems(){//从数据库搜索items
-        if(this.userID===null){
-        }else {
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/dayCalculate/userDayCalculateHistory", qs.stringify({
-            'sdate': this.sdate,
-            'edate': this.edate,
-            'userID': this.userID
-          })).then(function (result) {
+          axios.post("http://localhost:8080/hoso/workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.doctorID})).then(function(result) {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
-            this.items = [];
-            this.items = result.data.data;
-            for (let item of this.items) {
-              this.$set(item, "isselected", false)
+            this.items=[];
+            this.items.push(result.data.data);
+            for (let item of this.items){
+              this.$set(item,"isselected",false)
             }
             //console.log(result);
           }.bind(this));
-          this.CaltotalRows();
-        }
+        this.CaltotalRows();
       },
     }
   }
@@ -250,4 +281,3 @@
 <style scoped>
 
 </style>
-

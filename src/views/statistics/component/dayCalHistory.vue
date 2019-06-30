@@ -25,14 +25,14 @@
         :sort-direction="sortDirection"
       >
         <template slot="isselected" slot-scope="row">
-          <b-button size="sm" @click="itemSelected(row.item)" class="mr-2">
-            {{ row.item.isselected ? '隐藏' : '展示'}} 图表
+          <b-button :variant="row.item.isselected ?  'warning':'primary'" size="sm" @click="itemSelected(row.item)" class="mr-2">
+            {{ row.item.isselected ? '隐藏图表' : '展示图表'}}
           </b-button>
         </template>
       </b-table>
-      {{totalRows}}
-      {{chartdatasets}}
-      {{items.length}}
+<!--      {{totalRows}}-->
+<!--      {{chartdatasets}}-->
+<!--      {{items.length}}-->
       <b-col class="my-1" >
         <b-pagination
           v-model="currentPage"
@@ -44,35 +44,38 @@
       </b-col>
     </b-row>
     <b-row>
-      <workload-chart v-if="datacollection.datasets.length" :chart-data="datacollection"></workload-chart>
+      <div class="chart-wrapper" >
+      <workload-chart width="900px" v-if="datacollection.datasets.length" :chart-data="datacollection"></workload-chart>
+      </div>
     </b-row>
   </b-container>
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from 'axios/index'
   import WorkloadChart from './workloadChart'
   export default {
     components: {WorkloadChart},
-    name:'personalworkload',
+    name:'dayCalHistory',
     props: {
-      doctorID:{
+      userID:{
         type: Number,
-        default: 1
       },
       chartlabels:{
         type:Array,
-        default:['zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd',]
+        default:['挂号费','药费','材料费','检查费','处置费（含麻醉）','其他费用','总计']
       },
       fields:{
         type: Array,
         default: [
-          { key: "itemID",label:'编号', sortable: true },
-          { key: "itemname",label:'姓名', sortable: true },
-          { key: "ghf",label:'挂号费', sortable: true },
-          { key: "zlf",label:'诊疗费', sortable: true },
-          {key: "jyf",label:'检验费', sortable: true },
-          {key:"isselected",label:'比较',sortable:false}
+          { key: "ghTotal",label:'挂号费', sortable: true },
+          { key: "yfTotal",label:'药费', sortable: true },
+          { key: "clTotal",label:'材料费', sortable: true },
+          { key: "jcTotal",label:'检查费', sortable: true },
+          {key: "czTotal",label:'处置费', sortable: true },
+          {key:"qtTotal",label:'其他',sortable:true},
+          {key:"dayCalTotal",label:'总计',sortable:true},
+          {key:"isselected",label:'选择',sortable:false},
           // {key: 4,label:'检验材料费', sortable: true },
           // {key: 5,label:'超声检查费', sortable: true },
           // {key: 6,label:'超声材料费', sortable: true },
@@ -97,10 +100,11 @@
     },
     data() {
       return {
+        colorArr:['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'],
         datacollection: { labels: [], datasets: [] },
         chartdatasets: [],
-        sdate:'2019-06-09',
-        edate:'2019-06-10',
+        sdate:'2019-06-27',
+        edate:'2019-06-29',
         items: [],
         totalRows: 1,
         currentPage: 1,
@@ -111,6 +115,7 @@
       }
     },
     watch:{
+      'userID':'reload',
       'items':'CaltotalRows',
       'chartdatasets':'fillData',
     },
@@ -119,6 +124,27 @@
       // Set the initial number of items
     },
     methods: {
+      random(min,max){
+        if(isNaN(min) || isNaN(max)){
+          return null;
+        }
+        if(min > max){
+          min ^= max;
+          max ^= min;
+          min ^= max;
+        }
+        return (Math.random() * (max - min) | 0) + min;
+      },
+      RandomColor(){
+        var color="#";
+        for(var i=0;i<6;i++){
+          color += this.colorArr[this.random(0,16)];
+        }
+        return color;
+      },
+      reload(){
+        this.selectItems();
+      },
       fillData() {
         let result = {
           labels: this.chartlabels,
@@ -127,6 +153,7 @@
         for(var item of this.chartdatasets){
           var temp ={
             label:item['label'],
+            backgroundColor: item['backgroundColor'],
             data:item['data']
           }
           result.datasets.push(temp)
@@ -141,7 +168,7 @@
         var item=JSON.parse(JSON.stringify(ite));
         if (item['isselected']===true){//如果在比较就找到他并删除
           for(var i in this.chartdatasets){
-            if (this.chartdatasets[i]["itemID"]===item['itemID']){
+            if (this.chartdatasets[i]["dayCalId"]===item['dayCalId']){
               this.chartdatasets.splice(i,1)
             }
           }
@@ -149,7 +176,7 @@
             if (this.items[j]===null){
               break;
             }
-            if (this.items[j]["itemID"]===item['itemID']){
+            if (this.items[j]["dayCalId"]===item['dayCalId']){
               this.items[j]['isselected']=false;
             }
           }
@@ -157,79 +184,40 @@
           console.log("正在添加");
           var tempitem={
             label: '',
-            itemID:null,
+            backgroundColor: this.RandomColor(),
+            dayCalId:null,
+            Day_Cal_Date:null,
             data:[]
           };
           for (var m in item) {//遍历一行对象,初始化tempitem数据
             var temp =item[m]
             switch (m) {
-              case'itemname':
+              case'dayCalId':
                 tempitem.label = temp;
+                tempitem.dayCalId=temp;
                 break;
-              case'itemID':
-                tempitem.itemID = temp;
+              case'dayCalDate':
+                tempitem.Day_Cal_Date = temp;
                 break;
-              case'invoiceNumber':
+              case'ghTotal':
                 tempitem.data.push(temp);
                 break;
-              case'paitents':
+              case'yfTotal':
                 tempitem.data.push(temp);
                 break;
-              case'csclf':
+              case'clTotal':
                 tempitem.data.push(temp);
                 break;
-              case'csjcf':
+              case'jcTotal':
                 tempitem.data.push(temp);
                 break;
-              case'ctclf':
+              case'czTotal':
                 tempitem.data.push(temp);
                 break;
-              case'ctjcf':
+              case'qtTotal':
                 tempitem.data.push(temp);
                 break;
-              case'czclf':
-                tempitem.data.push(temp);
-                break;
-              case'czf':
-                tempitem.data.push(temp);
-                break;
-              case'fsclf':
-                tempitem.data.push(temp);
-                break;
-              case'fsjcf':
-                tempitem.data.push(temp);
-                break;
-              case'ghf':
-                tempitem.data.push(temp);
-                break;
-              case'jyclf':
-                tempitem.data.push(temp);
-                break;
-              case'mriclf':
-                tempitem.data.push(temp);
-                break;
-              case'mrijcf':
-                tempitem.data.push(temp);
-                break;
-              case'mzf':
-                tempitem.data.push(temp);
-                break;
-              case'mzssf':
-                tempitem.data.push(temp);
-                break;
-              case'xyf':
-                tempitem.data.push(temp);
-                break;
-              case'zcpyf':
-                tempitem.data.push(temp);
-                break;
-              case'zcyf':
-                tempitem.data.push(temp);
-                break;
-              case'zlf':
-                tempitem.data.push(temp);
-                break;
-              case'qt':
+              case'dayCalTotal':
                 tempitem.data.push(temp);
                 break;
               default:
@@ -242,7 +230,7 @@
           console.log("更改items中的isselected值");
           for(var n in this.items){//找到items中的他，并改为true
             //console.log("元素"+this.items[n]['itemID']);
-            if (this.items[n]["itemID"]===item['itemID']){
+            if (this.items[n]["dayCalId"]===item['dayCalId']){
               //console.log("isselected为"+this.items[n]['isselected']);
               this.items[n]['isselected']=true;
               //console.log(this.items[n]);
@@ -255,24 +243,28 @@
         console.log(this.chartdatasets)
         this.fillData()
       },
-      // test(){
-      //   console.log(this.sdate)
-      // },
       selectItems(){//从数据库搜索items
+        if(this.userID===null){
+        }else {
           var qs = require('qs');
-          axios.post("http://localhost:8080/hoso/workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.doctorID})).then(function(result) {
+          axios.post("http://localhost:8080/hoso/dayCalculate/userDayCalculateHistory", qs.stringify({
+            'sdate': this.sdate,
+            'edate': this.edate,
+            'userID': this.userID
+          })).then(function (result) {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
-            this.items=[];
-            this.items.push(result.data.data);
-            for (let item of this.items){
-              this.$set(item,"isselected",false)
+            this.items = [];
+            this.items = result.data.data;
+            for (let item of this.items) {
+              this.$set(item, "isselected", false)
             }
             //console.log(result);
           }.bind(this));
-        this.CaltotalRows();
+          this.CaltotalRows();
+        }
       },
     }
   }
@@ -281,3 +273,4 @@
 <style scoped>
 
 </style>
+

@@ -18,6 +18,6 @@ export default new Vuex.Store({
     register,
     pharmacy,
     tech,
-    // statistics,
+    statistics,
   }
 })

@@ -22,6 +22,7 @@
                 @filtered="onFiltered"
               ></b-table>
               <b-pagination
+                size="sm"
                 v-model="currentPage"
                 :total-rows="totalRows"
                 :per-page="perPage"
@@ -47,6 +48,7 @@
                 @filtered="HistoryonFiltered"
               ></b-table>
               <b-pagination
+                size="sm"
                 v-model="historycurrentPage"
                 :total-rows="historytotalRows"
                 :per-page="historyperPage"
@@ -58,11 +60,23 @@
         </b-card>
       </b-col>
       <b-col lg="9">
-        <b-card header="" v-if="currentTab===0">
-          <b-row>
-            <b-button :disabled="invoiceIDselected.length===0" @click="DODaycal">日结</b-button>
-          </b-row>
-          <b-row>
+        <b-card header="发票列表"  v-if="currentTab===0">
+          <template slot="header">
+            <b-row class="ml-auto" >
+              <b-col lg="3">
+                <b-row>
+                <label style="font-size: medium">
+                  发票列表
+                </label>
+                </b-row>
+              </b-col>
+              <b-col  lg="9" >
+                <b-row style="float: right">
+                <b-button   variant="primary" :disabled="invoiceIDselected.length===0" @click="DODaycal">日结</b-button>
+                </b-row>
+              </b-col>
+            </b-row>
+          </template>
           <b-table
             :items="invoiceitems"
             :fields="invoicefields"
@@ -78,7 +92,7 @@
               {{row.value.split('T')[0]}}
             </template>
             <template slot="isselected" slot-scope="row">
-              <b-button size="sm" @click="InvoiceRowSelected(row.item)" class="mr-2">
+              <b-button size="sm" :variant="row.item.isselected ?  'warning':'primary'" @click="InvoiceRowSelected(row.item)" class="mr-2">
                 {{ row.item.isselected ? '已' : ''}} 选择
               </b-button>
             </template>
@@ -87,27 +101,62 @@
             v-model="invoicecurrentPage"
             :total-rows="invoicetotalRows"
             :per-page="invoiceperPage"
-            class="my-0"
             align="center"
           ></b-pagination>
-          </b-row>
           <b-row>
                 <b-table :items="daycalitems" :fields="daycalfields" striped>
                   <template slot="show_details" slot-scope="row">
-                    <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+                    <b-button size="sm" :variant="row.detailsShowing ?  'warning':'primary'"@click="row.toggleDetails" class="mr-2">
                       {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
                     </b-button>
                   </template>
                   <template slot="row-details" slot-scope="row">
                     <b-card>
+                      <b-card class="text-center">
                       <b-row class="mb-2">
-                        <b-col sm="2" class="text-sm-left"><b>中药费:</b></b-col>
-                        <b-col>{{ row.item.zyf }}</b-col>
+                        <b-col sm="2" class="text-lg-left"><b>药品费</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>中成药费:{{ row.item.zcpyf }}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>中草药费:{{ row.item.zcyf }}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>西药费:{{ row.item.xyf }}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>麻醉药费:{{ row.item.mzyf }}</b></b-col>
                       </b-row>
+                      </b-card>
+                      <b-card class="text-center">
                       <b-row class="mb-2">
-                        <b-col sm="2" class="text-sm-left"><b>西药费:</b></b-col>
-                        <b-col>{{ row.item.xyf }}</b-col>
+                        <b-col sm="2" class="text-sm-left"><b>检查费</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>超声检查费：{{ row.item.csjcf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>MRI检查费：{{ row.item.mrijcf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>放射检查费：{{ row.item.fsjcf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>CT检查费：{{ row.item.ctjcf}}</b></b-col>
                       </b-row>
+                      </b-card>
+                      <b-card class="text-center">
+                      <b-row class="mb-2">
+                        <b-col sm="2" class="text-sm-left"><b>检查材料费</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>超声材料费：{{ row.item.csclf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>MRI材料费：{{ row.item.mriclf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>放射材料费：{{ row.item.fsclf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>CT材料费：{{ row.item.ctclf}}</b></b-col>
+                      </b-row>
+                      </b-card>
+                      <b-card class="text-center">
+                      <b-row class="mb-2">
+                        <b-col sm="2" class="text-sm-left"><b>处置费(含麻醉）费</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>处置费：{{ row.item.czf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>处置材料费：{{ row.item.czclf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>麻醉费：{{ row.item.mzf}}</b></b-col>
+                      </b-row>
+                      </b-card>
+                      <b-card class="text-center">
+                      <b-row class="mb-2">
+                        <b-col sm="2" class="text-sm-left"><b>其他费用</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>诊疗费：{{ row.item.zlf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>检验费：{{ row.item.jyf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>检验材料费：{{ row.item.jyclf}}</b></b-col>
+                        <b-col sm="2" class="text-sm-left"><b>门诊手术费：{{ row.item.mzssf}}</b></b-col>
+                        <b-col sm="1" class="text-sm-left"><b>其他：{{ row.item.qt}}</b></b-col>
+                      </b-row>
+                      </b-card>
                     </b-card>
                   </template>
                 </b-table>
@@ -119,18 +168,18 @@
         </b-card>
       </b-col>
     </b-row>
-    {{ invoiceselected }}
-    {{invoiceIDselected}}
-    {{userID}}
-    {{historyuserID}}
+<!--    {{ invoiceselected }}-->
+<!--    {{invoiceIDselected}}-->
+<!--    {{userID}}-->
+<!--    {{historyuserID}}-->
   </div>
 </template>
 
 <script>
   //UserDayCalculate
   import {mapState} from 'vuex'
-  import axios from 'axios'
-  import dayCalHistory from './dayCalHistory'
+  import axios from 'axios/index'
+  import dayCalHistory from './component/dayCalHistory'
   export default {
     name:'userTable',
     components: {dayCalHistory},
@@ -144,7 +193,7 @@
       'invoiceIDselected':'CalculateWorkload'
     },
     computed:{
-      ...mapState("doctor",["userID"])
+      ...mapState("statistics",["userID"])
     },
     data() {
       return {
@@ -204,7 +253,7 @@
         invoicesortDirection: 'asc',
         invoicefilter: null,
         invoicefields:[{ key: 'invoiceNo',label:'发票编号', sortable: true },
-          { key: 'payTime',label:'职员姓名', sortable: true },
+          { key: 'payTime',label:'时间', sortable: true },
           { key: 'totalCost',label:'总金额', sortable: true },
           { key: 'isselected',label:'选择'}],
         invoiceselected: [],
@@ -434,6 +483,10 @@
                   break;
                 case'qt':
                   this.detailworkload.qt = temp;
+                  this.detailworkload.QT_Total = this.detailworkload.QT_Total + temp;
+                  break;
+                case'jyf':
+                  this.detailworkload.jyf = temp;
                   this.detailworkload.QT_Total = this.detailworkload.QT_Total + temp;
                   break;
                 default:

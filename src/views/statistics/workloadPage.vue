@@ -1,17 +1,8 @@
 <template>
   <b-row>
     <b-col lg="3">
-    <b-card header="科室列表">
-      <div slot="header">
-        <b-row>
-        <label>
-          科室列表
-        </label>
-        <label>
+    <b-card  header="科室列表">
           <input type="text" class="form-control" placeholder="请输入关键字" v-on:input="departmentSearch" v-model="departmentKeywords" id="departmentTable">
-        </label>
-        </b-row>
-      </div>
     <b-table
       id="departmentTable"
       :per-page="departmentPerPage"
@@ -26,6 +17,7 @@
       :sort-desc.sync="departmentsortDesc"
     ></b-table>
       <b-pagination
+        size="sm"
         v-model="departmentCurrentPage"
         :total-rows="departmentRows"
         :per-page="departmentPerPage"
@@ -33,21 +25,8 @@
         align="center"
       ></b-pagination>
     </b-card>
-
-
-
-
-    <b-card v-if="isShow" >
-      <div slot="header">
-        <b-row>
-          <label>
-            {{departmentselected[0].departmentName}}
-          </label>
-          <label>
-            <input type="text" class="form-control" placeholder="请输入关键字" v-on:input="personalSearch" v-model="personalKeywords" >
-          </label>
-        </b-row>
-      </div>
+    <b-card :header="departmentselected[0].departmentName"v-if="isShow" >
+      <input type="text" class="form-control" placeholder="请输入关键字" v-on:input="personalSearch" v-model="personalKeywords" >
       <b-table
         :per-page="personalPerPage"
         :current-page="personalCurrentPage"
@@ -61,6 +40,7 @@
         :sort-desc.sync="persoanlsortDesc"
       ></b-table>
       <b-pagination
+        size="sm"
         v-model="personalCurrentPage"
         :total-rows="personalRows"
         :per-page="personalPerPage"
@@ -69,15 +49,17 @@
     </b-card>
     </b-col>
     <b-col>
+      <b-card>
       <workload :test-i-d="test" :currentdepartment="currentdepartmentID" :currentperson="currentpersonalID">
       </workload>
+      </b-card>
     </b-col>
   </b-row>
 </template>
 
 <script>
-  import Workload from "./workload";
-  import axios from 'axios'
+  import Workload from "./component/workload";
+  import axios from 'axios/index'
   export default {
     components: {Workload},
     data() {
