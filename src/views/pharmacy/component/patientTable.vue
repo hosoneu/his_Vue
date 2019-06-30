@@ -1,13 +1,21 @@
-<template>
-        <b-card header="患者列表">
-          <b-tabs @input="changeTab">
-            <b-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :active="index === currentTab">
-              <b-table :items="items" :fields="tableFields" :busy="isBusy">
+<template  slot-scope="scope">
+        <b-card header="发药列表">
+
+              <b-table
+                :items="items"
+                :fields="tableFields"
+                :busy="isBusy">
                 <template slot="status" slot-scope="data">
-                  <b-badge :variant="data.item.status">{{data.item.status}}</b-badge>
+                  <b-badge
+                    :variant="data.item.status">{{data.item.status}}
+                  </b-badge>
                 </template>
                 <template slot="选择" slot-scope="data">
-                  <b-button variant="outline-primary" size="sm" @click="selectUser(data.item)" class="mr-2">
+                  <b-button
+                    variant="outline-primary"
+                    size="sm"
+                    @click="selectUser(data.item)"
+                    class="mr-2">
                     选择
                   </b-button>
                 </template>
@@ -19,10 +27,10 @@
                 :per-page="perPage"
                 aria-controls="user-table"
               ></b-pagination>
-            </b-tab>
-          </b-tabs>
+
         </b-card>
 </template>
+
 <script>
     export default {
       props:{
@@ -109,7 +117,6 @@
       }
     }
 </script>
-
 
 <style scoped>
 

@@ -1,4 +1,6 @@
 export default {
   namespaced:true,
-  state:{},
+  state:{
+    curr_user:{}
+  },
 }

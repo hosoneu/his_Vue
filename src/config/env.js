@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'development') {
     baseUrl = localConfig.developUrl
 
 } else if (process.env.NODE_ENV === 'production') {
-    baseUrl = 'https://120.79.88.98:8080/hoso';
+    baseUrl = 'https://120.79.88.98:8000/hoso';
 }
 
 export {

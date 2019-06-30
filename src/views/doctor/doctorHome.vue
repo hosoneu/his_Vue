@@ -115,6 +115,7 @@
 <script>
     import PatientTable from "./component/patientTable";
     import PatientInfo from "./component/patientInfo";
+
     export default {
       name: "doctorHome",
       components: {PatientInfo, PatientTable},

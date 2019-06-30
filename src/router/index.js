@@ -6,7 +6,7 @@ import home from './home'
 import common from './common'
 import doctor from './doctor'
 // import basicInfo from './basicInfo'
-// import pharmacy from './pharmacy'
+import pharmacy from './pharmacy'
 // import register from './register'
 // import tech from './tech'
 
@@ -24,6 +24,6 @@ export default new Router({
     // basicInfo,
     // tech,
     // register,
-    // pharmacy
+    pharmacy
   ]
 })
