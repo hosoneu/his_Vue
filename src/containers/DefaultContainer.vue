@@ -12,6 +12,7 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <DefaultHeaderDropdownAccnt/>
+        <b-link class="ml-3" to="#"></b-link>
       </b-navbar-nav>
     </AppHeader>
     <div class="app-body">
