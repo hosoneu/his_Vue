@@ -102,7 +102,7 @@
               <i class="fa fa-align-justify"></i><strong> Collapse </strong> <small>multiple elements</small>
             </div>
             <div>
-              <!-- Single button triggers two b-collapse components -->
+              <!-- Single button triggers two b-collapse component -->
               <b-btn v-b-toggle.collapseA.collapseB>Toggle Both Collapse A and B</b-btn>
 
               <!-- elements to collapse -->
