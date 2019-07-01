@@ -13,6 +13,12 @@
           @selectPatient="selectPatient"
         >
         </registration-list>
+        <group-examination
+         :type="type"
+         @onCite="onCite"
+        >
+
+        </group-examination>
       </b-col>
       <b-col lg="9">
 
@@ -22,7 +28,7 @@
             <div class="card-header-actions">
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
                 <b-button size="sm" @click="examinationReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
+                <b-button size="sm" @click="examinationSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
                 <b-button size="sm" @click="examinationSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
@@ -264,9 +270,12 @@
   import ExaminationDrugsTable from "./examinationDrugsTable";
   import HistoryExaminationList from "./examinationList";
   import {mapState} from 'vuex';
+  import GroupExamination from "./groupExamination";
     export default {
       name: "examination",
-      components: {RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedExamination,ExaminationDrugsTable,HistoryExaminationList},
+      components: {
+        GroupExamination,
+        RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedExamination,ExaminationDrugsTable,HistoryExaminationList},
       props:{
         type:{
           type:Number,//0 检查 1 检验
@@ -295,9 +304,11 @@
           api:[//定义需要用到的api
             {
               insertExaminationApi:"/doctor/examination/insertExamination",
+              insertGroupExaminationApi:"/doctor/examination/insertGroupExamination"
             },
             {
               insertExaminationApi:"/doctor/examination/insertExamination",
+              insertGroupExaminationApi:"/doctor/examination/insertGroupExamination"
             }
           ],
           examinationForm:{//当前的检查检验条目
@@ -358,6 +369,68 @@
 
         selectPatient(){//选择患者
 
+        },
+        onCite(groupExaminationInfoItem){//引用组套
+          if(this.medicalRecordState==='未初诊'){
+            alert("患者还未初诊");
+          }else if(this.medicalRecordState==='诊毕'){
+            alert("患者已经诊毕");
+          }else{
+            let groupExaminationFmedicalItemsList = groupExaminationInfoItem.groupExaminationFmedicalItemsList;
+            for(let i = 0;i<groupExaminationFmedicalItemsList.length;i++){
+              let examinationFmedicalItems = {};
+              examinationFmedicalItems.purposeRequirements=groupExaminationFmedicalItemsList[i].purposeRequirements;
+              examinationFmedicalItems.doctorId=this.doctor.userId;
+              examinationFmedicalItems.quantity = groupExaminationFmedicalItemsList[i].quantity;
+              examinationFmedicalItems.fmedicalItemsId = groupExaminationFmedicalItemsList[i].fmedicalItemsId;
+              examinationFmedicalItems.fmedicalItems = groupExaminationFmedicalItemsList[i].fmedicalItems;
+              examinationFmedicalItems.examinationDrugsItemsList=[];
+              let groupExaminationDrugsItemsList = groupExaminationFmedicalItemsList[i].groupExaminationDrugsItemsList;
+              for(let j = 0;j<groupExaminationDrugsItemsList.length;j++){
+                let examinationDrugsItems = {};
+                examinationDrugsItems.drugsId = groupExaminationDrugsItemsList[j].drugs.drugsId;
+                examinationDrugsItems.doctorId = this.doctor.userId;
+                examinationDrugsItems.drugs=groupExaminationDrugsItemsList[j].drugs;
+                examinationDrugsItems.drugsUsage=groupExaminationDrugsItemsList[j].drugsUsage;
+                examinationDrugsItems.dosage=groupExaminationDrugsItemsList[j].dosage;//药品用量
+                examinationDrugsItems.times=groupExaminationDrugsItemsList[j].times;
+                examinationDrugsItems.days=groupExaminationDrugsItemsList[j].days;
+                examinationDrugsItems.quantity=groupExaminationDrugsItemsList[j].quantity;
+                examinationFmedicalItems.examinationDrugsItemsList.push(Object.assign({},examinationDrugsItems));
+              }
+              this.examinationForm.examinationFmedicalItemsList.push(Object.assign({},examinationFmedicalItems));
+            }
+          }
+        },
+        examinationSave(){//存为组套
+          let groupExamination = {};
+          groupExamination.doctorId = this.doctor.userId;
+          groupExamination.groupExaminationName = "发送";
+          groupExamination.groupExaminationScope = '1';
+          if(this.type===0){
+            groupExamination.groupExaminationType = '1';
+          }else{
+            groupExamination.groupExaminationType = '2';
+          }
+          let groupExaminationFmedicalItemsList = [];
+          for(let i = 0;i<this.examinationForm.examinationFmedicalItemsList.length;i++){
+            let groupExaminationFmedicalItems={};
+            groupExaminationFmedicalItems.purposeRequirements=this.examinationForm.examinationFmedicalItemsList[i].purposeRequirements;
+            groupExaminationFmedicalItems.quantity = this.examinationForm.examinationFmedicalItemsList[i].quantity;
+            groupExaminationFmedicalItems.fmedicalItemsId = this.examinationForm.examinationFmedicalItemsList[i].fmedicalItemsId;
+            groupExaminationFmedicalItems.groupExaminationDrugsItemsList=this.examinationForm.examinationFmedicalItemsList[i].examinationDrugsItemsList;
+            groupExaminationFmedicalItemsList.push(Object.assign({},groupExaminationFmedicalItems));
+          }
+          groupExamination.groupExaminationFmedicalItemsList = groupExaminationFmedicalItemsList;
+          console.log("开始打印组套");
+          console.log(groupExamination);
+          this.$post(this.api[this.type].insertGroupExaminationApi,JSON.parse(JSON.stringify(groupExamination))).then(res=>{
+            if(res.status==="OK"){
+              alert(res.msg);
+            }else{
+              alert(res.msg);
+            }
+          });
         },
         examinationReset(){//重置检查检验单
 

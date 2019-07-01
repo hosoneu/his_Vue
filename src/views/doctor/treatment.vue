@@ -13,6 +13,9 @@
           @selectPatient="selectPatient"
         >
         </registration-list>
+        <group-treatment
+         @onCite="onCite"
+        ></group-treatment>
       </b-col>
       <b-col lg="9">
         <b-card header="处置">
@@ -21,7 +24,7 @@
             <div class="card-header-actions">
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
                 <b-button size="sm" @click="treatmentReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                <b-button size="sm" @click="treatmentSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
                 <b-button size="sm" @click="treatmentSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
@@ -240,10 +243,11 @@
   import FmedicalTable from "./component/fmedicalTable";
   import CommonlyUsedTreatment from "./component/commonlyUsedItems";
   import HistoryTreatmentTable from "./component/treatmentList";
+  import GroupTreatment from "./component/groupTreatment";
   import {mapState} from "vuex";
     export default {
       name: "treatment",
-      components:{RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedTreatment,HistoryTreatmentTable},
+      components:{GroupTreatment,RegistrationList,PatientInfo,FmedicalTable,CommonlyUsedTreatment,HistoryTreatmentTable},
       data(){
           return{
             items:{},
@@ -288,7 +292,8 @@
               },
             ],
             api:{
-              insertTreatmentApi:"/doctor/treatment/insertTreatment"
+              insertTreatmentApi:"/doctor/treatment/insertTreatment",
+              insertGroupTreatmentApi:"/doctor/treatment/insertGroupTreatment"
             },
             treatmentItemsFields:[
               {key: 'fmedicalItems.fmedicalItemsCode', label:'编码', sortable: true},
@@ -407,6 +412,37 @@
             alert("请选中处置条目");
           }
         },
+        onCite(groupTreatmentInfoItem) {//
+          if (this.medicalRecordState === '未初诊') {
+            alert("患者还未初诊");
+          } else if (this.medicalRecordState === '诊毕') {
+            alert("患者已经诊毕");
+          } else {
+            let treatmentItemsList = groupTreatmentInfoItem.groupTreatmentItemsList;
+            for (let i = 0; i < treatmentItemsList.length; i++) {
+              let treatmentItems = {};
+              treatmentItems.fmedicalItems = treatmentItemsList[i].fmedicalItems;
+              treatmentItems.fmedicalItemsId = treatmentItemsList[i].fmedicalItemsId;
+              treatmentItems.quantity = treatmentItemsList[i].quantity;
+              this.treatmentForm.treatmentItemsList.push(Object.assign({}, treatmentItems));
+            }
+          }
+        },
+        treatmentSave(){//
+          let groupTreatment={};
+          groupTreatment.doctorId = this.doctor.userId;
+          groupTreatment.groupTreatmentCode = "DSAD";
+          groupTreatment.groupTreatmentName = "的撒大";
+          groupTreatment.groupTreatmentScope= '1';
+          groupTreatment.groupTreatmentItemsList = this.treatmentForm.treatmentItemsList;
+          this.$post(this.api.insertGroupTreatmentApi,JSON.parse(JSON.stringify(groupTreatment))).then(res=>{
+            if(res.status==="OK"){
+              alert(res.msg);
+            }else{
+              alert(res.msg);
+            }
+          });
+        }
 
       }
     }

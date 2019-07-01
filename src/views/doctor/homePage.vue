@@ -27,7 +27,7 @@
       <b-col md="9">
         <b-row>
           <b-col lg="12">
-          <b-card header="基本信息"  disabled="true">
+          <b-card header="基本信息" >
             <div slot="header"><!-- slot设置插槽便于模板数据的精准插入-->
               填写模块
               <div class="card-header-actions">

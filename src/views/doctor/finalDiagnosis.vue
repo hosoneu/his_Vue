@@ -113,6 +113,7 @@
       methods:{
         getDiagnosisList(){
           if(this.medicalRecordState==='已初诊'){
+            this.ifReadonly=false;
             this.privateGetDiagnosisList('初诊');
           }else {
             if(this.medicalRecordState==='未初诊') {

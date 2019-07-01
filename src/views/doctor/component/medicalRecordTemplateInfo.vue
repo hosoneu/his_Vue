@@ -45,11 +45,9 @@
         :fields="diagnosisFields"
         :current-page="currentPage"
         :per-page="perPage"
-        :filter="filter"
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
         :sort-direction="sortDirection"
-        @filtered="onFiltered"
       >
       </b-table>
     </b-card>
@@ -75,22 +73,13 @@
             sortBy: null,
             sortDesc: false,
             sortDirection: 'asc',
-            filter: null,
             diagnosisFields:[
+              {key: 'disease.diseaseCode', label:'疾病代码', sortable: true},
               {key: 'disease.diseaseIcd', label: '疾病ICD', sortable: true},
               {key: 'disease.diseaseName', label: '疾病名', sortable: true},
-              {key: 'disease.diseaseCode', label:'疾病代码', sortable: true},
-              {key: 'disease.diseaseTypeId', label: '疾病类型', sortable: true},
             ]
           }
       },
-      methods:{
-        onFiltered(filteredItems) {
-          // Trigger pagination to update the number of buttons/pages due to filtering
-          this.total = filteredItems.length;
-          this.currentPage = 1;
-        },
-      }
     }
 </script>
 

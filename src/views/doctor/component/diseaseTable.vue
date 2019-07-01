@@ -76,10 +76,9 @@
               getDiseaseParams:{},},
           ],
           diseaseFields: [
+            {key: 'diseaseCode', label:'疾病代码', sortable: true},
             {key: 'diseaseIcd', label: '疾病ICD', sortable: true},
             {key: 'diseaseName', label: '疾病名', sortable: true},
-            {key: 'diseaseCode', label:'疾病代码', sortable: true},
-            {key: 'diseaseTypeId', label: '疾病类型', sortable: true},
           ],
           isBusy: false,
           items:[],

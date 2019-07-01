@@ -48,11 +48,19 @@
     methods:{
       transformDrugsUsage(item){
         if(item.drugsUsage==='1'){
-          return '发生大';
+          return '静脉滴注';
+        }else if(item.drugsUsage==='2'){
+          return '静脉可注';
+        }else if(item.drugsUsage==='3'){
+          return '肌肉注射';
         }else if(item.drugsUsage==='4'){
           return '口服';
+        }else if(item.drugsUsage==='5'){
+          return '皮试';
+        }else if(item.drugsUsage==='6'){
+          return '皮下注射';
         }else{
-          return 'dsa';
+          return '自定义';
         }
       },
       transformDaysAndTimes(item){

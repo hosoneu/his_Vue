@@ -1,39 +1,39 @@
 <template>
-  <b-table
-    show-empty
-    stacked="md"
-    hover
-    selectable
-    select-mode="single"
-    :items="prescriptionItemsList"
-    :fields="prescriptionItemsFields"
-    @row-selected="selectPrescriptionItems"
-  >
-    <template slot="drugsUsage" slot-scope="row">
-      {{transformDrugsUsage(row.item)}}
-    </template>
+  <div>
+    <b-table
+      show-empty
+      stacked="md"
+      hover
+      :items="groupPrescriptionInfoItem.groupPrescriptionItemsList"
+      :fields="groupPrescriptionFields"
+    >
+      <template slot="drugsUsage" slot-scope="row">
+        {{transformDrugsUsage(row.item)}}
+      </template>
 
-    <template slot="days" slot-scope="row">
-      {{transformDaysAndTimes(row.item)}}
-    </template>
+      <template slot="days" slot-scope="row">
+        {{transformDaysAndTimes(row.item)}}
+      </template>
 
-    <template slot="dosage" slot-scope="row">
-      {{transformDosage(row.item)}}
-    </template>
-  </b-table>
+      <template slot="dosage" slot-scope="row">
+        {{transformDosage(row.item)}}
+      </template>
+    </b-table>
+  </div>
 </template>
 
 <script>
     export default {
-      name: "prescriptionItemsTable",
+      name: "groupPrescriptionInfo",
       props:{
-        prescriptionItemsList:{
-          type:Array,
-          default:()=>{return []}
-        },
-        prescriptionItemsFields:{
-          type:Array,
-          default:()=>{return [
+        groupPrescriptionInfoItem:{
+          type:Object,
+          default:()=>{return {}}
+        }
+      },
+      data(){
+        return{
+          groupPrescriptionFields:[
             {key: 'drugs.drugsName', label:'名称', sortable: true},
             {key: 'drugs.drugsFormat', label:'规格', sortable: true},
             {key: 'quantity', label:'数量', sortable: true},
@@ -41,8 +41,8 @@
             {key: 'days', label:'频次', sortable: true},
             {key: 'dosage', label:'用量', sortable: true},
             {key: 'drugs.drugsPrice', label:'单价', sortable: true},
-            {key: 'drugsAdvice', label:'医嘱'},]
-          }
+            {key: 'drugsAdvice', label:'医嘱'}
+          ]
         }
       },
       methods:{
@@ -73,10 +73,8 @@
             return item.dosage;
           }
         },
-        selectPrescriptionItems(item){
-          this.$emit("selectPrescriptionItems",item[0]);
-        }
       }
+
     }
 </script>
 

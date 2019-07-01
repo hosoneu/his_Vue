@@ -1,5 +1,8 @@
 <template>
   <b-card header="患者列表" >
+    <div slot="header">
+      <strong>患者列表</strong>
+    </div>
     <b-tabs @input="changeTab">
       <!-- changeTab更换tab 个人/科室挂号列表 -->
       <b-tab v-for="(tab, index) in registrationTabs" :title="tab.title" :key="index" :active="index === currentTab" >

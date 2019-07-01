@@ -13,6 +13,12 @@
           @selectPatient="selectPatient"
         >
         </registration-list>
+        <group-prescription
+         :type="type"
+         @onCite="onCite"
+        >
+
+        </group-prescription>
       </b-col>
       <b-col lg="9">
         <b-card header="成药处方" >
@@ -22,7 +28,7 @@
 
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
                 <b-button size="sm" @click="prescriptionReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                <b-button size="sm" @click="prescriptionSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
                 <b-button size="sm" @click="prescriptionSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
@@ -351,9 +357,11 @@
   import HistoryPrescriptionTable from "./prescriptionList";//已开立的处方
   import PrescriptionItemsTable from "./prescriptionItemsTable";//展示处方详细信息
   import {mapState} from 'vuex';
+  import GroupPrescription from "./groupPrescription";
     export default {
       name: "prescription",
       components: {
+        GroupPrescription,
         PrescriptionItemsTable,
         RegistrationList,PatientInfo,DrugsTable,CommonlyUsedDrugs,HistoryPrescriptionTable},
       props:{
@@ -425,8 +433,10 @@
           api:[
             {
               insertPrescription:"/doctor/prescription/patent/insertPrescription",
+              insertGroupPrescriptionApi:"/doctor/prescription/patent/insertGroupPrescription"
             },{
               insertPrescription:"/doctor/prescription/herbal/insertPrescription",
+              insertGroupPrescriptionApi:"/doctor/prescription/herbal/insertGroupPrescription"
             }
           ],
         }
@@ -479,12 +489,12 @@
             console.log(res);
             if(res.status === "OK"){
               console.log(res.data);
-              console.log(res.message+res.data);
-              alert(res.message);
+              console.log(res.msg+res.data);
+              alert(res.msg);
               this.$refs["history-prescription-table"].getHistoryPrescription();
             }else{
-              console.log(res.message);
-              alert(res.message);
+              console.log(res.msg);
+              alert(res.msg);
             }
           });
           this.prescriptionReset();
@@ -542,6 +552,46 @@
           console.log(item);
           this.prescriptionItemForm.drugs = item;
         },
+        onCite(groupPrescriptionInfoItem){//引用模板
+          if(this.medicalRecordState==='未初诊'){
+            alert("患者还未初诊");
+          }else if(this.medicalRecordState==='诊毕'){
+            alert("患者已经诊毕");
+          }else{
+            console.log(groupPrescriptionInfoItem);
+            console.log(this.prescriptionForm);
+            for(let i = 0 ; i< groupPrescriptionInfoItem.groupPrescriptionItemsList.length;i++){
+              let prescriptionItems = {};
+              prescriptionItems.drugs = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].drugs;
+              prescriptionItems.dragsId = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].drugsId;
+              prescriptionItems.drugsUsage = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].drugsUsage;
+              prescriptionItems.times = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].times;
+              prescriptionItems.days = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].days;
+              prescriptionItems.drugsAdvice = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].drugsAdvice;
+              prescriptionItems.quantity = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].quantity;
+              prescriptionItems.dosage = groupPrescriptionInfoItem.groupPrescriptionItemsList[i].dosage;
+              this.prescriptionForm.prescriptionItemsList.push(Object.assign({},prescriptionItems));
+            }
+            console.log(this.prescriptionForm);
+          }
+        },
+        prescriptionSave(){//存为模板
+          let groupPrescription={};
+          groupPrescription.doctorId = this.doctor.userId;
+          groupPrescription.groupPrescriptionCode = "DSAD";
+          groupPrescription.groupPrescriptionName = "的撒大";
+          groupPrescription.groupPrescriptionScope= '1';
+          groupPrescription.groupPrescriptionItemsList = this.prescriptionForm.prescriptionItemsList;
+          this.$post(this.api[this.type].insertGroupPrescriptionApi,JSON.parse(JSON.stringify(groupPrescription))).then(res=>{
+            if(res.status==="OK"){
+              alert(res.msg);
+            }else{
+              alert(res.msg);
+            }
+          });
+
+        }
+
 
       }
     }

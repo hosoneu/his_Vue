@@ -1,5 +1,16 @@
 <template>
   <b-card header="病历模板" >
+
+    <div slot="header">
+      <strong>病历模板</strong>
+      <div class="card-header-actions">
+        <b-button-group class="pull-right" >
+          <b-button @click="deleteMedicalRecordTemplate" variant="danger"  size="sm" >删除</b-button>
+          <b-button @click="checkMedicalRecordTemplate" variant="primary"  size="sm" >查看</b-button>
+        </b-button-group>
+      </div>
+    </div>
+
     <b-tabs @input="changeTab">
       <!-- changeTab更换tab 个人/科室挂号列表 -->
       <b-tab v-for="(tab, index) in medicalRecordTemplateTabs" :title="tab.title" :key="index" :active="index === currentTab" >
@@ -29,9 +40,12 @@
             ></b-form-select>
           </b-col>
         </b-row>
+        <br>
         <!-- Main table element -->
         <b-table
           show-empty
+          selectable
+          select-mode="single"
           hover
           :aria-busy="isBusy"
           :items="medicalRecordHistoryItems"
@@ -42,12 +56,9 @@
           :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
           :sort-direction="sortDirection"
-          @filtered="onFiltered">
-          <!-- @filtered当本地筛选导致项目数发生变化时发出。-->
-          <template slot="operate" slot-scope="row">
-            <b-button @click="selectMedicalRecordTemplate(row.item, row.index)" variant="primary"  size="sm" >查看</b-button>
-          </template>
-
+          @filtered="onFiltered"
+          @row-selected="selectMedicalRecordTemplate"
+        >
         </b-table>
         <!--页码-->
         <b-row>
@@ -65,12 +76,12 @@
 
       </b-tab>
       <!-- 弹框-->
-      <b-modal  ref="medical-record-template-modal" size="lg" centered title="模板详情" @ok="onCite">
+      <b-modal  ref="medical-record-template-modal" size="lg" centered title="模板详情" okTitle="引用"
+      cancelTitle="取消" @ok="onCite">
         <medical-record-template-info
-          :medical-record-template-info-item=medicalRecordTemplateInfoItem
+          :medical-record-template-info-item="medicalRecordTemplateInfoItem"
         >
         </medical-record-template-info>
-
       </b-modal>
     </b-tabs>
   </b-card>
@@ -97,22 +108,25 @@
           medicalRecordTemplateTabs:[{
             title:"个人",
             getMedicalRecordTemplateApi:"/doctor/homepage/listMedicalRecordHomePageTemplate",
-            getMedicalRecordTemplateParams:{userId:1,scope:'1'},
+            getMedicalRecordTemplateParams:{scope:'1'},
           },{
             title:"科室",
             getMedicalRecordTemplateApi:"/doctor/homepage/listMedicalRecordHomePageTemplate",
-            getMedicalRecordTemplateParams:{userId:1,scope:'2'},
+            getMedicalRecordTemplateParams:{scope:'2'},
           },{
             title:"全院",
             getMedicalRecordTemplateApi:"/doctor/homepage/listMedicalRecordHomePageTemplate",
-            getMedicalRecordTemplateParams:{userId:1,scope:'3'},
+            getMedicalRecordTemplateParams:{scope:'3'},
           }
           ],
           medicalRecordTemplateFields: [
             {key: 'medicalRecordHomePageTemplateId', label: '模板编号', sortable: true},
             {key: 'name', label: '模板名称', sortable: true},
-            {key: 'operate', label: '操作'},
           ],
+          api:{
+            deleteMedicalRecordHomePageTemplateApi:"/doctor/homepage/deleteMedicalRecordHomePageTemplate",
+            deleteMedicalRecordHomePageTemplateParams:{}
+          }
         }
       },
       mounted: async function(){//挂载之后才开始填充数据
@@ -123,13 +137,35 @@
         ...mapState("doctor",['doctor']),
       },
       methods:{
-        selectMedicalRecordTemplate(item,index){
-          console.log("进来饿了");
-          this.medicalRecordTemplateInfoItem=Object.assign({},this.medicalRecordHistoryItems[index]);
-          console.log(this.medicalRecordTemplateInfoItem);
-          console.log("正在完");
-          this.$refs["medical-record-template-modal"].show();
-          console.log("出去了");
+        selectMedicalRecordTemplate(item) {//选中一个模板
+          if (item.length === 0) {
+            this.medicalRecordTemplateInfoItem = {};
+          } else {
+            this.medicalRecordTemplateInfoItem = Object.assign({}, item[0]);
+          }
+        },
+        deleteMedicalRecordTemplate(){//删除病历首页模板
+          if(JSON.stringify(this.medicalRecordTemplateInfoItem)=="{}"){
+            alert("请先选择模板");
+          }else{
+              this.api.deleteMedicalRecordHomePageTemplateParams.medicalRecordHomePageTemplateId = this.medicalRecordTemplateInfoItem.medicalRecordHomePageTemplateId;
+              this.$get(this.api.deleteMedicalRecordHomePageTemplateApi,this.api.deleteMedicalRecordHomePageTemplateParams).then(res=>{
+                console.log(res);
+                if(res.status === "OK"){
+                  console.log(res.data);
+                  this.getMedicalRecordTemplateList();
+                }else{
+                  console.log("插入失败");
+                }
+              });
+          }
+        },
+        checkMedicalRecordTemplate(){
+          if(JSON.stringify(this.medicalRecordTemplateInfoItem)=="{}"){
+            alert("请先选择模板");
+          }else{
+            this.$refs["medical-record-template-modal"].show();
+          }
         },
         async changeTab(index){
           this.currentTab = index;
@@ -145,9 +181,8 @@
           this.currentPage = 1;
         },
         getMedicalRecordTemplateList(){
-          let data = this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams;
-          console.log(data);
-          this.$get(this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateApi, data).then(res=>{
+          this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams.userId=this.doctor.userId;
+          this.$get(this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateApi, this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams).then(res=>{
             console.log(res);
             if(res.status === 'OK'){
               this.medicalRecordHistoryItems = res.data;
