@@ -5,7 +5,7 @@
     </template>\
     <template slot="dropdown">
       <b-dropdown-item  v-for="(item, index) in nav" :key ="index">
-        <b-nav-item class="px-3 text-left" :to="item.url">
+        <b-nav-item class="px-3 text-left" :to="item.url" active-class="text-primary">
           {{item.name}}
         </b-nav-item>
       </b-dropdown-item>

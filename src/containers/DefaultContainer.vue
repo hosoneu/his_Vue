@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <b-navbar toggleable="sm" type="light" tag="header" variant="light" class="app-header" fixed>
+    <app-header fixed>
       <b-navbar-nav class="md-auto">
         <DefaultDropdownNav/>
       </b-navbar-nav>
@@ -9,14 +9,14 @@
         <!--<img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">-->
       </b-link>
       <b-navbar-nav class="d-md-down-none">
-        <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url">
+        <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url" active-class="text-primary">
           {{item.name}}
         </b-nav-item>
       </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <DefaultHeaderDropdownAccnt/>
         </b-navbar-nav>
-    </b-navbar>
+    </app-header>
     <div class="app-body">
       <main class="main">
         <div class="row mt-3"></div>
