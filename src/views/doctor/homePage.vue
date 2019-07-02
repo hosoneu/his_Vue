@@ -24,7 +24,7 @@
         </medical-record-template>
 
       </b-col>
-      <b-col md="9">
+      <b-col lg="9">
         <b-row>
           <b-col lg="12">
           <b-card header="基本信息" >
@@ -33,8 +33,8 @@
               <div class="card-header-actions">
                 <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
                   <b-button size="sm" @click="medicalRecordReset" :disabled="this.ifReadonly" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                  <b-button size="sm"  @click="medicalRecordSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
-                  <b-button size="sm" :disabled="this.ifReadonly" @click="medicalRecordSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
+                  <b-button size="sm" @click="medicalRecordSave" :disabled="this.ifReadonly" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
+                  <b-button size="sm" @click="medicalRecordSubmit" :disabled="this.ifReadonly"  class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
                 </b-button-group>
               </div>
             </div>
@@ -172,7 +172,7 @@
     export default {
       name: "homePage",
       components: {RegistrationList,MedicalRecordHistory, ChineseDiagnosis,WesternDiagnosis, MedicalRecordTemplate, PatientInfo,},
-      data: () => {
+      data(){
           return{
             api:{
               insertMedicalRecordHomePageApi:"/doctor/homepage/insertMedicalRecordHomePage",//插入病历首页内容
@@ -183,7 +183,7 @@
               listFirstDiagnosisByMedicalRecordIdParams:{},
               insertMedicalRecordHomePageTemplateApi:"/doctor/homepage/insertMedicalRecordHomePageTemplate",//存为模板
             },
-            ifReadonly:false,//默认为不只读（即可以录入病历首页信息）
+            ifReadonly:true,//默认为不只读（即可以录入病历首页信息）
             ifSeen:true,//默认为可见
             firstChineseDiagnosisItems:[],
             firstWesternDiagnosisItems:[],

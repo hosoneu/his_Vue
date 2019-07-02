@@ -7,7 +7,7 @@
       <b-col md="10">
         <b-row>
           <b-col align="right">
-            <b-button id="cancelButton" @click="cancelTreatmentItem" size="md" variant="outline-dark">废除</b-button>
+            <b-button :disabled="this.ifReadonly" id="cancelButton" @click="cancelTreatmentItem" size="md" variant="outline-dark">废除</b-button>
           </b-col>
         </b-row>
         <br>
@@ -49,6 +49,7 @@
               {key: 'fmedicalItems.fmedicalItemsPrice', label:'价格', sortable: true},
               {key: 'quantity', label:'数量', sortable: true},
               {key: 'validStatus', label:'状态', sortable: true},
+              {key: 'department.departmentName', label:'执行科室', sortable: true},
               ],
             api:{
               ifTreatmentItemsCanCancelApi:"/doctor/treatment/ifTreatmentItemsCanCancel",
@@ -64,6 +65,10 @@
           type:Array,
           default:()=>{return []}
         },
+        ifReadonly:{
+          type:Boolean,
+          default:()=>{return true}
+        }
       },
       methods:{
         selectTreatmentItem(item){//选中一个条目可以废除

@@ -26,16 +26,16 @@
             填写模块
             <div class="card-header-actions">
 
-              <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
-                <b-button size="sm" @click="prescriptionReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" @click="prescriptionSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
-                <b-button size="sm" @click="prescriptionSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
+              <b-button-group class="pull-right"  ><!-- 此处为清空暂存提交按钮 -->
+                <b-button size="sm" :disabled="this.ifReadonly"  @click="prescriptionReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
+                <b-button size="sm" :disabled="this.ifReadonly"  @click="prescriptionSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                <b-button size="sm" :disabled="this.ifReadonly"  @click="prescriptionSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
           </div>
           <b-tabs>
             <!--主模块部分的分菜单栏-->
-            <b-tab title = "开立处方">
+            <b-tab title = "开立处方" :disabled="this.ifReadonly">
               <br>
               <b-card>
                 <b-row>
@@ -47,7 +47,7 @@
                         <b-col
                           align="right"
                         >
-                          <b-button-group class="pull-right">
+                          <b-button-group class="pull-right" >
                             <!--检索药品-->
                             <b-button id="searchButton" v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
                             <!--常用诊断-->
@@ -205,6 +205,8 @@
                     <b-button-group class="pull-right">
                       <b-button size="md" variant="outline-dark"  @click="exitPrescriptionItems" >编辑
                       </b-button>
+                      <b-button size="md" variant="outline-dark"  @click="savePrescriptionItems" >存档
+                      </b-button>
                       <b-button size="md" variant="outline-dark" @click="deletePrescriptionItems">删除
                       </b-button>
                     </b-button-group>
@@ -337,6 +339,7 @@
               <history-prescription-table
                 ref="history-prescription-table"
                 :type="this.type"
+                :if-readonly="this.ifReadonly"
               >
               </history-prescription-table>
 
@@ -439,6 +442,7 @@
               insertGroupPrescriptionApi:"/doctor/prescription/herbal/insertGroupPrescription"
             }
           ],
+          ifReadonly:true,
         }
       },
       computed:{
@@ -480,6 +484,11 @@
         },
         selectPatient(){//选择患者
           //do nothing
+          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
+            this.ifReadonly = true;
+          }else{
+            this.ifReadonly = false;
+          }
         },
         prescriptionSubmit(){//提交处方
           this.prescriptionForm.medicalRecordId=this.registration.medicalRecordId;
@@ -518,6 +527,14 @@
         },
         exitOk(){
           this.$set(this.prescriptionForm.prescriptionItemsList,this.selectedIndex,Object.assign({},this.operatePrescriptionItemForm));
+        },
+        savePrescriptionItems(){
+          if(this.selectedIndex>=0){
+
+          }else{
+            alert("请选中处方条目");
+          }
+
         },
         deletePrescriptionItems(){//删除一个处方条目
           this.prescriptionForm.prescriptionItemsList.splice(this.selectedIndex,1);
@@ -589,10 +606,7 @@
               alert(res.msg);
             }
           });
-
         }
-
-
       }
     }
 </script>

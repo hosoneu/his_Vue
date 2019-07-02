@@ -36,8 +36,7 @@
             <b-col md="5">
               <b-button-group class="pull-right">
                 <!--检索药品-->
-                <!--                <b-button id="checkButton" @click="checkPrescriptionItem" size="md" variant="outline-dark">查看</b-button>-->
-                <b-button id="cancelButton" @click="cancelPrescriptionItem" size="md" variant="outline-dark">废除
+                <b-button :disabled="ifReadonly" id="cancelButton" @click="cancelPrescriptionItem" size="md" variant="outline-dark">废除
                 </b-button>
               </b-button-group>
 
@@ -118,8 +117,12 @@
         type: Number,
         default: () => {
           return 0
+        },
+        ifReadonly:{
+          type:Boolean,
+          default:()=>{return true}
         }
-      }
+      },
     },
     computed:{
       ...mapState("doctor",["patient"]),
@@ -220,7 +223,8 @@
             }
           });
         }else{
-          alert("找个锤子");
+          console.log("未初诊");
+          // alert("找个锤子");
         }
       },
       cancelPrescriptionItem() {//废除处方

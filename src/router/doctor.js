@@ -9,6 +9,8 @@ const HerbalPrescription = () => import('../views/doctor/herbalPrescription');
 const Treatment = () => import('../views/doctor/treatment');
 const ExaminatonFirst = () => import('../views/doctor/examination1');
 const ExaminatonSecond = () => import('../views/doctor/examination2');
+const TreatmentOver = () => import('../views/doctor/treatmentOver');
+const ExpenseSearch = () => import('../views/doctor/expenseSearch');
 
 export default {
   path:'/doctor',
@@ -50,6 +52,16 @@ export default {
       path:'examination2',
       name:'examination2',
       component:ExaminatonSecond
+    },
+    {
+      path:'treatmentOver',
+      name:'treatmentOver',
+      component:TreatmentOver
+    },
+    {
+      path:'expenseSearch',
+      name:'expenseSearch',
+      component:ExpenseSearch
     }
   ]
 }

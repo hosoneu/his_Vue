@@ -23,15 +23,15 @@
             填写模块
             <div class="card-header-actions">
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
-                <b-button size="sm" @click="treatmentReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" @click="treatmentSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
-                <b-button size="sm" @click="treatmentSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
+                <b-button :disabled="ifReadonly" size="sm" @click="treatmentReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
+                <b-button :disabled="ifReadonly" size="sm" @click="treatmentSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
+                <b-button :disabled="ifReadonly" size="sm" @click="treatmentSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
           </div>
           <b-tabs>
             <!--主模块部分的分菜单栏-->
-            <b-tab title = "开立处置">
+            <b-tab title = "开立处置" :disabled="this.ifReadonly">
               <br>
               <b-card>
                 <b-row>
@@ -227,7 +227,9 @@
               </b-card>
             </b-tab>
             <b-tab title="已开处置">
-              <history-treatment-table>
+              <history-treatment-table
+                :if-readonly="this.ifReadonly"
+              >
               </history-treatment-table>
             </b-tab>
           </b-tabs>
@@ -302,6 +304,7 @@
               {key: 'fmedicalItems.fmedicalItemsPrice', label:'价格', sortable: true},
               {key: 'quantity', label:'数量', sortable: true},
             ],
+            ifReadonly:true,
           }
       },
       computed:{
@@ -327,6 +330,11 @@
       methods:{
         selectPatient(){
           //do nothing
+          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
+            this.ifReadonly = true;
+          }else{
+            this.ifReadonly = false;
+          }
         },
         selectFmedical(item){//选择处置非处置非药品项目
           this.treatmentItemForm.fmedicalItems = item;

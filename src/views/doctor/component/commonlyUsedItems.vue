@@ -29,6 +29,7 @@
       </b-col>
     </b-row>
     <!-- Main table element -->
+    <br>
     <b-table
       selectable
       select-mode="single"

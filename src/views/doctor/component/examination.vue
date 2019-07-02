@@ -27,15 +27,15 @@
             填写模块
             <div class="card-header-actions">
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
-                <b-button size="sm" @click="examinationReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" @click="examinationSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
-                <b-button size="sm" @click="examinationSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
+                <b-button size="sm" :disabled="ifReadonly" @click="examinationReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
+                <b-button size="sm" :disabled="ifReadonly" @click="examinationSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
+                <b-button size="sm" :disabled="ifReadonly" @click="examinationSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
           </div>
           <b-tabs>
             <!--主模块部分的分菜单栏-->
-            <b-tab :title = "computedTitle1">
+            <b-tab :title = "computedTitle1" :disabled="ifReadonly">
               <b-card>
                 <b-row>
                   <b-col md="1"></b-col>
@@ -154,6 +154,8 @@
                       >
                         <b-button-group class="pull-right">
                           <b-button :disabled="showAdditionDrugs" variant="outline-dark" size="md" @click="additionExaminationFmedicalItems()">加药
+                          </b-button>
+                          <b-button :disabled="showAdditionDrugs" variant="outline-dark" size="md" @click="saveExaminationFmedicalItems()">存档
                           </b-button>
                           <b-button :disabled="showAdditionDrugs" variant="outline-dark" size="md" @click="exitExaminationFmedicalItems()">编辑
                           </b-button>
@@ -304,11 +306,13 @@
           api:[//定义需要用到的api
             {
               insertExaminationApi:"/doctor/examination/insertExamination",
-              insertGroupExaminationApi:"/doctor/examination/insertGroupExamination"
+              insertGroupExaminationApi:"/doctor/examination/insertGroupExamination",
+              insertCommonlyUsedFmedicalApi:"/doctor/common/insertCommonlyUsedFmedical"
             },
             {
               insertExaminationApi:"/doctor/examination/insertExamination",
-              insertGroupExaminationApi:"/doctor/examination/insertGroupExamination"
+              insertGroupExaminationApi:"/doctor/examination/insertGroupExamination",
+              insertCommonlyUsedFmedicalApi:"/doctor/common/insertCommonlyUsedFmedical"
             }
           ],
           examinationForm:{//当前的检查检验条目
@@ -345,6 +349,7 @@
           selectedExaminationFmedicalItemsIndex:-1,//当前选中的检查检验非药品项目的索引
           currentExaminationDrugsItemsList:[],
           historyExaminationList:[],//历史检查检查检验单记录
+          ifReadonly:true,
         }
       },
       computed:{
@@ -368,7 +373,12 @@
       methods:{
 
         selectPatient(){//选择患者
-
+          //do nothing
+          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
+            this.ifReadonly = true;
+          }else{
+            this.ifReadonly = false;
+          }
         },
         onCite(groupExaminationInfoItem){//引用组套
           if(this.medicalRecordState==='未初诊'){
@@ -497,6 +507,24 @@
         deleteExaminationFmedicalItems(){//删除非药品
           if(this.selectedExaminationFmedicalItemsIndex>=0){
             this.examinationForm.examinationFmedicalItemsList.splice(this.selectedExaminationFmedicalItemsIndex,1);
+          }else{
+            alert("请选中非药品条目");
+          }
+        },
+        saveExaminationFmedicalItems(){
+          if(this.selectedExaminationFmedicalItemsIndex>=0){
+            let commonlyUsedFmedical = {};
+            commonlyUsedFmedical.fmedicalItemsId = this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex].fmedicalItemsId;
+            commonlyUsedFmedical.doctorId = this.doctor.userId;
+            this.$post(this.api[this.type].insertCommonlyUsedFmedicalApi,JSON.parse(JSON.stringify(commonlyUsedFmedical))).then(res=>{
+              if(res.status === "OK"){
+                console.log(res.data);
+                alert(res.msg);
+              }else{
+                console.log("插入失败");
+                alert(res.msg);
+              }
+            });
           }else{
             alert("请选中非药品条目");
           }

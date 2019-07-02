@@ -29,7 +29,7 @@ export default [
   },
   {
     name:'费用查询',
-    // url:'/expenseResearch',
+    url:'/doctor/expenseSearch',
   },
   {
     name:'诊毕',

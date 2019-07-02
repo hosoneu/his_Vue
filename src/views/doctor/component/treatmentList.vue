@@ -78,6 +78,7 @@
     <br>
         <treatment-info
           :treatment-items-list="this.selectedTreatment.treatmentItemsList"
+          :if-readonly="this.ifReadonly"
         >
         </treatment-info>
   </div>
@@ -89,6 +90,12 @@
     export default {
       name: "treatmentList",
       components:{TreatmentInfo},
+      props:{
+        ifReadonly:{
+          type:Boolean,
+          default:()=>{return true}
+        }
+      },
       data(){
         return{
           perPage: 5,//每页的个数
@@ -170,13 +177,9 @@
               console.log(res.data);
             });
           }else{
-            alert("找个锤子");
+            console.log("未初诊");
           }
         },
-
-        // checkTreatmentItem(){//查看处置条目
-        //   this.$refs["treatment-info-modal"].show();
-        // },
       },
     }
 </script>

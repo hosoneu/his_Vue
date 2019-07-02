@@ -8,9 +8,9 @@
             <b-col md="10">
               <b-row>
                 <b-col align="right">
-                  <b-button-group class="pull-right">
+                  <b-button-group class="pull-right" >
                     <!--检索疾病-->
-                    <b-button id="searchButton"  v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
+                    <b-button id="searchButton" v-b-modal="computedModalId" size="md" variant="outline-dark">检索</b-button>
                     <!--常用诊断-->
                     <b-button id="commonlyUsedButton" v-b-modal="computedCommonlyUsedModalId" size="md" variant="outline-dark">常用</b-button>
                     <b-button type="button" @click="onReset" size="md" variant="outline-dark">清空</b-button>
@@ -114,6 +114,8 @@
                     </b-button>
                     <b-button variant="outline-dark" size="md" @click="deleteDiagnosis()">删除
                     </b-button>
+                    <b-button variant="outline-dark" size="md" @click="addDiagnosis()">存档
+                    </b-button>
                   </b-button-group>
                 </b-col>
               </b-row>
@@ -192,7 +194,7 @@
                 :items="diagnosisItems"
                 :fields="diagnosisFields"
                 :busy="isBusy"
-                @row-clicked="selectPrescriptionItems">
+                @row-selected="selectDiagnosisItems">
                 <!-- @row-clicked用于单选 可以得到该行的索引  -->
 
                 <template slot="mainDiagnosisMark" slot-scope="row">
@@ -297,10 +299,14 @@
             {getCommonlyUsedListApi:"/doctor/common/listCommonlyUsedWesternDiagnosisByUserId",
               getCommonlyUsedParams:{},},
           ],
+          api:{
+            insertCommonlyUsedDiagnosisApi:"/doctor/common/insertCommonlyUsedDiagnosis",
+          }
       }
       },
       computed:{
         ...mapState("doctor",["medicalRecord"]),
+        ...mapState("doctor",["doctor"]),
         computedModalId:function () {
           return this.modalId+this.type;
         },
@@ -309,8 +315,16 @@
         }
       },
       methods:{
-        selectPrescriptionItems(item,index){
-          this.selectedIndex=index;
+        selectDiagnosisItems(item){
+          if(item.length!=0){
+            for(let i = 0;i<this.diagnosisItems.length;i++){
+              if(this.diagnosisItems[i]===item[0]){
+                this.selectedIndex=i;
+                break;
+              }
+            }
+          }
+
         },
         transformOnsetDate(item){//得到发病日期
           if(item.onsetDate==''){
@@ -383,6 +397,25 @@
             alert("请选中诊断条目");
           }
         },
+        addDiagnosis(){//存为常用诊断
+          if(this.selectedIndex>=0){
+            let commonlyUsedDiagnosis = {};
+            commonlyUsedDiagnosis.doctorId = this.doctor.userId;
+            commonlyUsedDiagnosis.diseaseId = this.diagnosisItems[this.selectedIndex].diseaseId;
+            this.$post(this.api.insertCommonlyUsedDiagnosisApi,JSON.parse(JSON.stringify(commonlyUsedDiagnosis))).then(res=>{
+              if(res.status === "OK"){
+                console.log(res.data);
+                alert(res.msg);
+              }else{
+                console.log("插入失败");
+                alert(res.msg);
+              }
+            });
+          }else{
+            alert("请选中诊断条目");
+          }
+
+        }
       }
     }
 </script>

@@ -211,8 +211,8 @@
               console.log(res.data);
             });
           } else {
-            console.log("每斤");
-            alert("找个锤子");
+            console.log("未初诊");
+            // alert("找个锤子");
           }
           console.log("获取历史检查成果");
         }

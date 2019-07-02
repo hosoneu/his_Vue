@@ -29,7 +29,7 @@
           </div>
 
           <b-tabs>
-            <b-tab title="中医诊断">
+            <b-tab title="中医诊断" >
               <chinese-diagnosis
                 ref="chineseDiagnosis"
                 :type=0
@@ -40,7 +40,7 @@
               </chinese-diagnosis>
               <!--  体格检查physicalExamination-->
             </b-tab>
-            <b-tab title="西医诊断">
+            <b-tab title="西医诊断" >
               <western-diagnosis
                 ref="westernDiagnosis"
                 :type=1
@@ -50,7 +50,7 @@
               >
               </western-diagnosis>
             </b-tab>
-            <b-tab title="辅助检查">
+            <b-tab title="辅助检查" >
               <b-row>
                 <b-col md="1">
 
@@ -154,7 +154,12 @@
           });
         },
         selectPatient(){//切换患者
-
+          // do nothing
+          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
+              this.ifReadonly = true;
+          }else{
+            this.ifReadonly = false;
+          }
         },
         finalDiagnosisReset(){//重置确诊信息
           if(this.medicalRecordState==='已初诊'){
