@@ -1,9 +1,12 @@
 <template>
   <div class="app">
-    <AppHeader fixed>
+    <b-navbar toggleable="sm" type="light" tag="header" variant="light" class="app-header" fixed>
+      <b-navbar-nav class="md-auto">
+        <DefaultDropdownNav/>
+      </b-navbar-nav>
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="img/brand/logo.svg" width="90" height="45" alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
+        <!--<img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">-->
       </b-link>
       <b-navbar-nav class="d-md-down-none">
         <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url">
@@ -14,7 +17,15 @@
         <DefaultHeaderDropdownAccnt/>
         <b-link class="ml-3" to="#"></b-link>
       </b-navbar-nav>
-    </AppHeader>
+        <b-navbar-nav class="d-md-down-none">
+          <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url">
+            {{item.name}}
+          </b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <DefaultHeaderDropdownAccnt/>
+        </b-navbar-nav>
+    </b-navbar>
     <div class="app-body">
       <main class="main">
         <div class="row mt-3"></div>
