@@ -6,7 +6,7 @@
         <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
       </b-link>
       <b-navbar-nav class="d-md-down-none">
-        <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url">
+        <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url" active-class="text-primary">
           {{item.name}}
         </b-nav-item>
       </b-navbar-nav>

@@ -65,9 +65,7 @@
                                     :checked="1">
 
                     </b-form-radio-group>
-
                 </b-form-group>
-
             </b-card>
 <!-- 发药列表  -->
             <patient-table
