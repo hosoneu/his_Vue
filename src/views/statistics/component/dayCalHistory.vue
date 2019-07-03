@@ -134,7 +134,7 @@
           min ^= max;
         }
         return (Math.random() * (max - min) | 0) + min;
-      },
+      },//random color
       RandomColor(){
         var color="#";
         for(var i=0;i<6;i++){

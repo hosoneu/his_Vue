@@ -6,7 +6,6 @@
     name:'workloadChart',
     props: {
       chartData:Object,
-
     },
     watch:{
       'chartData':'reload'

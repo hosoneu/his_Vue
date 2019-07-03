@@ -56,7 +56,7 @@
     <b-row>
       <b-card header="Chart"  v-if="datacollection.datasets.length" >
       <div class="chart-wrapper" >
-      <workload-chart width="900px" :chart-data="datacollection"></workload-chart>
+      <workload-chart :width="fullWidth" :chart-data="datacollection"></workload-chart>
       </div>
       </b-card>
     </b-row>
@@ -76,6 +76,7 @@
     },
     data() {
       return {
+        fullWidth: document.documentElement.clientWidth,
         colorArr:['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'],
         datacollection: { labels: [], datasets: [] },
         chartdatasets: [],
@@ -121,6 +122,13 @@
         filter: null,
       }
     },
+    ready: function () {
+
+      window.addEventListener('resize', this.handleResize)
+    }, beforeDestroy: function () {
+
+      window.removeEventListener('resize', this.handleResize)
+    },
     watch:{
       'items':'CaltotalRows',
       'chartdatasets':'fillData',
@@ -132,6 +140,11 @@
       // Set the initial number of items
     },
     methods: {
+      reloadChart(){
+        this.chartdatasets=[]
+      },
+      handleResize (event) {
+        this.fullWidth = document.documentElement.clientWidth},
       random(min,max){
         if(isNaN(min) || isNaN(max)){
           return null;
