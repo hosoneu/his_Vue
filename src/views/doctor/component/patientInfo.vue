@@ -31,8 +31,8 @@
           initialPatient:{medicalRecordState: "未选择", patientGender: "未选择", medicalRecordId: '未选择', patientName: '未选择', calculationTypeId:0},
         }
       },
-      mounted:function () {
-        this.initialPatient=this.patient;
+      mounted:async function () {
+        await this.initPatient();
       },
       computed:{
         ...mapState("doctor",["patient"]),
@@ -76,10 +76,13 @@
           handler() {
             this.initialPatient = this.patient;
           },
-          immediate: false
         }
       },
-      
+      methods:{
+        initPatient(){
+          this.initialPatient=this.patient;
+        }
+      }
     }
 </script>
 

@@ -498,6 +498,9 @@
           return this.modalId+this.type;
         },
       },
+      mounted:async function(){
+        await this.prescriptionReset();
+      },
       watch:{
         patient:{
           handler(){
@@ -522,7 +525,7 @@
               break;
             }
           }
-        },
+        },  
         selectPatient(){//选择患者
           //do nothing
           if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){

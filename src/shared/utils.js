@@ -1,7 +1,7 @@
-
 export function random (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
 /**
  * Randomize array element order in-place.
  * Using Durstenfeld shuffle algorithm.

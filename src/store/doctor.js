@@ -6,9 +6,6 @@ export default {
   //1.多个视图依赖于同一状态。
   //2.来自不同视图的行为需要变更同一状态。
   state:{
-    doctor:{
-      userId:1
-    },//当前医生
     department:{},//当前科室医生所在科室
     patient:{medicalRecordState: "未选择", patientGender: "未选择", medicalRecordId: '未选择', patientName: '未选择', calculationTypeId:0},//当前患者
     medicalRecord:{},//当前病历
@@ -19,12 +16,6 @@ export default {
   //通过store.state.count获取值
   //当一个组件需要获取多个状态时候,可以使用 mapState 辅助函数帮助我们生成计算属性
   mutations:{
-    updateDoctor (state, doctor) {
-      state.doctor = doctor;
-    },
-    updateDepartment (state, department) {
-      state.department = department;
-    },
     updateRegistration(state,registration){
       state.registration = registration;
       state.medicalRecord = registration.medicalRecord;

@@ -279,6 +279,7 @@
             </b-tab>
             <b-tab :title="computedTitle2">
               <history-examination-list
+                ref="history-examination-list"
                :type="type"
               ></history-examination-list>
             </b-tab>
@@ -501,6 +502,8 @@
           this.$post(this.api[this.type].insertExaminationApi,JSON.parse(JSON.stringify(this.examinationForm))).then(res=>{
             if(res.status==="OK"){
               alert(res.msg);
+              this.$refs["history-examination-list"].getHistoryExamination();
+              this.examinationReset();
             }else{
               alert(res.msg);
             }

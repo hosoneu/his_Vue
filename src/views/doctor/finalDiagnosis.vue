@@ -3,6 +3,7 @@
     <b-row>
       <b-col lg="12">
         <patient-info
+          ref="patientInfo"
         ></patient-info>
       </b-col>
     </b-row>
@@ -10,6 +11,7 @@
       <b-col lg="3">
         <!--  挂号列表-->
         <registration-list
+          ref="registrationList"
           @selectPatient="selectPatient"
         >
         </registration-list>
@@ -101,6 +103,9 @@
         ...mapState("doctor",["medicalRecordState"]),
         ...mapState("doctor",["registration"]),
       },
+      mounted:function () {
+        this.getDiagnosisList();
+      },
       watch:{
         patient:{
           handler(){
@@ -115,25 +120,25 @@
             this.privateGetDiagnosisList('初诊');
           }else {
             if(this.medicalRecordState==='未初诊') {
-              alert('您还没初诊，不能确诊');
+              // alert('您还没初诊，不能确诊');
+              this.finalChineseDiagnosisItems=[];
+              this.finalWesternDiagnosisItems=[];
             }else {
               this.ifReadonly=true;
               this.privateGetDiagnosisList('确诊');
             }
           }
         },
-        privateGetDiagnosisList(type){
+        privateGetDiagnosisList(type){//得到诊断列表
           let para = {};
           let reqApi='';
           if(type==='初诊'){//如果未确诊
-            alert("现在为初诊");
             reqApi=this.api.listFirstDiagnosisByMedicalRecordId;
           }else{//如果已确诊
             reqApi=this.api.listFinalDiagnosisByMedicalRecordId;
           }
           para.medicalRecordId = this.registration.medicalRecordId;//得到病历号
           this.$get(reqApi, para).then(res => {
-            console.log("开始执行");
             console.log(res);
             if (res.status === 'OK') {
               if(res.data[0].disease.diseaseTypeId===472){//判断是中医疾病还是西医疾病 472为中医
@@ -141,11 +146,15 @@
                 for(let i=0;i<this.finalChineseDiagnosisItems.length;i++){
                   this.finalChineseDiagnosisItems[i].diagnosisMark='2';
                 }
+                console.log("终诊信息为");
+                console.log(this.finalChineseDiagnosisItems);
               }else{
                 this.finalWesternDiagnosisItems = res.data;
                 for(let i=0;i<this.finalWesternDiagnosisItems.length;i++){
                   this.finalWesternDiagnosisItems[i].diagnosisMark='2';
                 }
+                console.log("终诊信息为");
+                console.log(this.finalWesternDiagnosisItems);
               }
               this.isBusy = false;
             } else {
@@ -184,10 +193,12 @@
               console.log(res);
               if(res.status === "OK"){
                 console.log(res.data);
-                alert(res.message);
+                this.$refs["registrationList"].getPatientList();
+                this.$refs["patientInfo"].initPatient();
+                alert(res.msg);
               }else{
                 console.log("插入失败");
-                alert(res.message);
+                alert(res.msg);
               }
             });
             //录入辅助检查结果

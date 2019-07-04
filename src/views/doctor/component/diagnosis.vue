@@ -323,6 +323,8 @@
         transformOnsetDate(item){//得到发病日期
           if(item.onsetDate==''){
             return '';
+          }else if(item.onsetDate===null){
+            return "";
           }else{
             return item.onsetDate.split("T")[0];
           }
@@ -348,7 +350,7 @@
           }else{
             this.diagnosisForm.diseaseId = this.diagnosisForm.disease.diseaseId;
             this.diagnosisForm.medicalRecordId = this.medicalRecord.medicalRecordId;
-            this.diagnosisForm.defineDiagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
+            this.diagnosisForm.diagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
             let copyDiagnosisForm = Object.assign({},this.diagnosisForm);
             this.diagnosisItems.push(copyDiagnosisForm);
             this.diagnosisForm.disease={};
@@ -392,8 +394,8 @@
         exitDiagnosis(){//更改诊断
           if(this.selectedIndex>=0){
             this.operateDiagnosisForm = Object.assign({},this.diagnosisItems[this.selectedIndex]);
-
-            this.operateDiagnosisForm.onsetDate = this.operateDiagnosisForm.onsetDate.split("T")[0];//处理从数据库传输过来的日期
+            this.operateDiagnosisForm.onsetDate = this.transformOnsetDate(this.operateDiagnosisForm);
+            // this.operateDiagnosisForm.onsetDate = this.operateDiagnosisForm.onsetDate.split("T")[0];//处理从数据库传输过来的日期
             console.log("我来了");
             console.log(this.operateDiagnosisForm);
             console.log("我走了");
