@@ -85,7 +85,7 @@
         methods: {
           getDrugsList() {
             console.log("请求药品列表");
-            this.$get('http://localhost:8080/hoso/drug/getAllDrugsWithTypeAndDosage').then((res) => {
+            this.$get('drug/getAllDrugsWithTypeAndDosage').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
@@ -96,7 +96,7 @@
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/drug/delete', {"id": item.drugsId}).then((res) => {
+            this.$get('drug/delete', {"id": item.drugsId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.getDrugsList();
@@ -106,7 +106,7 @@
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/drug/update', JSON.stringify(item)).then((res) => {
+            this.$post('drug/update', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -118,7 +118,7 @@
           },
           insertList(item){
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/drug/insert', JSON.stringify(item)).then((res) => {
+            this.$post('drug/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求
@@ -130,7 +130,7 @@
           },
           getDrugsDosageList() {
             console.log("请求药品剂型列表");
-            this.$get('http://localhost:8080/hoso/drug/getDrugsDosage').then((res) => {
+            this.$get('drug/getDrugsDosage').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.drugsDosage = res.data;
                 console.log(this.usedData.drugsDosage);
@@ -141,7 +141,7 @@
           },
           getDrugsTypeList() {
             console.log("请求药品类型列表");
-            this.$get('http://localhost:8080/hoso/drug/getDrugsType').then((res) => {
+            this.$get('drug/getDrugsType').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.drugsType = res.data;
                 console.log(this.usedData.drugsType);

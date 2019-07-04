@@ -76,7 +76,7 @@
         methods:{
           getDepartmentList(){
             console.log("请求科室列表");
-            this.$get('http://localhost:8080/hoso/department/getAllDepartmentWithCategory').then((res)=> {
+            this.$get('department/getAllDepartmentWithCategory').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.departmentList = res.data;
@@ -88,7 +88,7 @@
           },
           getDoctorList(){
             console.log("请求医生列表");
-            this.$get('http://localhost:8080/hoso/user/getUserByRole', {roleId: 1}).then((res)=> {
+            this.$get('user/getUserByRole', {roleId: 1}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.doctorList = res.data;
@@ -100,7 +100,7 @@
           },
           getRegistrationList(){
             console.log("请求挂号列表");
-            this.$get('http://localhost:8080/hoso/registration/showRegistration').then((res)=> {
+            this.$get('registration/showRegistration').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.items = res.data;
@@ -111,7 +111,7 @@
             })
           },
           getPatientList(){
-            this.$get('http://localhost:8080/hoso/registration/getAllPatient').then((res)=> {
+            this.$get('registration/getAllPatient').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 let that = this;
@@ -125,7 +125,7 @@
             })
           },
           withdraw(item){
-            this.$get('http://localhost:8080/hoso/registration/withdraw', {"expenseItemsId": item.expenseItems.expenseItemsId, "userId": this.$store.state.register.cashier.userId}).then((res)=> {
+            this.$get('registration/withdraw', {"expenseItemsId": item.expenseItems.expenseItemsId, "userId": this.$store.state.register.cashier.userId}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 alert("退号成功！");

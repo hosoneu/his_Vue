@@ -285,7 +285,7 @@
           };
         },
         getRegistrationCost:(function () {
-           this.$get('http://localhost:8080/hoso/registrationLevel/getRegistrationLevelById', {"id": this.registration.registrationLevelId}).then((res) => {
+           this.$get('registrationLevel/getRegistrationLevelById', {"id": this.registration.registrationLevelId}).then((res) => {
             if (res.status === 'OK') {
               this.totalCost = parseFloat(res.data.registrationCost) + parseFloat(this.registration.buyMedicalRecord);
             } else {
@@ -294,7 +294,7 @@
           })
         }),
         register(payModeId){
-          this.$post('http://localhost:8080/hoso/registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.state.register.cashier.userId, "payModeId": payModeId}).then((res) => {
+          this.$post('registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.state.register.cashier.userId, "payModeId": payModeId}).then((res) => {
             if (res.status === 'OK') {
               alert("挂号成功！");
               payModeId = 51;

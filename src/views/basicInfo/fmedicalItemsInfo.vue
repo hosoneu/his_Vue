@@ -101,7 +101,7 @@
         methods: {
           getFmedicalItemsList() {
             console.log("请求非药品项目列表");
-            this.$get('http://localhost:8080/hoso/fmedicalItems/getAllFmedicalItemsForShow').then((res) => {
+            this.$get('fmedicalItems/getAllFmedicalItemsForShow').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
@@ -112,7 +112,7 @@
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/fmedicalItems/delete', {"id": item.fmedicalItemsId}).then((res) => {
+            this.$get('fmedicalItems/delete', {"id": item.fmedicalItemsId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.getFmedicalItemsList();
@@ -122,7 +122,7 @@
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/fmedicalItems/update', JSON.stringify(item)).then((res) => {
+            this.$post('fmedicalItems/update', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -134,7 +134,7 @@
           },
           insertList(item){
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/fmedicalItems/insert', JSON.stringify(item)).then((res) => {
+            this.$post('fmedicalItems/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求
@@ -146,7 +146,7 @@
           },
           getDepartmentList() {
             console.log("请求科室列表");
-            this.$get('http://localhost:8080/hoso/department/getAllDepartment').then((res) => {
+            this.$get('department/getAllDepartment').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.department = res.data;
                 console.log(this.usedData.department);
@@ -157,7 +157,7 @@
           },
           getExpenseTypeList() {
             console.log("请求费用科目列表");
-            this.$get('http://localhost:8080/hoso/expenseType/getAllExpenseType').then((res) => {
+            this.$get('expenseType/getAllExpenseType').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.expenseType = res.data;
                 console.log(this.usedData.expenseType);

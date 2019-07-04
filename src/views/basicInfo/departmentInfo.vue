@@ -101,7 +101,7 @@
         methods: {
           getDepartmentList(){
             console.log("请求科室列表");
-            this.$get('http://localhost:8080/hoso/department/getAllDepartment').then((res)=> {
+            this.$get('department/getAllDepartment').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.items = res.data;
@@ -112,7 +112,7 @@
             })
           },
           deleteList(item){
-            this.$get('http://localhost:8080/hoso/department/delete', {"id": item.departmentId}).then((res)=> {
+            this.$get('department/delete', {"id": item.departmentId}).then((res)=> {
               if(res.status === 'OK'){
                 console.log("删除成功");
                 // this.items.splice(index, 1);
@@ -123,7 +123,7 @@
             })
           },
           updateList(item){
-            this.$post('http://localhost:8080/hoso/department/update', JSON.stringify(item)).then((res)=> {
+            this.$post('department/update', JSON.stringify(item)).then((res)=> {
               if(res.code === true){
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -135,7 +135,7 @@
           },
           insertList(item){
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/department/insert', JSON.stringify(item)).then((res) => {
+            this.$post('department/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求
@@ -147,7 +147,7 @@
           },
           // getDepartmentCategoryList() {
           //   console.log("请求科室类型列表");
-          //   this.$get('http://localhost:8080/hoso/department/getAllDepartmentCategory').then((res) => {
+          //   this.$get('department/getAllDepartmentCategory').then((res) => {
           //     if (res.status === 'OK') {
           //       this.usedData.constantItems = res.data;
           //     } else {

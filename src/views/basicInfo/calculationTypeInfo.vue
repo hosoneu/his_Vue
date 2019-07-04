@@ -41,7 +41,7 @@
         methods: {
           getCalculationTypeList() {
             console.log("请求结算类别列表");
-            this.$get('http://localhost:8080/hoso/calculationType/getAllCalculationType').then((res) => {
+            this.$get('calculationType/getAllCalculationType').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
@@ -51,7 +51,7 @@
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/calculationType/delete', {"id": item.calculationTypeId}).then((res) => {
+            this.$get('calculationType/delete', {"id": item.calculationTypeId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.getCalculationTypeList();
@@ -61,7 +61,7 @@
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/calculationType/update', JSON.stringify(item)).then((res) => {
+            this.$post('calculationType/update', JSON.stringify(item)).then((res) => {
               if (res.code === true) {
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -73,7 +73,7 @@
           },
           insertList(item) {
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/calculationType/insert', JSON.stringify(item)).then((res) => {
+            this.$post('calculationType/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求

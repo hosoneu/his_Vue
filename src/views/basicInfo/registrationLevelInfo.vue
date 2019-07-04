@@ -56,7 +56,7 @@
         methods: {
           getRegistrationLevelList() {
             console.log("请求挂号级别列表");
-            this.$get('http://localhost:8080/hoso/registrationLevel/getAllRegistrationLevel').then((res) => {
+            this.$get('registrationLevel/getAllRegistrationLevel').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
@@ -66,7 +66,7 @@
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/registrationLevel/delete', {"id": item.registrationLevelId}).then((res) => {
+            this.$get('registrationLevel/delete', {"id": item.registrationLevelId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.getRegistrationLevelList();
@@ -76,7 +76,7 @@
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/registrationLevel/update', JSON.stringify(item)).then((res) => {
+            this.$post('registrationLevel/update', JSON.stringify(item)).then((res) => {
               if (res.code === true) {
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -88,7 +88,7 @@
           },
           insertList(item) {
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/registrationLevel/insert', JSON.stringify(item)).then((res) => {
+            this.$post('registrationLevel/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求

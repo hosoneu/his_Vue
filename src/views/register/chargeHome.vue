@@ -106,7 +106,7 @@
         methods:{
           getRegistrationList(){
             console.log("请求挂号列表");
-            this.$get('http://localhost:8080/hoso/registration/showRegistration').then((res)=> {
+            this.$get('registration/showRegistration').then((res)=> {
               if(res.status === 'OK'){
                 this.registrationList = res.data;
               }else{
@@ -115,7 +115,7 @@
             })
           },
           getExpenseItemsList(){
-            this.$get('http://localhost:8080/hoso/registration/getAllExpenseItems').then((res)=> {
+            this.$get('registration/getAllExpenseItems').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.expenseItemsList = res.data;

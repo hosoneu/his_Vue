@@ -101,7 +101,7 @@
         methods: {
           getUserList(){
             console.log("请求用户列表");
-            this.$get('http://localhost:8080/hoso/user/getAllUserWithRole').then((res)=> {
+            this.$get('user/getAllUserWithRole').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.items = res.data;
@@ -113,7 +113,7 @@
           },
           getDepartmentList(){
             console.log("请求科室列表");
-            this.$get('http://localhost:8080/hoso/department/getAllDepartment').then((res)=> {
+            this.$get('department/getAllDepartment').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.usedData.department = res.data;
@@ -124,7 +124,7 @@
           },
           getRoleList(){
             console.log("请求角色列表");
-            this.$get('http://localhost:8080/hoso/user/getAllRole').then((res)=> {
+            this.$get('user/getAllRole').then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 this.usedData.role = res.data;
@@ -134,7 +134,7 @@
             })
           },
           deleteList(item){
-            this.$get('http://localhost:8080/hoso/user/delete', {"id": item.userId}).then((res)=> {
+            this.$get('user/delete', {"id": item.userId}).then((res)=> {
               if(res.status === 'OK'){
                 console.log("删除成功");
                 this.getUserList();
@@ -144,7 +144,7 @@
             })
           },
           updateList(item){
-            this.$post('http://localhost:8080/hoso/user/update', JSON.stringify(item)).then((res)=> {
+            this.$post('user/update', JSON.stringify(item)).then((res)=> {
               if(res.code === true){
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -156,7 +156,7 @@
           },
           insertList(item){
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/user/insert', JSON.stringify(item)).then((res) => {
+            this.$post('user/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求

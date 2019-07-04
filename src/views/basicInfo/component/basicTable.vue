@@ -203,7 +203,7 @@
       convertFromId(item, field){
         //将根据ID选择的属性，把ID转换为对应属性，并以此属性为列名显示
         console.log(field.key + "请求转换" + item[field.key]);
-        this.$get('http://localhost:8080/hoso/' + field.api, {id: item[field.key]}).then((res)=> {
+        this.$get('' + field.api, {id: item[field.key]}).then((res)=> {
           // console.log(res.data);
           if(res.status === 'OK'){
             console.log(res.data[field.to]);

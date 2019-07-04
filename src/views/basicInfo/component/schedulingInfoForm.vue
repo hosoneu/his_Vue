@@ -45,7 +45,16 @@
             label="排班起始时间" label-for="schedulingStartTime"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input v-model="schedulingInfo.schedulingStarttime" type="datetime" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" id="schedulingStartTime"></b-form-input>
+            <b-form-input v-model="schedulingInfo.schedulingStarttime" type="date" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" id="schedulingStartTime"></b-form-input>
+            <b-input-group>
+              <b-form-input :state="startHourState" v-model="schedulingStartHour" id="schedulingStartHour" type="text" placeholder="请输入开始时间"></b-form-input>
+              <b-input-group-append>
+                <b-input-group-text slot="append"><strong>时</strong></b-input-group-text>
+              </b-input-group-append>
+              <b-form-invalid-feedback id="schedulingStartHour">
+                请输入0到24之间的数字
+              </b-form-invalid-feedback>
+            </b-input-group>
           </b-form-group>
         </b-col>
         <b-col md="6">
@@ -53,7 +62,16 @@
             label="排班结束时间" label-for="schedulingEndTime"
             :label-cols="3"
             :horizontal="true">
-            <b-form-input v-model="schedulingInfo.schedulingEndtime" type="datetime" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" id="schedulingEndTime"></b-form-input>
+            <b-form-input v-model="schedulingInfo.schedulingEndtime" type="date" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" id="schedulingEndTime"></b-form-input>
+            <b-input-group>
+              <b-form-input :state="endHourState" v-model="schedulingEndHour" id="schedulingEndHour" type="text" placeholder="请输入结束时间"></b-form-input>
+              <b-input-group-append>
+                <b-input-group-text><strong>时</strong></b-input-group-text>
+              </b-input-group-append>
+              <b-form-invalid-feedback id="schedulingEndHour">
+                请输入0到24之间的数字
+              </b-form-invalid-feedback>
+            </b-input-group>
           </b-form-group>
         </b-col>
       </b-row>
@@ -153,11 +171,19 @@
               userLoginname: '',
             },
             schedulingData: {},
+            schedulingStartHour: '',
+            schedulingEndHour: '',
           }
         },
         computed:{
           countState(){
             return !isNaN(this.schedulingInfo.schedulingLimitcount) && this.schedulingInfo.schedulingLimitcount > 0;
+          },
+          startHourState(){
+            return !isNaN(this.schedulingStartHour) && this.schedulingStartHour >= 0 && this.schedulingStartHour <= 23;
+          },
+          endHourState(){
+            return !isNaN(this.schedulingEndHour) && this.schedulingEndHour >= 0 && this.schedulingEndHour <= 23;
           },
         },
         methods:{
@@ -173,9 +199,18 @@
           },
           submit(){
             this.schedulingInfo.doctorId = this.user.userId;
+            let startDate= new Date(Date.parse(this.schedulingInfo.schedulingStarttime.replace(/-/g, "/")));
+            startDate.setHours(this.schedulingStartHour);
+            this.schedulingInfo.schedulingStarttime = startDate;
+
+            let endDate= new Date(Date.parse(this.schedulingInfo.schedulingEndtime.replace(/-/g, "/")));
+            endDate.setHours(this.schedulingEndHour);
+            this.schedulingInfo.schedulingEndtime = endDate;
+            // let dateTime = this.schedulingInfo.schedulingStarttime + " " + this.schedulingStartHour;
+            // this.schedulingInfo.schedulingStarttime = this.$moment().format("YYYY-MM-DD");
             console.log("接下来打印");
             console.log(this.schedulingInfo);
-            this.$post('http://localhost:8080/hoso/scheduling/insertInfo', this.schedulingInfo).then((res) => {
+            this.$post('scheduling/insertInfo', this.schedulingInfo).then((res) => {
               if (res.status === 'OK') {
                 alert("生成排班信息成功");
               } else {
@@ -183,6 +218,7 @@
               }
             });
             this.$emit('convertInfo', JSON.parse(JSON.stringify(this.schedulingInfo)), this.user.userName);
+            //不清空会因为转换为date类型报错
             // this.schedulingData = {};
             // this.reset();
           },
@@ -193,7 +229,7 @@
           saveRule(){
             let schedulingData = this.schedulingInfo;
             schedulingData.userId = this.user.userId;
-            this.$post('http://localhost:8080/hoso/scheduling/insertRule', {"schedulingInfo": schedulingData}).then((res) => {
+            this.$post('scheduling/insertRule', {"schedulingInfo": schedulingData}).then((res) => {
               if (res.status === 'OK') {
                 alert("生成排班规则成功");
               } else {
