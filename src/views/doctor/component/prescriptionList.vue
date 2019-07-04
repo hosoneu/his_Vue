@@ -224,7 +224,6 @@
           });
         }else{
           console.log("未初诊");
-          // alert("找个锤子");
         }
       },
       cancelPrescriptionItem() {//废除处方

@@ -28,7 +28,7 @@
 
               <b-button-group class="pull-right"  ><!-- 此处为清空暂存提交按钮 -->
                 <b-button size="sm" :disabled="this.ifReadonly"  @click="prescriptionReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" :disabled="this.ifReadonly"  @click="prescriptionSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
+                <b-button size="sm"   @click="prescriptionSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
                 <b-button size="sm" :disabled="this.ifReadonly"  @click="prescriptionSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
@@ -599,6 +599,7 @@
           this.prescriptionItemForm.days=1;//天数 *次*天 如1天3次
           this.prescriptionItemForm.quantity=1;//开立数量
           this.prescriptionItemForm.drugsAdvice='';//药品医嘱
+          this.prescriptionItemForm.dragsId=0;//药品医嘱
         },
         addPrescriptionItem(){
             this.prescriptionItemForm.dragsId=this.prescriptionItemForm.drugs.drugsId;//药品ID
@@ -610,6 +611,7 @@
         },
         selectCommonlyUsedItemOk(){
           this.prescriptionItemForm.drugs = JSON.parse(JSON.stringify(this.selectedCommonlyUsedItems));
+          this.prescriptionItemForm.dragsId = this.selectedDrugs.drugsId;
           this.selectCommonlyUsedItemCancel();
         },
         selectCommonlyUsedItemCancel(){
@@ -620,6 +622,7 @@
         },
         selectDrugsOk(){
           this.prescriptionItemForm.drugs = this.selectedDrugs;
+          this.prescriptionItemForm.dragsId = this.selectedDrugs.drugsId;
           this.selectDrugsCancel();
         },
         selectDrugsCancel(){
@@ -657,8 +660,15 @@
           groupPrescription.groupPrescriptionCode = this.groupPrescriptionCode;
           groupPrescription.groupPrescriptionName = this.groupPrescriptionName;
           groupPrescription.groupPrescriptionScope= this.groupPrescriptionScope;
-          groupPrescription.prescriptionType=((this.type==0)?'1':'2') ;
-          groupPrescription.groupPrescriptionItemsList = this.prescriptionForm.prescriptionItemsList;
+          groupPrescription.prescriptionType=((this.type==0)?'1':'2');
+          groupPrescription.groupPrescriptionItemsList=[];
+          for(let i = 0;i<this.prescriptionForm.prescriptionItemsList.length;i++){
+            let groupPrescriptionItems = this.prescriptionForm.prescriptionItemsList[i];
+            groupPrescriptionItems.drugsId = this.prescriptionForm.prescriptionItemsList[i].dragsId;
+            groupPrescription.groupPrescriptionItemsList.push(JSON.parse(JSON.stringify(groupPrescriptionItems)));
+          }
+          console.log("现在的检查组套为");
+          console.log(groupPrescription);
           this.$post(this.api[this.type].insertGroupPrescriptionApi,JSON.parse(JSON.stringify(groupPrescription))).then(res=>{
             if(res.status==="OK"){
               alert(res.msg);
@@ -666,6 +676,8 @@
               alert(res.msg);
             }
           });
+          console.log("现在的组套未");
+          console.log(groupPrescription);
         }
       }
     }

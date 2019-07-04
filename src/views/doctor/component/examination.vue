@@ -26,7 +26,7 @@
             <div class="card-header-actions">
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
                 <b-button size="sm" :disabled="ifReadonly" @click="examinationReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" :disabled="ifReadonly" @click="examinationSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
+                <b-button size="sm" @click="examinationSave" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 存档</b-button>
                 <b-button size="sm" :disabled="ifReadonly" @click="examinationSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
@@ -411,7 +411,7 @@
 
         selectPatient(){//选择患者
           //do nothing
-          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
+          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"||this.medicalRecordState==="未选择"){
             this.ifReadonly = true;
           }else{
             this.ifReadonly = false;
@@ -535,13 +535,17 @@
           this.examinationFmedicalItemsForm.purposeRequirements='';
         },
         addExaminationFmedicalItem(){//新增非药品检查检验条目
-          this.examinationFmedicalItemsForm.doctorId = this.curr_user.userId;
-          this.examinationFmedicalItemsForm.fmedicalItemsId = this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId;
-          this.examinationForm.examinationFmedicalItemsList.push( Object.assign({},this.examinationFmedicalItemsForm));
-          this.examinationFmedicalItemsForm.fmedicalItems={};
-          this.examinationFmedicalItemsForm.fmedicalItemsId=-1;
-          this.examinationFmedicalItemsForm.quantity=1;
-          this.examinationFmedicalItemsForm.purposeRequirement='';
+          if(JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm.fmedicalItems))=="{}"||JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm.fmedicalItems))=="") {//判断是否有诊断信息
+            alert("您还没有新增检查检验条目");
+          }else{
+            this.examinationFmedicalItemsForm.doctorId = this.curr_user.userId;
+            this.examinationFmedicalItemsForm.fmedicalItemsId = this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId;
+            this.examinationForm.examinationFmedicalItemsList.push( Object.assign({},this.examinationFmedicalItemsForm));
+            this.examinationFmedicalItemsForm.fmedicalItems={};
+            this.examinationFmedicalItemsForm.fmedicalItemsId=-1;
+            this.examinationFmedicalItemsForm.quantity=1;
+            this.examinationFmedicalItemsForm.purposeRequirement='';
+          }
         },
         selectExaminationFmedicalItems(item){//选中非药品项目
           let examinationFmedicalItemsList = this.examinationForm.examinationFmedicalItemsList;
