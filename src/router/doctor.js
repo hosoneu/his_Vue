@@ -2,30 +2,65 @@
 const DefaultContainer = () => import('../containers/DefaultContainer');
 
 //Doctors
-const DoctorHome = () => import('../views/doctor/doctorHome');
-const DepartmentTable = () => import('../views/statistics/workloadPage');
-const Workload = () => import('../views/statistics/component/workload');
-const WorkloadChart = () => import('../views/statistics/component/workloadChart');
-const UserTable = () => import('../views/statistics/dayCalPage');
-const personalWorkload = () => import('../views/statistics/personalworkload');
-const dayCalHistory = () => import('../views/statistics/component/dayCalHistory');
-const patientCost= () => import('../views/doctor/patientCost');
+const DoctorHome = () => import('../views/doctor/homePage');
+const FinalDiagnosis = () => import('../views/doctor/finalDiagnosis');
+const PatentPrescription = () => import('../views/doctor/patentPrescription');
+const HerbalPrescription = () => import('../views/doctor/herbalPrescription');
+const Treatment = () => import('../views/doctor/treatment');
+const ExaminatonFirst = () => import('../views/doctor/examination1');
+const ExaminatonSecond = () => import('../views/doctor/examination2');
+const TreatmentOver = () => import('../views/doctor/treatmentOver');
+const ExpenseSearch = () => import('../views/doctor/expenseSearch');
 export default {
   path:'/doctor',
-    redirect:'/doctor/doctorHome',
+  redirect:'/doctor/homePage',
   name:'Doctor',
   component: DefaultContainer,
   children: [
-  {
-    path: 'doctorHome',
-    name: 'doctorHome',
-    component: DoctorHome
-  },
     {
-      path: 'patientCost',
-      name: 'patientCost',
-      component: patientCost
+      path: 'homePage',
+      name: 'homePage',
+      component: DoctorHome
     },
-
-]
+    {
+      path:'finalDiagnosis',
+      name:'finalDiagnosis',
+      component:FinalDiagnosis
+    },
+    {
+      path:'patentPrescription',
+      name:'patentPrescription',
+      component:PatentPrescription
+    },
+    {
+      path:'herbalPrescription',
+      name:'herbalPrescription',
+      component:HerbalPrescription
+    },
+    {
+      path:'treatment',
+      name:'treatment',
+      component:Treatment
+    },
+    {
+      path:'examination1',
+      name:'examination1',
+      component:ExaminatonFirst
+    },
+    {
+      path:'examination2',
+      name:'examination2',
+      component:ExaminatonSecond
+    },
+    {
+      path:'treatmentOver',
+      name:'treatmentOver',
+      component:TreatmentOver
+    },
+    {
+      path:'expenseSearch',
+      name:'expenseSearch',
+      component:ExpenseSearch
+    }
+  ]
 }

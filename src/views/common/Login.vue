@@ -115,10 +115,10 @@ computed:{
         this.alertLoginFail();
       });
     },
-    forgetPass(){
+    forgetPass(){//忘记密码
 
     },
-    alertLoginFail(){
+    alertLoginFail(){//弹出登陆失败的对话框
       this.dismissCountDown = this.defaultDismissDes;
     },
   }
