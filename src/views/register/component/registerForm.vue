@@ -153,7 +153,7 @@
                 <label class="custom-control-label" for="expert">专家</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="emergency" name="registrationLevel" class="custom-control-input" value="3">
+                <input v-model="registration.registrationLevelId" type="radio" id="emergency" name="registrationLevel" class="custom-control-input" value="3">
                 <label class="custom-control-label" for="emergency">急诊</label>
               </div>
             </b-form-radio-group>
@@ -212,7 +212,7 @@
             return{
               patient: {
                 patientName:'',
-                patientGender: '',
+                patientGender: '1',
                 patientBirth: '2019-06-29',
                 patientIdentity: '',
               },
@@ -253,15 +253,36 @@
             alert("此患者尚未在本医院就诊过！");
           }
         },
+        checkForm(){
+          return this.idState && this.nameState;
+        },
         submit:(async function () {
-          //检查表单是否填充
-
-          await this.getRegistrationCost();
-          this.$bvModal.show('registerModal');
+          //检查表单是否填充 身份证号18位且名字处长度大于1
+          if(this.checkForm()){
+            await this.getRegistrationCost();
+            this.$bvModal.show('registerModal');
+          }
+          else{
+            alert("患者信息部分填写尚不完善，请正确填写");
+          }
         }),
         reset(){
-          this.patient = {};
-          this.registration = {};
+          //初始化 若全部置为空对象会报错
+          this.patient = {
+            patientName:'',
+            patientGender: '',
+            patientBirth: '2019-06-29',
+            patientIdentity: '',
+          };
+          this.registration = {
+            registrationLevelId: 1,
+            departmentId: 1,
+            calculationTypeId: 1,
+            //doctorId可谓不填项，则insertSelective不更新
+            doctorId: null,
+            buyMedicalRecord: 1,
+            registrationStatus: 1,
+          };
         },
         getRegistrationCost:(function () {
            this.$get('http://localhost:8080/hoso/registrationLevel/getRegistrationLevelById', {"id": this.registration.registrationLevelId}).then((res) => {
@@ -275,13 +296,16 @@
         register(payModeId){
           this.$post('http://localhost:8080/hoso/registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.state.register.cashier.userId, "payModeId": payModeId}).then((res) => {
             if (res.status === 'OK') {
+              alert("挂号成功！");
               payModeId = 51;
               //改变父组件props属性 破坏了单项数据流
               //改变自身数据
               this.totalCost = 0;
               this.reset();
+              //刷新左侧挂号信息表格
+              this.$emit('refresh');
             } else {
-              console.log("挂号失败");
+              alert("挂号失败！");
             }
           })
         }

@@ -36,7 +36,7 @@
         <b-button variant="info" class="btn-pill" @click="updateList">编辑</b-button>
       </b-col>
     </b-row>
-    <b-table selectable select-mode="single" @row-clicked="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"
+    <b-table selectable select-mode="single" @row-selected="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"
              :current-page="currentPage" :per-page="perPage">
       <template :slot="selectField.key" slot-scope="data" v-for="selectField in selectFields">
         {{convertType(data.item, selectField)}}
@@ -141,7 +141,6 @@
         filter: null,
         selected_items: {},
         reserve_items: {},
-        selected_index: {},
         modal_status: "",
       }
     },
@@ -162,11 +161,11 @@
       }
     },
     mounted(){
-      console.log("table处输出开始");
-      console.log(this.usedData);
-      console.log(this.usedData.department);
-      console.log(this.usedData.amount);
-      console.log("table处输出结束");
+      // console.log("table处输出开始");
+      // console.log(this.usedData);
+      // console.log(this.usedData.department);
+      // console.log(this.usedData.amount);
+      // console.log("table处输出结束");
     },
     methods: {
       getBadge (status) {
@@ -187,7 +186,19 @@
         //将选择性属性 从数值value转换为对应文字
         console.log("转换的是" + field.label);
         let value = item[field.key];
-        return field.options[value-1].text;
+        let ds = field.options.filter(option => {if(option.value == value) return true;});
+        if(ds.length > 0) return ds[0].text;
+        else return "未知";
+
+        //forEach方法 不知道为什么行不通，明明相等却无法进入if内部
+        // field.options.forEach(function (option) {
+        //   if (option["value"] === value) {
+        //     return option.text;
+        //   }
+        // })
+
+        //只适用于 从1开始的options
+        // return field.options[value-1].text;
       },
       convertFromId(item, field){
         //将根据ID选择的属性，把ID转换为对应属性，并以此属性为列名显示
@@ -202,39 +213,34 @@
           }
         })
       },
-      selectItem(item, index){
-        alert("已选择" + this.selected_index);
-        alert("选择" + index);
-        if (this.selected_index === index) {
-          this.selected_items = {};
-          this.selected_index = {};
+      selectItem(items){
+        if (items.length > 0){
+          this.selected_items = JSON.parse(JSON.stringify(items[0]));
+          // this.selected_items = JSON.parse(JSON.stringify(items));
+          this.reserve_items = JSON.parse(JSON.stringify(items[0]));
         }
         else {
-          console.log("已选择" + (item != null?item.fmedicalItemsName:",其实并未选择"));
-          this.selected_items = JSON.parse(JSON.stringify(item));
-          this.reserve_items = JSON.parse(JSON.stringify(item));
-          this.selected_index = index;
+          this.selected_items = {};
         }
       },
       deleteList(){
-        alert("删除按钮");
+        // alert("删除按钮");
         if (JSON.stringify(this.selected_items) === "{}"){
           alert("您还未选择希望删除的条目！");
         }
         else{
-          this.$emit('deleteList', this.selected_index, this.selected_items);
+          this.$emit('deleteList', this.selected_items);
         }
       },
       updateList(){
-        alert("更新按钮");
+        // alert("更新按钮");
         if (JSON.stringify(this.selected_items) === "{}"){
             alert("您还未选择希望编辑的条目！");
         }
         else {
-          alert("您已选择更新");
+          // alert("您已选择更新");
           this.modal_status = "update";
           this.$bvModal.show('basicModal');
-          // this.$emit('updateList', this.selected_items);
         }
       },
       insertList(){
@@ -263,19 +269,16 @@
           this.$emit('insertList', this.selected_items);
           this.$bvModal.hide('basicModal');
           this.selected_items = {};
-          this.selected_index = {};
         }
         else if (this.modal_status === "update"){
           this.$emit('updateList', this.selected_items);
           this.$bvModal.hide('basicModal');
           this.selected_items = {};
-          this.selected_index = {};
         }
         else{
           alert("模态框状态发生错误！");
           this.$bvModal.hide('basicModal');
           this.selected_items = {};
-          this.selected_index = {};
         }
       },
       reset(){
@@ -284,8 +287,7 @@
       },
       cancel(){
         this.$bvModal.hide('basicModal');
-        this.selected_items = {};
-        this.selected_index = {};
+        // this.selected_items = {};
       },
     }
   }

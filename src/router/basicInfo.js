@@ -22,6 +22,12 @@ import FmedicalItemsInfo from "../views/basicInfo/fmedicalItemsInfo"
 //排班信息组件
 import SchedulingInfo from "../views/basicInfo/schedulingInfo"
 
+//排班信息组件
+import ExpenseTypeInfo from "../views/basicInfo/expenseTypeInfo"
+
+//排班信息组件
+import DrugsInfo from "../views/basicInfo/drugsInfo"
+
 export default {
   path: '/basicInfo',
   name: 'basicInfo',
@@ -61,6 +67,16 @@ export default {
       path: 'schedulingInfo',
       name: 'schedulingInfo',
       component: SchedulingInfo
-    }
+    },
+    {
+      path: 'expenseTypeInfo',
+      name: 'expenseTypeInfo',
+      component: ExpenseTypeInfo
+    },
+    {
+      path: 'drugsInfo',
+      name: 'drugsInfo',
+      component: DrugsInfo
+    },
   ]
 }

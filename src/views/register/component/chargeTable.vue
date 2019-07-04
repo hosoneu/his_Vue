@@ -29,7 +29,7 @@
     <b-row>
       <b-col md="10" class="my-1"></b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="outline-danger" class="" @click="refund">退费</b-button>
+        <b-button variant="outline-danger" class="" @click="balanceForRefund">退费</b-button>
       </b-col>
       <b-col md="1" class="my-1">
         <b-button variant="outline-success" class="" @click="balance">缴费</b-button>
@@ -54,14 +54,16 @@
     </nav>
     <RegisterModal   @register="charge" :total-cost="totalCost">
     </RegisterModal>
+    <RefundModal @refund="refund" :total-cost="totalCost"></RefundModal>
   </b-card>
 </template>
 
 <script>
     import RegisterModal from "./registerModal"
+    import RefundModal from "./refundModal";
     export default {
         name: "ChargeTable",
-        components:{RegisterModal},
+        components:{RefundModal, RegisterModal},
         props:{
           caption: {
             type: String,
@@ -198,6 +200,8 @@
               return "退费";
             } else if (item["payStatus"] === "4") {
               return "无效";
+            } else if (item["payStatus"] === "5") {
+              return "部分退费";
             } else {
               return "未知状态"
             }
@@ -205,20 +209,30 @@
           selectItems(items) {
             this.selected_items = items;
           },
-          checkCharge(){
-            this.selected_items.forEach(function (item) {
-              if (item.payStatus !== "1"){
-                return false;
-              }
-            });
+          checkCharge() {
+            try {
+              this.selected_items.forEach(function (item) {
+                console.log(item.payStatus);
+                if (item.payStatus !== "1") {
+                  throw new Error("error");
+                }
+              });
+            }catch (e) {
+              return false;
+            }
             return true;
           },
           checkRefund(){
-            this.selected_items.forEach(function (item) {
-              if (item.payStatus !== "2"){
-                return false;
-              }
-            });
+            try {
+              this.selected_items.forEach(function (item) {
+                console.log(item.payStatus);
+                if (item.payStatus !== "2") {
+                  throw new Error("error");
+                }
+              });
+            }catch (e) {
+              return false;
+            }
             return true;
           },
           balance:(async function () {
@@ -240,9 +254,12 @@
                 this.$bvModal.show('registerModal');
               }
             }
+            else{
+              alert("请选择缴费状态均为未缴费的项目！");
+            }
           }),
           getChargeCost(){
-            that.totalCost = 0;
+            this.totalCost = 0;
             let that = this;
             this.selected_items.forEach(function (item) {
               that.totalCost += item.totalCost;
@@ -253,7 +270,13 @@
             this.$post('http://localhost:8080/hoso/registration/charge', {"expenseItemsIdList": this.selected_items_Id, "userId": this.$store.state.register.cashier.userId,"payModeId": payModeId}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
-                alert("缴费成功")
+                alert("缴费成功");
+                //更改前端表面上的值
+                this.selected_items.forEach(function (item) {
+                  item.payStatus = "2";
+                });
+                //重新请求费用项目
+                this.$emit('refresh');
               }else{
                 console.log("缴费失败");
               }
@@ -261,7 +284,7 @@
           },
           balanceForRefund:(async function () {
             //检查希望缴费的项目是否均为已缴费
-            if (this.checkCharge()) {
+            if (this.checkRefund()) {
               this.selected_items_Id = [];
               if (JSON.stringify(this.selected_items) === "[]") {
                 alert("您还未选择希望退费的条目！");
@@ -271,24 +294,32 @@
                 //计算退费项目的总费用
                 await this.getRefundCost();
                 //展示支付窗口
-                this.$bvModal.show('registerModal');
+                this.$bvModal.show('refundModal');
               }
+            }
+            else{
+             alert("请选择缴费状态均为已缴费的项目！");
             }
           }),
           getRefundCost(){
-            that.totalCost = 0;
+            this.totalCost = 0;
             let that = this;
             this.selected_items.forEach(function (item) {
-              that.totalCost -= item.totalCost * (that.getQuantity(item) - that.getActualQuantity(item)) / that.getQuantity(item);
+              that.totalCost += item.totalCost * (that.getQuantity(item) - that.getActualQuantity(item)) / that.getQuantity(item);
             });
           },
           //退费的逻辑中 牵扯到 药品的部分退费 需与退药一同考虑
           refund() {
+            let replace = {expenseItemsList: this.selected_items, userId: this.$store.state.register.cashier.userId};
             //registerModal对话框提交后触发事件 执行此方法
-            this.$post('http://localhost:8080/hoso/registration/refund', {"expenseItemsList": this.selected_items, "userId": this.$store.state.register.cashier.userId}).then((res)=> {
+            this.$post('http://localhost:8080/hoso/registration/refund', replace).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
-                alert("退费成功")
+                alert("退费成功");
+                this.selected_items.forEach(function (item) {
+                  item.payStatus = "3";
+                });
+                this.$emit('refresh');
               }else{
                 console.log("退费失败");
               }

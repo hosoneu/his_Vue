@@ -105,12 +105,17 @@
           this.options[field.table] = this.pageData[field.table];
         },
       },
-      updated() {
-          //因usedData变化而pageData的变化会引起更新 刷新下拉列表（不然 早早传来的usedData是空的 当时还未请求到数据）
-          for (let i = 0; i < this.multi_fields.length; i++){
-            this.getList(this.multi_fields[i]);
-          }
-      },
+      // updated() {
+      //     //因usedData变化而pageData的变化会引起更新 刷新下拉列表（不然 早早传来的usedData是空的 当时还未请求到数据）
+      //     for (let i = 0; i < this.multi_fields.length; i++){
+      //       this.getList(this.multi_fields[i]);
+      //     }
+      // },
+      beforeUpdate: async function(){
+        for (let i = 0; i < this.multi_fields.length; i++){
+          await this.getList(this.multi_fields[i]);
+        }
+      }
     }
 </script>
 

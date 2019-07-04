@@ -16,7 +16,7 @@
     import BasicTable from "./component/basicTable";
     import BasicTabs from "./component/basicTabs";
     export default {
-        name: "FmedicalItemsInfo",
+        name: "fmedicalItemsInfo",
         components: {BasicTable, BasicTabs},
         data(){
           return{
@@ -111,20 +111,17 @@
               }
             })
           },
-          deleteList(index, item) {
-            console.log("删除科室");
-            alert(index);
+          deleteList(item) {
             this.$get('http://localhost:8080/hoso/fmedicalItems/delete', {"id": item.fmedicalItemsId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
-                this.items.splice(index, 1);
+                this.getFmedicalItemsList();
               } else {
                 console.log("加载失败");
               }
             })
           },
           updateList(item) {
-            alert(JSON.stringify(item));
             this.$post('http://localhost:8080/hoso/fmedicalItems/update', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("更新成功");

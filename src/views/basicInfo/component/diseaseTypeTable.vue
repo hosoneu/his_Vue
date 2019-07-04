@@ -26,14 +26,8 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col md="8" class="my-1"></b-col>
-      <b-col md="4" class="my-1">
-        <b-button variant="outline-danger" class="" @click="withdraw">退号</b-button>
-      </b-col>
-    </b-row>
     <b-table selectable select-mode="single" @row-selected="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered" :current-page="currentPage" :per-page="perPage">
-      <template slot="registrationStatus" slot-scope="row">
+      <template slot="diseaseTypeType" slot-scope="row">
         {{getType(row.item)}}
       </template>
     </b-table>
@@ -45,7 +39,7 @@
 
 <script>
     export default {
-        name: "registerTable",
+        name: "diseaseTypeTable",
         props: {
           caption: {
             type: String,
@@ -90,7 +84,7 @@
           dark: {
             type: Boolean,
             default: false
-          }
+          },
         },
         data: () => {
           return {
@@ -133,27 +127,18 @@
             this.currentPage = 1
           },
           getType(item){
-            const map = {boolean: {1: '正常', 2: '退号'}};
-            return map.boolean[item.registrationStatus];
+            const map = {boolean: {1: '西医', 2: '中医'}};
+            return map.boolean[item.diseaseTypeType];
           },
           selectItem(items){
             if (items.length > 0){
               this.selected_items = JSON.parse(JSON.stringify(items[0]));
               //传递患者病历号给父组件 用于chargeHome 不用于registerHome
-              this.$emit('showExpenseItems', this.selected_items.medicalRecord.medicalRecordId);
+              this.$emit('showDisease', this.selected_items.diseaseTypeId);
             }
             else {
               this.selected_items = {};
-              this.$emit('showExpenseItems', null);
-            }
-          },
-          withdraw(){
-            if (JSON.stringify(this.selected_items) === "{}"){
-              alert("您还未选择希望退号的条目！");
-            }
-            else {
-              alert("您已选择退号");
-              this.$emit('withdraw', this.selected_items);
+              this.$emit('showDisease', null);
             }
           },
         }

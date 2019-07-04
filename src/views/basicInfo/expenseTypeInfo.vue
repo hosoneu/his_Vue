@@ -5,7 +5,7 @@
         <BasicTabs></BasicTabs>
       </b-col>
       <b-col lg="9">
-        <BasicTable :caption="'结算类别列表'" :textFields="calculationType_text_fields" :selectFields="calculationType_select_fields" :multiFields="calculationType_multi_fields" :table-data="items" :perPage="10" :itemType="itemType" @insertList ="insertList" @updateList="updateList" @deleteList="deleteList">
+        <BasicTable :caption="'费用科目列表'" :textFields="expenseType_text_fields" :selectFields="expenseType_select_fields" :multiFields="expenseType_multi_fields" :table-data="items" :perPage="10" :itemType="itemType" @insertList ="insertList" @updateList="updateList" @deleteList="deleteList">
         </BasicTable>
       </b-col>
     </b-row>
@@ -16,56 +16,61 @@
     import BasicTable from "./component/basicTable";
     import BasicTabs from "./component/basicTabs";
     export default {
-        name: "calculationTypeInfo",
+        name: "expenseTypeInfo",
         components: {BasicTable, BasicTabs},
         data(){
           return{
-            calculationType_text_fields:[
+            expenseType_text_fields:[
               {
-                key: 'calculationTypeName',
+                key: 'expenseTypeCode',
                 sortable: true,
-                label: '结算类别名称'
+                label: '费用科目编码'
+              },
+              {
+                key: 'expenseTypeName',
+                sortable: true,
+                label: '费用科目名称'
               },
             ],
-            calculationType_select_fields: [],
-            calculationType_multi_fields: [],
+            expenseType_select_fields: [],
+            expenseType_multi_fields: [],
             items:[],
-            itemType: '结算类别',
+            itemType: '费用科目',
           }
         },
         mounted: async function(){
           console.log("mounted");
           this.$store.commit('common/set_curr_user_type', 'basicInfo');
-          await this.getCalculationTypeList();
+          await this.getExpenseTypeList();
         },
         methods: {
-          getCalculationTypeList() {
-            console.log("请求结算类别列表");
-            this.$get('http://localhost:8080/hoso/calculationType/getAllCalculationType').then((res) => {
+          getExpenseTypeList() {
+            console.log("请求费用科目列表");
+            this.$get('http://localhost:8080/hoso/expenseType/getAllExpenseType').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
               } else {
-                console.log("加载结算类别列表失败");
+                console.log("加载费用科目列表失败");
               }
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/calculationType/delete', {"id": item.calculationTypeId}).then((res) => {
+            this.$get('http://localhost:8080/hoso/expenseType/delete', {"id": item.expenseTypeId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
-                this.getCalculationTypeList();
+                this.getExpenseTypeList();
               } else {
                 console.log("加载失败");
               }
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/calculationType/update', JSON.stringify(item)).then((res) => {
+            this.$post('http://localhost:8080/hoso/expenseType/update', JSON.stringify(item)).then((res) => {
               if (res.code === true) {
                 console.log("更新成功");
                 //改变数据后重新请求
-                this.getCalculationTypeList();
+                this.getExpenseTypeList();
               } else {
                 console.log("加载失败");
               }
@@ -73,11 +78,11 @@
           },
           insertList(item) {
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/calculationType/insert', JSON.stringify(item)).then((res) => {
+            this.$post('http://localhost:8080/hoso/expenseType/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求
-                this.getCalculationTypeList();
+                this.getExpenseTypeList();
               } else {
                 console.log("插入失败");
               }

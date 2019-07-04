@@ -12,6 +12,7 @@
       </b-col>
       <b-col lg="9">
         <RegisterForm
+          @refresh="refresh"
           :department-list="departmentList"
           :doctor-list="doctorList"
           :patient-list="patientList"
@@ -66,6 +67,7 @@
           }
         },
         mounted: async function(){
+          this.$store.commit('common/set_curr_user_type', 'register');
           await this.getRegistrationList();
           await this.getDepartmentList();
           await this.getDoctorList();
@@ -122,17 +124,21 @@
               }
             })
           },
-          withdraw(item, index){
+          withdraw(item){
             this.$get('http://localhost:8080/hoso/registration/withdraw', {"expenseItemsId": item.expenseItems.expenseItemsId, "userId": this.$store.state.register.cashier.userId}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 alert("退号成功！");
-                this.items.splice(index, 1);
+                this.refresh();
               }else{
                 console.log("加载挂号列表失败");
               }
             })
-          }
+          },
+          //刷新左侧挂号信息表格
+          refresh(){
+            this.getRegistrationList();
+          },
         }
     }
 </script>

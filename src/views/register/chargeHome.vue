@@ -12,6 +12,7 @@
       </b-col>
       <b-col lg="9">
         <ChargeTable
+          @refresh="refresh"
           :caption="'费用项目信息'"
           :initial-fields="expenseItemsFields"
           :per-page="10"
@@ -98,6 +99,7 @@
           }
         },
         mounted: async function(){
+          this.$store.commit('common/set_curr_user_type', 'register');
           await this.getRegistrationList();
           await this.getExpenseItemsList();
         },
@@ -134,6 +136,9 @@
                 }
               })
             }
+          },
+          refresh(){
+            this.getExpenseItemsList();
           },
         }
     }
