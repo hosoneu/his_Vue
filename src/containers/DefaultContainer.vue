@@ -1,19 +1,22 @@
 <template>
   <div class="app">
-    <AppHeader fixed>
+    <app-header fixed>
+      <b-navbar-nav class="md-auto">
+        <DefaultDropdownNav/>
+      </b-navbar-nav>
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="img/brand/logo.svg" width="80" height="40" alt="CoreUI Logo">
+        <!--<img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">-->
       </b-link>
       <b-navbar-nav class="d-md-down-none">
         <b-nav-item v-for="(item, index) in nav" :key ="index" class="px-3" :to="item.url" active-class="text-primary">
           {{item.name}}
         </b-nav-item>
       </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <DefaultHeaderDropdownAccnt/>
-      </b-navbar-nav>
-    </AppHeader>
+        <b-navbar-nav class="ml-auto">
+          <DefaultHeaderDropdownAccnt/>
+        </b-navbar-nav>
+    </app-header>
     <div class="app-body">
       <main class="main">
         <div class="row mt-3"></div>
@@ -45,10 +48,12 @@ import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFoot
 import DefaultAside from './DefaultAside'
 import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
 import {mapState} from 'vuex'
+import DefaultDropdownNav from './DefaultDropdownNav'
 
 export default {
   name: 'DefaultContainer',
   components: {
+    DefaultDropdownNav,
     AsideToggler,
     AppHeader,
     AppSidebar,

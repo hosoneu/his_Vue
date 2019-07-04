@@ -11,7 +11,6 @@ const ExaminatonFirst = () => import('../views/doctor/examination1');
 const ExaminatonSecond = () => import('../views/doctor/examination2');
 const TreatmentOver = () => import('../views/doctor/treatmentOver');
 const ExpenseSearch = () => import('../views/doctor/expenseSearch');
-
 export default {
   path:'/doctor',
   redirect:'/doctor/homePage',
