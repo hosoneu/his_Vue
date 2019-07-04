@@ -52,7 +52,6 @@
 </template>
 
 <script>
-  import axios from 'axios/index'
   import WorkloadChart from './workloadChart'
   export default {
     components: {WorkloadChart},
@@ -63,11 +62,11 @@
       },
       chartlabels:{
         type:Array,
-        default:['挂号费','药费','材料费','检查费','处置费（含麻醉）','其他费用','总计']
+        default:()=>['挂号费','药费','材料费','检查费','处置费（含麻醉）','其他费用','总计']
       },
       fields:{
         type: Array,
-        default: [
+        default: ()=>[
           { key: "ghTotal",label:'挂号费', sortable: true },
           { key: "yfTotal",label:'药费', sortable: true },
           { key: "clTotal",label:'材料费', sortable: true },
@@ -245,13 +244,13 @@
       },
       selectItems(){//从数据库搜索items
         if(this.userID===null){
+          console.log();
         }else {
-          var qs = require('qs');
-          this.$post("dayCalculate/userDayCalculateHistory", qs.stringify({
+          this.$post("dayCalculate/userDayCalculateHistory", {
             'sdate': this.sdate,
             'edate': this.edate,
             'userID': this.userID
-          })).then(res=> {
+          }).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头

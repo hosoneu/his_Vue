@@ -2,7 +2,6 @@
   <b-row>
     <b-col lg="4">
       <patient-table
-        @select_user=""
         :initial-fields="fields"
         :per-page="5"
         :tabs="tabs"
