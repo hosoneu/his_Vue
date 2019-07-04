@@ -185,7 +185,7 @@
               listFirstDiagnosisByMedicalRecordIdParams:{},
               insertMedicalRecordHomePageTemplateApi:"/doctor/homepage/insertMedicalRecordHomePageTemplate",//存为模板
             },
-            ifReadonly:true,//默认为不只读（即可以录入病历首页信息）
+            ifReadonly:false,//默认为不只读（即可以录入病历首页信息）
             ifSeen:true,//默认为可见
             firstChineseDiagnosisItems:[],
             firstWesternDiagnosisItems:[],
@@ -218,7 +218,6 @@
         ...mapState("doctor",["registration"]),
       },
       mounted:function () {
-
         this.getMedicalRecord();
       },
       watch:{
@@ -233,7 +232,10 @@
 
         },
         getMedicalRecord(){
-          if(!(this.medicalRecordState==='未初诊')){//如果已初诊 查询病历首页的信息
+          console.log("病历状态");
+          console.log(this.medicalRecordState);
+          console.log(!(this.medicalRecordState==='未初诊'));
+          if(!(this.medicalRecordState==='未初诊'||JSON.parse(JSON.stringify(this.medicalRecordState))=="" )){//如果已初诊 查询病历首页的信息
             this.api.selectMedicalRecordHomePageParams.medicalRecordId=this.registration.medicalRecordId;
             this.$get(this.api.selectMedicalRecordHomePageApi,JSON.parse(JSON.stringify(this.api.selectMedicalRecordHomePageParams))).then(res=>{
               console.log(res);
@@ -244,14 +246,10 @@
                 console.log(res.msg);
               }
             });
-            console.log("w哦请求1");
             this.api.listFirstDiagnosisByMedicalRecordIdParams.medicalRecordId=this.registration.medicalRecordId;
             this.$get(this.api.listFirstDiagnosisByMedicalRecordIdApi,JSON.parse(JSON.stringify(this.api.listFirstDiagnosisByMedicalRecordIdParams))).then(res=>{
               console.log(res);
               if(res.status === "OK"){
-                //todo 疾病类型
-                console.log("w哦请求2");
-                console.log(res);
                 if(res.data[0].disease.diseaseTypeId===472){//如果是中医疾病
                   this.firstChineseDiagnosisItems= res.data;//填充中医Items)
                 }else{//如果是西医疾病
@@ -276,9 +274,6 @@
           let westernDiagnosisItems = this.$refs["westernDiagnosis"].diagnosisItems;
           let diagnosisItems=[];
           diagnosisItems = chineseDiagnosisItems.concat(westernDiagnosisItems);
-          console.log("病历首页录入成功");
-          console.log(diagnosisItems);
-          console.log("病历首页录入成功");
           if(chineseDiagnosisItems.length===0&&westernDiagnosisItems.length===0){//判断是否有诊断信息
             alert("您还没有诊断");
           }else{
@@ -324,10 +319,10 @@
             this.$post(this.api.insertMedicalRecordHomePageTemplateApi,JSON.parse(JSON.stringify(medicalRecordHomePageTemplate))).then(res=>{
               console.log(res);
               if(res.status === "OK"){
-                alert("插入成功");
+                alert(res.msg)
                 console.log(res.data);
               }else{
-                alert("插入失败");
+                alert(res.msg);
                 console.log("插入失败");
               }
             });

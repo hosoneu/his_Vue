@@ -168,7 +168,7 @@
             selectMedicalRecordHomePageByMedicalRecordIdParams:{},
             listFirstDiagnosisByMedicalRecordIdApi:"/doctor/homepage/listFirstDiagnosisByMedicalRecordId",
             listFirstDiagnosisByMedicalRecordIdParams:{},
-            listFinalDiagnosisByMedicalRecordIdApi:"/doctor/homepage/listFinalDiagnosisByMedicalRecordId",
+            listFinalDiagnosisByMedicalRecordIdApi:"/doctor/diagnosis/listFinalDiagnosisByMedicalRecordId",
             listFinalDiagnosisByMedicalRecordIdParams:{},
             treatmentOverApi:"/doctor/diagnosis/treatmentOver",
             treatmentOverParams:{}
@@ -201,13 +201,14 @@
           this.$get(this.api.treatmentOverApi, this.api.treatmentOverParams).then(res => {
             if(res.status==="OK"){
               alert(res.msg);
+              this.$refs["registrationList"].getRegistrationList();
             }else{
               alert(res.msg);
             }
           });
         },
         transformOnsetDate(item){//得到发病日期
-          if(item.onsetDate==''){
+          if(JSON.parse(JSON.stringify(item.onsetDate))==''||item.onsetDate===null){
             return '';
           }else{
             return item.onsetDate.split("T")[0];
@@ -228,7 +229,7 @@
           }
         },
         getMedicalHomePage(){
-          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="已初诊"){
+          if(this.medicalRecordState==="未初诊"){
             this.medicalRecordHomePage = {};
             this.firstDiagnosis = [];
             this.finalDiagnosis = [];
@@ -248,7 +249,7 @@
               this.$get(this.api.listFirstDiagnosisByMedicalRecordIdApi, this.api.listFirstDiagnosisByMedicalRecordIdParams).then(ress => {
                 if (ress.status === "OK") {
                   this.firstDiagnosis = ress.data;
-                  this.$get(this.api.listFirstDiagnosisByMedicalRecordIdApi, this.api.listFirstDiagnosisByMedicalRecordIdParams).then(resss =>{
+                  this.$get(this.api.listFinalDiagnosisByMedicalRecordIdApi, this.api.listFinalDiagnosisByMedicalRecordIdParams).then(resss =>{
                     if (resss.status === "OK") {
                       this.finalDiagnosis = resss.data;
                     }else{

@@ -181,7 +181,6 @@
           if(JSON.stringify(this.groupTreatmentInfoItem)=="{}"){
             alert("请先选择组套");
           }else{
-
             this.$refs["group-Treatment-modal"].show();
           }
         },

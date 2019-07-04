@@ -3,20 +3,14 @@
     <b-row>
       <b-col align="right">
         <b-button-group class="pull-right">
-          <b-button id="checkButton" @click="checkExaminationItem" size="md" variant="outline-dark">查看</b-button>
+<!--          <b-button id="checkButton" @click="checkExaminationItem" size="md" variant="outline-dark">查看</b-button>-->
           <b-button id="resultButton" @click="resultExaminationItem" size="md" variant="outline-dark">结果</b-button>
           <b-button id="cancelButton" @click="cancelExaminationItem" size="md" variant="outline-dark">废除</b-button>
         </b-button-group>
 
       </b-col>
     </b-row>
-    <b-modal ref="examination-drugs-info" size="lg" centered title="附加药品">
-      <examination-drugs-info
-        :examination-drugs-items-list="selectedExaminationFmedicalItems.examinationDrugsItemsList"
-      >
 
-      </examination-drugs-info>
-    </b-modal>
     <br>
     <!--    检查检验非药品条目的列表 点击之后可以查看药品      -->
     <b-table
@@ -39,11 +33,26 @@
         {{row.value==0?'未出':'已出'}}
       </template>
     </b-table>
-    <b-modal ref="examination-result" size="lg" title="检查结果" >
-      <!--    <examination-result-->
-      <!--      :examination-result="selectedExaminationFmedicalItemsResult"-->
-      <!--    >-->
-      <!--    </examination-result>-->
+
+    <br>
+    <examination-drugs-info
+      :examination-drugs-items-list="selectedExaminationFmedicalItems.examinationDrugsItemsList"
+    >
+    </examination-drugs-info>
+    <b-modal ref="result" size="lg" hide-footer centered title="检查结果" >
+      <b-row>
+        <b-col md="1">
+
+        </b-col>
+        <b-col md="10">
+          <examination-results
+
+          >
+          </examination-results>
+        </b-col>
+      </b-row>
+      <br>
+      <!--            :examination-result="selectedExaminationFmedicalItemsResult"-->
     </b-modal>
 
   </div>
@@ -52,10 +61,10 @@
 
 <script>
   import ExaminationDrugsInfo from "./examinationDrugsInfo";
-  // import ExaminationResult from "./examinationResult";
+  import ExaminationResults from "./examinationResult";
   export default {
     name: "examinationFmedicalItemsTable",
-    components: {ExaminationDrugsInfo},
+    components: {ExaminationDrugsInfo,ExaminationResults},
     props: {
       examinationFmedicalItemsList: {//选择的检查检验非药品项目
         type: Array,
@@ -99,9 +108,9 @@
           this.selectedExaminationFmedicalItems = item[0];
         }
       },
-      checkExaminationItem() {
-        this.$refs["examination-drugs-info"].show();
-      },
+      // checkExaminationItem() {
+      //   this.$refs["examination-drugs-info"].show();
+      // },
       resultExaminationItem(){
         if(JSON.stringify(this.selectedExaminationFmedicalItems) =='{}'){
           alert("请选中项目");
@@ -114,6 +123,7 @@
               if (res.status === "OK") {
                 this.selectedExaminationFmedicalItemsResult = res.data;
                 //todo传值
+                this.$refs["result"].show();
                 console.log(res.msg + res.data);
               } else {
                 console.log(res.msg);
@@ -155,13 +165,21 @@
           });
         }
       },
-      transformDrugsUsage(item) {
-        if (item.drugsUsage === '1') {
-          return '发生大';
-        } else if (item.drugsUsage === '4') {
+      transformDrugsUsage(item){
+        if(item.drugsUsage==='1'){
+          return '静脉滴注';
+        }else if(item.drugsUsage==='2'){
+          return '静脉可注';
+        }else if(item.drugsUsage==='3'){
+          return '肌肉注射';
+        }else if(item.drugsUsage==='4'){
           return '口服';
-        } else {
-          return 'dsa';
+        }else if(item.drugsUsage==='5'){
+          return '皮试';
+        }else if(item.drugsUsage==='6'){
+          return '皮下注射';
+        }else{
+          return '自定义';
         }
       },
       transformDaysAndTimes(item) {

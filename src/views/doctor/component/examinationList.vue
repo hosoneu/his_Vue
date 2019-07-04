@@ -93,6 +93,7 @@
 <script>
   import {mapState} from "vuex";
   import ExaminationFmedicalItemsTable from "./examinationFmedicalItemsTable";
+
     export default {
       name: "examinationList",
       components:{ExaminationFmedicalItemsTable},

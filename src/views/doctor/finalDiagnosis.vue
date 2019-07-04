@@ -51,12 +51,22 @@
               >
               </western-diagnosis>
             </b-tab>
+            <b-tab title="已开检查">
+              <history-examination1-list
+                :type=0
+              ></history-examination1-list>
+            </b-tab>
+            <b-tab title="已开检验">
+              <history-examination2-list
+                :type=1
+              ></history-examination2-list>
+            </b-tab>
             <b-tab title="辅助检查" >
               <b-row>
                 <b-col md="1">
-
                 </b-col>
                 <b-col md="10 ">
+                  <br>
                   <b-form-group
                     label="辅助检查"
                     label-for="assistantExamination"
@@ -67,6 +77,7 @@
                 </b-col>
               </b-row>
             </b-tab>
+
           </b-tabs>
         </b-card>
       </b-col>
@@ -79,10 +90,12 @@
   import PatientInfo from "./component/patientInfo";
   import ChineseDiagnosis from "./component/diagnosis";//中医诊断
   import WesternDiagnosis from "./component/diagnosis";//西医诊断
+  import HistoryExamination1List from "./component/examinationList";
+  import HistoryExamination2List from "./component/examinationList";
   import {mapState} from 'vuex';
     export default {
       name: "finalDiagnosis",
-      components:{RegistrationList,PatientInfo,ChineseDiagnosis,WesternDiagnosis},
+      components:{RegistrationList,PatientInfo,ChineseDiagnosis,WesternDiagnosis,HistoryExamination1List,HistoryExamination2List},
       data(){
         return{
           ifSeen:true,
