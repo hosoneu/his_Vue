@@ -361,10 +361,13 @@
           this.selectedDrugs = items;
         },
         getStatus:function(item){
-          if (item.expenseItem.payStatus == "2") {
-            return "未缴费";
+           if (!item.expenseItem.payStatus) {
+             return '不存在';
+           }
+          if (item.expenseItem.payStatus != "2") {
+            return "无效";
           }
-          else if (item.expenseItem.payStatus == "1"){
+          else if (item.expenseItem.payStatus == "2"){
             if (item.drugsDispensingStatus == "1"){
               return "未发";
             } 
@@ -386,7 +389,7 @@
           }
           for (let i=0;i<this.selectedDrugs.length;i++){
             if (this.selectedDrugs[i].drugsDispensingStatus == 2||this.selectedDrugs[i].drugsDispensingStatus == 3){
-              alert("请选择药品全部未发药");
+              alert("请确认选择药品全部未发药");
               return;
             }
           }
@@ -405,7 +408,10 @@
 
           this.$post(url, data).then(res=>{
             if (res.data == "OK"){
-              alert("OK");
+              alert("退药成功");
+            }
+            else{
+              alert("退药失败");
             }
           });
           alert("发药成功");

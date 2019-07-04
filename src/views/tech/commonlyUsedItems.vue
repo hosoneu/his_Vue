@@ -1,8 +1,10 @@
 <template>
   <b-card header="Card title">
     <template slot="header">
+      常用药品
       <div class="pull-right">
         <b-button @click="addDrugs">添加</b-button>
+        <b-button @click="deleteCommonDrugs">删除</b-button>
       </div>
     </template>
     <div class="my-1">
@@ -36,6 +38,8 @@
       <br>
       <!-- Main table element -->
       <b-table
+        :selectable=true
+        :select-mode="multi"
         show-empty
         :hover="customizeHover"
         stacked="md"
@@ -49,6 +53,7 @@
         :sort-desc.sync="sortDesc"
         :sort-direction="sortDirection"
         @filtered="onFiltered"
+        @row-selected="CommonrowSelected"
       >
       </b-table>
       <!--          @row-clicked="selectItem">-->
@@ -67,6 +72,18 @@
       </b-row>
     </div>
 
+
+    <b-modal title="删除请求" size="sm" v-model="largeModal" @ok="largeModal = false" id="isDelete">
+      <center>确定删除</center>
+      <template slot="modal-footer" slot-scope="{cancel, ok}">
+        <b-button size="sm" variant="success" @click="cancel()">
+          取消
+        </b-button>
+        <b-button size="sm" variant="danger" @click="ok();deleteOk()">
+          确定
+        </b-button>
+      </template>
+    </b-modal>
 
     <b-modal title="Modal title" size="lg" v-model="largeModal" @ok="largeModal = false" id="allDrugsModal">
       <div class="my-1">
@@ -146,17 +163,7 @@
           确定
         </b-button>
       </template>
-<!--      slot-->
-      <template slot="modal-footer" slot-scope="{cancel, ok}">
-        <b-button size="sm" variant="success" @click="cancel();tempCancel();">
-          取消
-        </b-button>
-        <b-button size="sm" variant="danger" @click="ok();tempOk()">
-          确定
-        </b-button>
-      </template>
     </b-modal>
-
   </b-card>
 </template>
 <script>
@@ -218,6 +225,7 @@
         allfilter: null,
 
 
+        commonSelectedDrugs:[],
         commonDrugsItems:[],
         commonFields:[
           {key: 'drugs.drugsCode', label: '药品代码', sortable: true},
@@ -230,7 +238,8 @@
           {key: 'drugsCode', label: '药品代码', sortable: true},
           {key: 'drugsName', label:'药品名称'},
           {key: 'drugsTypeId', label:'类型'},
-        ]
+        ],
+        allAddSelectedDrugs:[],//全部药品中，选择的药品项
       }
     },
     methods:{
@@ -239,34 +248,87 @@
         this.total = filteredItems.length;
         this.currentPage = 1;
       },
+      CommonrowSelected:function(items){
+        this.commonSelectedDrugs = items;
+      },
       //all
       allonFiltered(filteredItems) {
         // Trigger pagination to update the number of buttons/pages due to filtering
         this.alltotal = filteredItems.length;
         this.allcurrentPage = 1;
       },
+      //加常用药，开启modal
       addDrugs:function () {
         this.$bvModal.show("allDrugsModal");
+      },
+      //删除常用药，开启modal
+      deleteCommonDrugs:function(){
+        if(this.commonSelectedDrugs.length == 0){
+          alert("请选择常用药品");
+          return;
+        }
+        this.$bvModal.show("isDelete");
+      },
+      rowSelected:function (items) {
+        this.allAddSelectedDrugs = items;
+      },
+      tempCancel:function () {
+        this.allAddSelectedDrugs = [];
+      },
+      tempOk:function () {
+        let url = 'doctor/common/insertCommonlyUsedDrugsList';
+        let transAllDrugs = [];
+        for (let i=0;i<this.allAddSelectedDrugs.length;i++){
+          let transDrugsItem = {doctorId:this.doctorId, drugsId:-1};
+          transDrugsItem.drugsId = this.allAddSelectedDrugs[i].drugsId;
+          transAllDrugs.push(transDrugsItem);
+        }
+        console.log("这是即将输出的transAllDrugs");
+        console.log(transAllDrugs)
+        this.$post(url, transAllDrugs).then(res=>{
+          if (res.status == "OK"){
+            alert("插入成功");
+            this.getCommonDrugs();
+          }
+          else {
+            alert("插入失败");
+          }
+        });
+      },
+      //确认删除
+      deleteOk:function(){
+        console.log(this.commonSelectedDrugs);
+        console.log("这是即将删除的药");
+        let url = 'tech/deleteCommonUsedDrugs';
+        let data = this.commonSelectedDrugs;
+        this.$post(url, data).then(res=>{
+          if(res.status == "OK"){
+            this.getCommonDrugs();
+          }
+          else {
+            alert("url报错");
+          }
+        });
+      },
+      getCommonDrugs:function () {
+        //获取常用
+        let url = '/tech/getCommonUsedDrugs';
+        let data = {doctorId:this.doctorId};
+        this.$get(url, data).then(res=>{
+          if (res.status == "OK"){
+            this.commonDrugsItems = res.data;
+            this.total = this.commonDrugsItems.length;
+            console.log("这是常用");
+            console.log(this.commonDrugsItems);
+          }
+          else {
+            alert("url报错");
+          }
+        });
       }
     },
     mounted:function(){//挂载之后才开始填充数据
-
-      //获取常用
-      let url = '/tech/getCommonUsedDrugs';
-      let data = {doctorId:this.doctorId};
-      this.$get(url, data).then(res=>{
-        if (res.status == "OK"){
-          this.commonDrugsItems = res.data;
-          this.total = this.commonDrugsItems.length;
-          console.log("这是常用");
-          console.log(this.commonDrugsItems);
-        }
-        else {
-          alert("url报错");
-        }
-      });
-
-
+      this.getCommonDrugs();
       let url1 = '/tech/getAllDrugs';
       this.$get(url1).then(res=>{
         if (res.status == "OK"){

@@ -1,10 +1,6 @@
 export default [
   {
-    name: 'PharmacyHome',
+    name: '药房工作站',
     url: '/pharmacy',
   },
-  {
-    name: 'pharmacy',
-    url: '/pharmacy/pharmacy',
-  }
 ]
