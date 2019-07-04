@@ -46,7 +46,7 @@
         </b-col>
         <b-col md="10">
           <examination-results
-
+            :examination-result="selectedExaminationFmedicalItemsResult"
           >
           </examination-results>
         </b-col>

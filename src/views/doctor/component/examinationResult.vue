@@ -32,24 +32,24 @@
 <script>
     export default {
       name: "examinationResult",
-      // props:{
-      //   // examinationResult:{//检查检验结果
-      //   //   type:Object,
-      //   //   default:()=>{return {}}
-      //   // },
-      // },
-      data(){
-        return{
-          examinationResult:{
-            findings:"无",
-            diagnosticSuggestion:"无",
-            submitTime:'2019-07-04T18:20:00.241',
-            examinationResultImageList:[
-              {imageUrl:"http://pic37.nipic.com/20140113/8800276_184927469000_2.png"}
-            ]
-          }
-        }
+      props:{
+        examinationResult:{//检查检验结果
+          type:Object,
+          default:()=>{return {}}
+        },
       },
+      // data(){
+      //   return{
+      //     examinationResult:{
+      //       findings:"无",
+      //       diagnosticSuggestion:"无",
+      //       submitTime:'2019-07-04T18:20:00.241',
+      //       examinationResultImageList:[
+      //         {imageUrl:"http://pic37.nipic.com/20140113/8800276_184927469000_2.png"}
+      //       ]
+      //     }
+      //   }
+      // },
     }
 </script>
 

@@ -448,15 +448,20 @@
           };
         },
         addTreatmentItem(){//新增正在编辑的treatmentItem
-          this.treatmentItemForm.fmedicalItemsId = this.treatmentItemForm.fmedicalItems.fmedicalItemsId;
-          this.treatmentForm.treatmentItemsList.push( Object.assign({},this.treatmentItemForm));
-          this.treatmentItemForm={
-            fmedicalItems:{},//处置非药品
-            fmedicalItemsId:-1,//处置非药品ID
-            quantity:1,//开立数量
-            actualQuantity:1,//实际数量
-          };
-          this.resetTreatmentItem();
+          if(JSON.stringify(this.treatmentItemForm.fmedicalItems)=="{}"||(!this.treatmentItemForm.fmedicalItems.fmedicalItemsId )) {//判断是否有诊断信息
+            alert("您还没有选择处方条目");
+          }else{
+            this.treatmentItemForm.fmedicalItemsId = this.treatmentItemForm.fmedicalItems.fmedicalItemsId;
+            this.treatmentForm.treatmentItemsList.push( Object.assign({},this.treatmentItemForm));
+            this.treatmentItemForm={
+              fmedicalItems:{},//处置非药品
+              fmedicalItemsId:-1,//处置非药品ID
+              quantity:1,//开立数量
+              actualQuantity:1,//实际数量
+            };
+            this.resetTreatmentItem();
+          }
+
         },
         exitTreatmentItem(){
           if(this.selectedIndex>=0){

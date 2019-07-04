@@ -602,9 +602,13 @@
           this.prescriptionItemForm.dragsId=0;//药品医嘱
         },
         addPrescriptionItem(){
+          if(JSON.stringify(this.prescriptionItemForm.drugs)=="{}"||(!this.prescriptionItemForm.drugs.drugsId)) {//判断是否有诊断信息
+            alert("您还没有新增处方条目");
+          }else{
             this.prescriptionItemForm.dragsId=this.prescriptionItemForm.drugs.drugsId;//药品ID
             this.prescriptionForm.prescriptionItemsList.push(Object.assign({},this.prescriptionItemForm));
             this.resetPrescriptionItem();
+          }
         },
         selectCommonlyUsedItem(item){//选择常用药品
           this.selectedCommonlyUsedItems = item.drugs;

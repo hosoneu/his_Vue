@@ -8,7 +8,7 @@ import basicInfo from './basicInfo'
 import pharmacy from './pharmacy'
 import register from './register'
 import tech from './tech'
-
+import patient from './patient'
 
 Vue.use(Router);
 
@@ -24,6 +24,7 @@ export default new Router({
     statistics,
     tech,
     register,
-    pharmacy
+    pharmacy,
+    patient
   ]
 })
