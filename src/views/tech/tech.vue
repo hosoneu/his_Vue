@@ -34,6 +34,7 @@
   import FmedicalTable from "./component/fmedicalItems";
   import detailsTable from "./component/detailsTable";
   import axios from "axios";
+  import {mapState} from "vuex";
 
   // import {mapMutations} from 'vuex';
   // import {mapGetters} from 'vuex';
@@ -73,6 +74,10 @@
             {key: 'drugsFormat', label:'药品规格'},
             {key: 'amount', label:'数量', sortable: true},
           ],
+
+          techDoctorId:this.curr_user_id,
+          DepartmentId:this.curr_dept.departmentId,
+
           //当前病人下各种信息
           currentFmedical:-1,//当前非药品项目
           medicalitems:[],//存储药品
@@ -81,8 +86,8 @@
           currentAllFmedical:[],//当前病人全部非药
 
           allDrugs:[],//所有药
-          DepartmentId:133,//当前科室号
-          techDoctorId:999,//当前医技医生id
+          // DepartmentId:-1,//当前科室号
+          // techDoctorId:-1,//当前医技医生id
 
 
           smImgUrl:'',//sm传来的url
@@ -96,9 +101,7 @@
         }
       },
       computed:{
-        test:function () {
-          return 'aaa';
-        }
+        ...mapState("common",['curr_user_id','curr_dept.departmentId'])
       },
       methods: {
         selectPatient: async function (registration) {//根据患者选择非药品项目

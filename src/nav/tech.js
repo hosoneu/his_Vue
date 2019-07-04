@@ -1,14 +1,14 @@
 export default [
   {
-    name: 'tech',
+    name: '医技医生工作站',
     url: '/tech',
   },
   {
-    name:'Tech',
+    name:'医技医生工作站',
     url:'/tech/tech'
   },
   {
-    name:'commonlyUsedItems',
+    name:'常用项目维护',
     url:'/tech/commonlyUsedItems'
   }
 ]
