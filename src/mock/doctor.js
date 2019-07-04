@@ -11,10 +11,7 @@ export default function () {
     for(let i = 0; i < 4; i++) {
       let listObject = {
         id: Random.integer(100, 9999),
-        user_name: Random.cword(2, 4),
-        pay_way: Random.cword(2, 4),
-        status: Random.pick(['primary','secondary']),
-        sex:Random.pick(['男','女']),
+        name: Random.cword(2, 4),
       };
       list.push(listObject);
     }

@@ -4,18 +4,24 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips'
 
 export default {
   extends: Bar,
+  data() {
+    return {
+      d:[
+        {
+          label: 'GitHub Commits',
+          backgroundColor: '#f87979',
+          data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+        }
+      ]
+    }
+  },
   mounted () {
+    console.log(typeof this.d)
     // Overwriting base render method with actual data.
     this.renderChart(
       {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        datasets: [
-          {
-            label: 'GitHub Commits',
-            backgroundColor: '#f87979',
-            data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-          }
-        ]
+        datasets: this.d
       },
       {
         responsive: true,
@@ -34,6 +40,6 @@ export default {
         }
       }
     )
-  }
+  },
 }
 </script>
