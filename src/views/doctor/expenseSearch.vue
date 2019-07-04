@@ -59,26 +59,34 @@
           {key: 'payStatus', label: '支付状态', sortable: true},
         ],
         api:{
-          getExpenseItemsListApi:"",
+          getExpenseItemsListApi:"/doctor/common/getPatientExpenseItems",
           getExpenseItemsListParams:{}
-        }
-
+        },
       }
     },
     computed: {
       ...mapState("doctor", ["patient"]),
+      ...mapState("doctor", ["registration"]),
+      ...mapState("doctor",["medicalRecordState"])
     },
     watch:{
       patient:{
         handler(){
-          this.getExpenseItemsList();
+          if(this.medicalRecordState==="未选择"){
+            this.expenseItemsList=[];
+          }else{
+            this.getExpenseItemsList();
+          }
         }
       }
     },
     methods: {
       getExpenseItemsList(){
+        this.api.getExpenseItemsListParams.medicalRecordId = this.registration.medicalRecordId;
         this.$get(this.api.getExpenseItemsListApi, this.api.getExpenseItemsListParams).then(res => {
           if(res.status==="OK"){
+            // for(let i = 0 ; i<data.length;i++){}
+            
             this.expenseItemsList = res.data;
             console.log(res.data);
           }else{

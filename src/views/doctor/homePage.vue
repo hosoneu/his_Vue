@@ -39,7 +39,7 @@
               </div>
             </div>
 
-            <b-modal ref="medical-record-template" size="md" @ok="onSave" centered title="存为模板">
+            <b-modal ref="medical-record-template" okTitle="确定" cancelTitle="取消" size="md" @ok="onSave" centered title="存为模板">
               <!--  名称 -->
               <b-form-group
                 label="模板名称"

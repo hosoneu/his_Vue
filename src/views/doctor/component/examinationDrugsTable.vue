@@ -21,22 +21,22 @@
             </b-button-group>
           </b-col>
         </b-row>
-        <!--   ***********************     检索草药的弹框  ************************          -->
-        <b-modal :id="computedDrugsModalId+'herbal'" size="lg" centered title="检索草药">
+        <!--   *********************** 检索草药的弹框  ************************          -->
+        <b-modal :id="computedDrugsModalId+'herbal'"  okTitle="确认" cancelTitle="取消"  size="lg" centered title="检索草药">
           <herbal-drugs-table
             @selectDrugs="selectDrugs"
             :type=1>
           </herbal-drugs-table>
         </b-modal>
-        <!--   ***********************     检索成药的弹框  ************************          -->
-        <b-modal :id="computedDrugsModalId+'patent'" size="lg" centered title="检索成药">
+        <!--   *********************** 检索成药的弹框  ************************          -->
+        <b-modal :id="computedDrugsModalId+'patent'"  okTitle="确认" cancelTitle="取消"  size="lg" centered title="检索成药">
           <patent-drugs-table
             @selectDrugs="selectDrugs"
             :type=0>
           </patent-drugs-table>
         </b-modal>
-        <!--   ***********************     检索常用药品的弹框  ************************          -->
-        <b-modal :id="computedCommonlyUsedDrugsModalId" size="lg" centered title="常用药品">
+        <!--   ***********************  检索常用药品的弹框  ************************          -->
+        <b-modal :id="computedCommonlyUsedDrugsModalId"  okTitle="确认" cancelTitle="取消" size="lg" centered title="常用药品">
           <commonly-used-drugs
             @selectCommonlyUsedItem="selectCommonlyUsedDrugsItem"
             :commonly-used-type=0
@@ -394,12 +394,6 @@
           this.examinationDrugsItemsForm.drugs = item.drugs;
         },
         resetExaminationDrugsItem(){//重置当前非药品项目的附加药品
-
-        },
-        addExaminationDrugsItem(){//为非药品项目附加药品
-          this.examinationDrugsItemsForm.drugsId = this.examinationDrugsItemsForm.drugs.drugsId;
-          this.examinationDrugsItemsForm.doctorId = this.doctor.userId;
-          this.examinationDrugsItemsList.push(JSON.parse(JSON.stringify(this.examinationDrugsItemsForm)));
           this.examinationDrugsItemsForm.drugs={};
           this.examinationDrugsItemsForm.drugsUsage="4";//药品用法：1 静脉滴注 2 静脉可注 3 肌肉注射 4 口服 5 皮试 6 皮下注射
           this.examinationDrugsItemsForm.dosage=0.0;//药品用量
@@ -407,6 +401,12 @@
           this.examinationDrugsItemsForm.days=1;//天数 *次*天 如1天3次
           this.examinationDrugsItemsForm.quantity=1;//开立数量
           this.examinationDrugsItemsForm.drugsAdvice='';//药品医嘱
+        },
+        addExaminationDrugsItem(){//为非药品项目附加药品
+          this.examinationDrugsItemsForm.drugsId = this.examinationDrugsItemsForm.drugs.drugsId;
+          this.examinationDrugsItemsForm.doctorId = this.doctor.userId;
+          this.examinationDrugsItemsList.push(JSON.parse(JSON.stringify(this.examinationDrugsItemsForm)));
+          this.resetExaminationDrugsItem();
         },
         saveExaminationDrugsItems(){//保存当前药品
           console.log("现在要保存当前药品列表");

@@ -16,9 +16,7 @@
         <group-examination
          :type="type"
          @onCite="onCite"
-        >
-
-        </group-examination>
+        ></group-examination>
       </b-col>
       <b-col lg="9">
 
@@ -33,6 +31,35 @@
               </b-button-group>
             </div>
           </div>
+          <b-modal ref="examination-group" size="md" @ok="onSave" okTitle="保存" cancelTitle="取消" centered title="存为模板">
+            <!--  名称 -->
+            <b-form-group
+              label="模板名称"
+              label-for="groupName"
+              :label-cols="3"
+              :horizontal="true">
+              <b-form-input v-model="groupName" id="groupName" type="text" placeholder="请输入内容..."></b-form-input>
+            </b-form-group>
+            <!--  名称 -->
+            <b-form-group
+              label="模板编码"
+              label-for="groupCode"
+              :label-cols="3"
+              :horizontal="true">
+              <b-form-input v-model="groupCode" id="groupCode" type="text" placeholder="请输入内容..."></b-form-input>
+            </b-form-group>
+            <!--  范围 -->
+            <b-form-group
+              label="适用范围"
+              label-for="groupScope"
+              :label-cols="3">
+              <b-form-radio-group
+                id="groupScope"
+                v-model="groupScope"
+                :options="scopeOptions"
+              ></b-form-radio-group>
+            </b-form-group>
+          </b-modal>
           <b-tabs>
             <!--主模块部分的分菜单栏-->
             <b-tab :title = "computedTitle1" :disabled="ifReadonly">
@@ -58,15 +85,16 @@
                     </b-row>
 
                     <!--    ***********************    检索非药品的弹框     ************************       -->
-                    <b-modal :id="computedModalId" size="lg" centered :title="type===0?'检索检查':'检索检验'">
+                    <b-modal :id="computedModalId" okTitle="确定" cancelTitle="取消" @ok="selectFmedicalOk" @cancel="selectFmedicalCancel" size="lg" centered :title="type===0?'检索检查':'检索检验'">
                       <fmedical-table
                         @selectFmedical="selectFmedical"
                         :type=this.type>
                       </fmedical-table>
                     </b-modal>
                     <!--   ***********************     检索常用非药品的弹框  ************************          -->
-                    <b-modal :id="computedCommonlyUsedModalId" size="lg" centered :title="type===0?'常用检查':'常用检验'">
+                    <b-modal :id="computedCommonlyUsedModalId" okTitle="确定" cancelTitle="取消" @ok="selectCommonlyUsedItemOk" @cancel="selectCommonlyUsedItemCancel" size="lg" centered :title="type===0?'常用检查':'常用检验'">
                       <commonly-used-examination
+                        :type=2
                         @selectCommonlyUsedItem="selectCommonlyUsedItem"
                         :commonly-used-type=this.type
                         :commonly-used-api=this.commonlyUsedApi
@@ -144,10 +172,8 @@
               <b-card>
                 <b-row>
                   <b-col md="1">
-
                   </b-col>
                   <b-col md="10">
-
                     <b-row>
                       <b-col
                         align="right"
@@ -350,6 +376,16 @@
           currentExaminationDrugsItemsList:[],
           historyExaminationList:[],//历史检查检查检验单记录
           ifReadonly:true,
+          groupName:'',//组套名字
+          groupCode:'',
+          groupScope:'1',//组套范围
+          scopeOptions:[
+            { text: '个人', value: '1' },
+            { text: '科室', value: '2' },
+            { text: '全院', value: '3' },
+          ],
+          selectedFmedical:{},//记录在所有的非药品列表中选择的对象
+          selectedCommonlyUsedItems:{},//记录在常用非药品中选择的对象
         }
       },
       computed:{
@@ -380,6 +416,7 @@
             this.ifReadonly = false;
           }
         },
+
         onCite(groupExaminationInfoItem){//引用组套
           if(this.medicalRecordState==='未初诊'){
             alert("患者还未初诊");
@@ -413,10 +450,14 @@
           }
         },
         examinationSave(){//存为组套
+          this.$refs["examination-group"].show();
+        },
+        onSave(){
           let groupExamination = {};
           groupExamination.doctorId = this.doctor.userId;
-          groupExamination.groupExaminationName = "发送";
-          groupExamination.groupExaminationScope = '1';
+          groupExamination.groupExaminationName = this.groupName;
+          groupExamination.groupExaminationCode = this.groupCode;
+          groupExamination.groupExaminationScope = this.groupScope;
           if(this.type===0){
             groupExamination.groupExaminationType = '1';
           }else{
@@ -442,8 +483,11 @@
             }
           });
         },
-        examinationReset(){//重置检查检验单
 
+        examinationReset(){//重置检查检验单
+          this.examinationForm.doctorAdvice='';//当前的检查检验条目
+          this.examinationForm.examinationFmedicalItemsList = [];
+          this.resetExaminationFmedicalItem();
         },
         examinationSubmit(){//提交检查检验单
           if(this.type===0){
@@ -463,10 +507,24 @@
           });
         },
         selectFmedical(item){//在检索表单中选择一个非药品
-          this.examinationFmedicalItemsForm.fmedicalItems = item;
+          this.selectedFmedical = item;
+        },
+        selectFmedicalCancel(){
+          this.selectedFmedical = {};
+        },
+        selectFmedicalOk(){
+          this.examinationFmedicalItemsForm.fmedicalItems = JSON.parse(JSON.stringify(this.selectedFmedical));
+          this.selectFmedicalCancel();
         },
         selectCommonlyUsedItem(item){//选中常用非药品
-          this.examinationFmedicalItemsForm.fmedicalItems = item.fmedicalItems;
+          this.selectedCommonlyUsedItems = item.fmedicalItems;
+        },
+        selectCommonlyUsedItemOk(){
+          this.examinationFmedicalItemsForm.fmedicalItems = JSON.parse(JSON.stringify(this.selectedCommonlyUsedItems));
+          this.selectCommonlyUsedItemCancel();
+        },
+        selectCommonlyUsedItemCancel(){
+          this.selectedCommonlyUsedItems ={};
         },
         resetExaminationFmedicalItem(){//重置非药品检查检验条目
           this.examinationFmedicalItemsForm.fmedicalItems={};

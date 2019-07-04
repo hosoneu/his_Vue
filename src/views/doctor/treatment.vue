@@ -57,17 +57,16 @@
                     </b-row>
 
 
-                    <b-modal :id="computedModalId" size="lg" centered title="检索处置">
-                      {{computedModalId}}
+                    <b-modal :id="computedModalId"  okTitle="确定" cancelTitle="取消" @ok="selectFmedicalOk" @cancel="selectFmedicalCancel"  size="lg" centered title="检索处置">
                       <fmedical-table
                         @selectFmedical="selectFmedical"
                         :type=this.type>
                       </fmedical-table>
                     </b-modal>
 
-                    <b-modal :id="computedCommonlyUsedModalId" size="lg" centered title="常用处置">
-                      {{computedCommonlyUsedModalId}}
+                    <b-modal :id="computedCommonlyUsedModalId" okTitle="确定" cancelTitle="取消" @ok="selectCommonlyUsedItemOk" @cancel="selectCommonlyUsedItemCancel"  size="lg" centered title="常用处置">
                       <commonly-used-treatment
+                        :type=2
                         @selectCommonlyUsedItem="selectCommonlyUsedItem"
                         :commonly-used-type=this.type
                         :commonly-used-api=this.commonlyUsedApi
@@ -147,6 +146,8 @@
                       >
                         <b-button-group class="pull-right">
                           <b-button variant="outline-dark" size="md" @click="exitTreatmentItem()">编辑
+                          </b-button>
+                          <b-button variant="outline-dark" size="md" @click="saveTreatmentItem()">存档
                           </b-button>
                           <b-button variant="outline-dark" size="md" @click="deleteTreatmentItem()">删除
                           </b-button>
@@ -295,7 +296,8 @@
             ],
             api:{
               insertTreatmentApi:"/doctor/treatment/insertTreatment",
-              insertGroupTreatmentApi:"/doctor/treatment/insertGroupTreatment"
+              insertGroupTreatmentApi:"/doctor/treatment/insertGroupTreatment",
+              insertCommonlyUsedFmedicalApi:"/doctor/common/insertCommonlyUsedFmedical"
             },
             treatmentItemsFields:[
               {key: 'fmedicalItems.fmedicalItemsCode', label:'编码', sortable: true},
@@ -305,6 +307,8 @@
               {key: 'quantity', label:'数量', sortable: true},
             ],
             ifReadonly:true,
+            selectedCommonlyUsedItem:{},//在常用项目中选择的项目
+            selectedFmedical:{}//在所有处置信息中选择的项目
           }
       },
       computed:{
@@ -337,10 +341,26 @@
           }
         },
         selectFmedical(item){//选择处置非处置非药品项目
-          this.treatmentItemForm.fmedicalItems = item;
+          this.selectedFmedical = item;
+
         },
+        selectFmedicalOk(){
+          this.treatmentItemForm.fmedicalItems = JSON.parse(JSON.stringify(this.selectedFmedical));
+          this.selectFmedicalCancel();
+        },
+        selectFmedicalCancel(){
+          this.selectedFmedical = {};
+        },
+
         selectCommonlyUsedItem(item){//选择常用处置非处置非药品项目
-          this.treatmentItemForm.fmedicalItems = item.fmedicalItems;
+          this.selectedCommonlyUsedItem = item.fmedicalItems;
+        },
+        selectCommonlyUsedItemOk(){
+          this.treatmentItemForm.fmedicalItems = JSON.parse(JSON.stringify(this.selectedCommonlyUsedItem));
+          this.selectCommonlyUsedItemCancel();
+        },
+        selectCommonlyUsedItemCancel(){
+          this.selectedCommonlyUsedItem = {};
         },
         selectTreatmentItem(item){//选择处置条目
           let treatmentItemsList = this.treatmentForm.treatmentItemsList;
@@ -378,7 +398,7 @@
               alert(res.msg);
             }
           });
-          this.treatmentReset();
+          this.treatmentReset();//
         },
         resetTreatmentItem(){//重置正在编辑的treatmentItem
           this.treatmentItemForm={
@@ -411,6 +431,22 @@
         exitOk(){//编辑确认
           this.$set(this.treatmentForm.treatmentItemsList,this.selectedIndex,Object.assign({},this.operateTreatmentItemForm));
           this.selectedIndex = -1;
+        },
+        saveTreatmentItem(){
+          if(this.selectedIndex>=0){
+            let commonlyUsedFmedical = {};
+            commonlyUsedFmedical.fmedicalItemsId = this.treatmentForm.treatmentItemsList[this.selectedIndex].fmedicalItems.fmedicalItemsId;
+            commonlyUsedFmedical.doctorId = this.doctor.userId;
+            this.$post(this.api.insertCommonlyUsedFmedicalApi,JSON.parse(JSON.stringify(commonlyUsedFmedical))).then(res=>{
+              if(res.status==="OK"){
+                alert(res.msg);
+              }else{
+                alert(res.msg);
+              }
+            });
+          }else{
+            alert("请选中处置条目");
+          }
         },
         deleteTreatmentItem(){
           if(this.selectedIndex>=0){

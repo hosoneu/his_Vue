@@ -169,6 +169,7 @@
           if(JSON.stringify(this.groupExaminationInfoItem)=="{}"){
             alert("请先选择组套");
           }else{
+            if(this.groupExaminationInfoItem.doctorId===this.doctor.userId){
               this.groupExaminationTabs[this.currentTab].deleteGroupExaminationParams.groupExaminationId = this.groupExaminationInfoItem.groupExaminationId;
               this.$get(this.groupExaminationTabs[this.currentTab].deleteGroupExaminationApi,this.groupExaminationTabs[this.currentTab].deleteGroupExaminationParams).then(res=>{
                 console.log(res);
@@ -179,7 +180,10 @@
                   alert(res.msg);
                 }
               });
+            }else{
+              alert("您不能删除其他人创建的组套");
             }
+          }
         },
         checkGroupExamination(){
           if(JSON.stringify(this.groupExaminationInfoItem)=="{}"){

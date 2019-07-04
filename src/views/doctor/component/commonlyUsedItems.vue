@@ -3,29 +3,33 @@
     <!--  本组件用来实现常用项目列表的获取 -->
     <!-- User Interface controls -->
     <b-row>
-      <b-col sm="8" class="my-1">
+      <b-col sm="5" class="my-1">
         <b-input-group>
           <b-form-input
             v-model="filter"
             placeholder="请输入..."
-            size="sm"
+            size="md"
           ></b-form-input>
           <b-input-group-append>
             <b-button
               :disabled="!filter"
               @click="filter = ''"
-              size="sm"
+              size="md"
             >
               清空</b-button>
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col sm="4" class="my-1">
+      <b-col sm="2" class="my-1">
         <b-form-select
           v-model="perPage"
           :options="pageOptions"
-          size="sm"
+          size="md"
         ></b-form-select>
+      </b-col>
+      <b-col sm="5" class="my-1" align="right">
+        <b-button variant="danger" size="md" @click="deleteCommonlyUsedItems()">删除
+        </b-button>
       </b-col>
     </b-row>
     <!-- Main table element -->
@@ -71,6 +75,10 @@
     export default {
         name: "commonlyUsedItems",
       props:{
+        type:{//常用项类型0疾病 1药品 2非药品
+          type:Number,
+          default:()=>{return 0}
+        },
         commonlyUsedType:{//疾病：0中医疾病 1西医疾病 药品：0成药 1草药 非药品：0检查 1检验 2处置
           type: Number,
           default:()=>{return 0}
@@ -96,6 +104,7 @@
             sortDesc: false,
             sortDirection: 'asc',
             filter: null,
+            selectedCommonlyUsedItems:{},//被选中的常用项目
           }
       },
       mounted: async function(){//挂载之后才开始填充数据
@@ -107,9 +116,14 @@
         ...mapState("doctor",["doctor"])
       },
       methods:{
-        selectCommonlyUsedItem(item) {
+        selectCommonlyUsedItem(item) {//选中常用项目
           console.log(item[0]);
-          this.$emit('selectCommonlyUsedItem', item[0]);
+          if(item.length==0){//未选中或者取消
+            this.selectedCommonlyUsedItems = {};
+          }else{
+            this.selectedCommonlyUsedItems = item[0];
+            this.$emit('selectCommonlyUsedItem', item[0]);
+          }
         },
         onFiltered(filteredItems) {
           // Trigger pagination to update the number of buttons/pages due to filtering
@@ -130,7 +144,41 @@
               console.log("加载失败");
             }
           });
+        },
+        deleteCommonlyUsedItems(){//删除常用项目
+          if(JSON.stringify(this.selectedCommonlyUsedItems)=="{}"){//如果未选中项目
+            alert("您未选中常用项目");
+          }else{//选择常用项目
+            let deleteCommonlyUsedApi=[{
+              deleteApi:"/doctor/common/deleteCommonlyUsedDiagnosis",
+              deleteParams:{}
+            },{
+              deleteApi:"/doctor/common/deleteCommonlyUsedDrugs",
+              deleteParams:{}
+            },{
+              deleteApi:"/doctor/common/deleteCommonlyUsedFmedical",
+              deleteParams:{}
+            }];
+            if(this.type===0){//疾病
+              deleteCommonlyUsedApi[this.type].deleteParams.commonlyUsedDiagnosisId = this.selectedCommonlyUsedItems.commonlyUsedDiagnosisId;
+            }else if(this.type===1){//药品
+              deleteCommonlyUsedApi[this.type].deleteParams.commonlyUsedDrugsId = this.selectedCommonlyUsedItems.commonlyUsedDrugs;
+            }else{//非药品
+              deleteCommonlyUsedApi[this.type].deleteParams.commonlyUsedFmedicalId = this.selectedCommonlyUsedItems.commonlyUsedFmedicalId;
+            }
+            this.$get(deleteCommonlyUsedApi[this.type].deleteApi,deleteCommonlyUsedApi[this.type].deleteParams).then(res=>{
+              if(res.status === 'OK'){
+                alert(res.msg);
+                this.getCommonlyUsedList();
+              }else{
+                alert(res.msg);
+              }
+            });
+
+          }
+
         }
+
       }
     }
 </script>

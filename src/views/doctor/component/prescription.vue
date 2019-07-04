@@ -33,6 +33,35 @@
               </b-button-group>
             </div>
           </div>
+          <b-modal ref="prescription-group" size="md" @ok="onSave" okTitle="保存" cancelTitle="取消" centered title="存为模板">
+            <!--  名称 -->
+            <b-form-group
+              label="模板名称"
+              label-for="groupName"
+              :label-cols="3"
+              :horizontal="true">
+              <b-form-input v-model="groupPrescriptionName" id="groupName" type="text" placeholder="请输入内容..."></b-form-input>
+            </b-form-group>
+            <!--  名称 -->
+            <b-form-group
+              label="模板编码"
+              label-for="groupCode"
+              :label-cols="3"
+              :horizontal="true">
+              <b-form-input v-model="groupPrescriptionCode" id="groupCode" type="text" placeholder="请输入内容..."></b-form-input>
+            </b-form-group>
+            <!--  范围 -->
+            <b-form-group
+              label="适用范围"
+              label-for="groupScope"
+              :label-cols="3">
+              <b-form-radio-group
+                id="groupScope"
+                v-model="groupPrescriptionScope"
+                :options="scopeOptions"
+              ></b-form-radio-group>
+            </b-form-group>
+          </b-modal>
           <b-tabs>
             <!--主模块部分的分菜单栏-->
             <b-tab title = "开立处方" :disabled="this.ifReadonly">
@@ -60,17 +89,16 @@
                         </b-col>
                       </b-row>
 
-                      <b-modal :id="computedModalId" size="lg" centered title="检索药品">
-                        {{computedModalId}}
+                      <b-modal :id="computedModalId"  okTitle="确定" cancelTitle="取消" @ok="selectDrugsOk" @cancel="selectDrugsCancel" size="lg" centered title="检索药品">
                         <drugs-table
                           @selectDrugs="selectDrugs"
                           :type=this.type>
                         </drugs-table>
                       </b-modal>
 
-                      <b-modal :id="computedCommonlyUsedModalId" size="lg" centered title="常用药品">
-                        {{computedCommonlyUsedModalId}}
+                      <b-modal :id="computedCommonlyUsedModalId"  okTitle="确定" cancelTitle="取消" @ok="selectCommonlyUsedItemOk" @cancel="selectCommonlyUsedItemCancel"  size="lg" centered title="常用药品">
                         <commonly-used-drugs
+                          :type=1
                           @selectCommonlyUsedItem="selectCommonlyUsedItem"
                           :commonly-used-type=this.type
                           :commonly-used-api=this.commonlyUsedApi
@@ -436,13 +464,25 @@
           api:[
             {
               insertPrescription:"/doctor/prescription/patent/insertPrescription",
-              insertGroupPrescriptionApi:"/doctor/prescription/patent/insertGroupPrescription"
+              insertGroupPrescriptionApi:"/doctor/prescription/patent/insertGroupPrescription",
+              insertCommonlyUsedDrugsApi:"/doctor/common/insertCommonlyUsedDrugs",
             },{
               insertPrescription:"/doctor/prescription/herbal/insertPrescription",
-              insertGroupPrescriptionApi:"/doctor/prescription/herbal/insertGroupPrescription"
+              insertGroupPrescriptionApi:"/doctor/prescription/herbal/insertGroupPrescription",
+              insertCommonlyUsedDrugsApi:"/doctor/common/insertCommonlyUsedDrugs",
             }
           ],
           ifReadonly:true,
+          selectedCommonlyUsedItems:{},//在常用项中选择药品
+          selectedDrugs:{},//检索药品得到的对象
+          groupPrescriptionCode:'',
+          groupPrescriptionName:'',
+          groupPrescriptionScope:'1',
+          scopeOptions:[
+            { text: '个人', value: '1' },
+            { text: '科室', value: '2' },
+            { text: '全院', value: '3' },
+          ]
         }
       },
       computed:{
@@ -530,11 +570,19 @@
         },
         savePrescriptionItems(){
           if(this.selectedIndex>=0){
-
+            let commonlyUsedDrugs = {};
+            commonlyUsedDrugs.drugsId = this.prescriptionForm.prescriptionItemsList[this.selectedIndex].drugs.drugsId;
+            commonlyUsedDrugs.doctorId = this.doctor.userId;
+            this.$post(this.api[this.type].insertCommonlyUsedDrugsApi,JSON.parse(JSON.stringify(commonlyUsedDrugs))).then(res=>{
+              if(res.status==="OK"){
+                alert(res.msg);
+              }else{
+                alert(res.msg);
+              }
+            });
           }else{
             alert("请选中处方条目");
           }
-
         },
         deletePrescriptionItems(){//删除一个处方条目
           this.prescriptionForm.prescriptionItemsList.splice(this.selectedIndex,1);
@@ -551,23 +599,27 @@
         addPrescriptionItem(){
             this.prescriptionItemForm.dragsId=this.prescriptionItemForm.drugs.drugsId;//药品ID
             this.prescriptionForm.prescriptionItemsList.push(Object.assign({},this.prescriptionItemForm));
-            this.prescriptionItemForm.drugs={};
-            this.prescriptionItemForm.drugsUsage="4";//药品用法：1 静脉滴注 2 静脉可注 3 肌肉注射 4 口服 5 皮试 6 皮下注射
-            this.prescriptionItemForm.dosage=0.0;//药品用量
-            this.prescriptionItemForm.times=3;//次数
-            this.prescriptionItemForm.days=1;//天数 *次*天 如1天3次
-            this.prescriptionItemForm.quantity=1;//开立数量
-            this.prescriptionItemForm.drugsAdvice='';//药品医嘱
+            this.resetPrescriptionItem();
         },
         selectCommonlyUsedItem(item){//选择常用药品
-          console.log("选择常用药品");
-          console.log(item);
-          this.prescriptionItemForm.drugs = item.drugs;
+          this.selectedCommonlyUsedItems = item.drugs;
+        },
+        selectCommonlyUsedItemOk(){
+          this.prescriptionItemForm.drugs = JSON.parse(JSON.stringify(this.selectedCommonlyUsedItems));
+          this.selectCommonlyUsedItemCancel();
+        },
+        selectCommonlyUsedItemCancel(){
+          this.selectedCommonlyUsedItems = {};
         },
         selectDrugs(item){//选择检索药品
-          console.log("选择检索药品");
-          console.log(item);
-          this.prescriptionItemForm.drugs = item;
+          this.selectedDrugs = item;
+        },
+        selectDrugsOk(){
+          this.prescriptionItemForm.drugs = this.selectedDrugs;
+          this.selectDrugsCancel();
+        },
+        selectDrugsCancel(){
+          this.selectedDrugs={};
         },
         onCite(groupPrescriptionInfoItem){//引用模板
           if(this.medicalRecordState==='未初诊'){
@@ -593,11 +645,15 @@
           }
         },
         prescriptionSave(){//存为模板
+          this.$refs["prescription-group"].show();
+        },
+        onSave(){
           let groupPrescription={};
           groupPrescription.doctorId = this.doctor.userId;
-          groupPrescription.groupPrescriptionCode = "DSAD";
-          groupPrescription.groupPrescriptionName = "的撒大";
-          groupPrescription.groupPrescriptionScope= '1';
+          groupPrescription.groupPrescriptionCode = this.groupPrescriptionCode;
+          groupPrescription.groupPrescriptionName = this.groupPrescriptionName;
+          groupPrescription.groupPrescriptionScope= this.groupPrescriptionScope;
+          groupPrescription.prescriptionType=((this.type==0)?'1':'2') ;
           groupPrescription.groupPrescriptionItemsList = this.prescriptionForm.prescriptionItemsList;
           this.$post(this.api[this.type].insertGroupPrescriptionApi,JSON.parse(JSON.stringify(groupPrescription))).then(res=>{
             if(res.status==="OK"){

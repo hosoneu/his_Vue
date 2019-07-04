@@ -59,6 +59,9 @@
           @filtered="onFiltered"
           @row-selected="selectMedicalRecordTemplate"
         >
+          <template slot="doctorId" slot-scope="row" >
+            {{transformDoctor(row.item)}}
+          </template>
         </b-table>
         <!--页码-->
         <b-row>
@@ -122,6 +125,7 @@
           medicalRecordTemplateFields: [
             {key: 'medicalRecordHomePageTemplateId', label: '模板编号', sortable: true},
             {key: 'name', label: '模板名称', sortable: true},
+            {key: 'doctorId', label: '创建者', sortable: true},
           ],
           api:{
             deleteMedicalRecordHomePageTemplateApi:"/doctor/homepage/deleteMedicalRecordHomePageTemplate",
@@ -144,10 +148,18 @@
             this.medicalRecordTemplateInfoItem = Object.assign({}, item[0]);
           }
         },
+        transformDoctor(item){
+          if(item.doctorId===this.doctor.userId){
+            return "自己";
+          }else{
+            return "其他";
+          }
+        },
         deleteMedicalRecordTemplate(){//删除病历首页模板
           if(JSON.stringify(this.medicalRecordTemplateInfoItem)=="{}"){
             alert("请先选择模板");
           }else{
+            if(this.medicalRecordTemplateInfoItem.doctorId===this.doctor.userId){
               this.api.deleteMedicalRecordHomePageTemplateParams.medicalRecordHomePageTemplateId = this.medicalRecordTemplateInfoItem.medicalRecordHomePageTemplateId;
               this.$get(this.api.deleteMedicalRecordHomePageTemplateApi,this.api.deleteMedicalRecordHomePageTemplateParams).then(res=>{
                 console.log(res);
@@ -158,6 +170,9 @@
                   console.log("插入失败");
                 }
               });
+            }else{
+              alert("您不能删除其他人创建的模板");
+            }
           }
         },
         checkMedicalRecordTemplate(){

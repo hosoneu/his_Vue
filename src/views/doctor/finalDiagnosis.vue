@@ -22,7 +22,6 @@
             <div class="card-header-actions">
               <b-button-group class="pull-right" ><!-- 此处为清空暂存提交按钮 -->
                   <b-button size="sm" :disabled="this.ifReadonly" @click="finalDiagnosisReset" variant="danger"><i class="fa fa-undo"></i> 清空</b-button>
-                <b-button size="sm" :disabled="this.ifReadonly" class="d-sm-down-none" variant="primary"><i class="fa fa-save"></i> 暂存</b-button>
                 <b-button size="sm" :disabled="this.ifReadonly" @click="finalDiagnosisSubmit" class="d-sm-down-none" variant="success"><i class="fa fa-check"></i> 提交</b-button>
               </b-button-group>
             </div>
@@ -65,7 +64,6 @@
                   </b-form-group>
                 </b-col>
               </b-row>
-
             </b-tab>
           </b-tabs>
         </b-card>
@@ -128,12 +126,14 @@
           let para = {};
           let reqApi='';
           if(type==='初诊'){//如果未确诊
+            alert("现在为初诊");
             reqApi=this.api.listFirstDiagnosisByMedicalRecordId;
           }else{//如果已确诊
             reqApi=this.api.listFinalDiagnosisByMedicalRecordId;
           }
           para.medicalRecordId = this.registration.medicalRecordId;//得到病历号
           this.$get(reqApi, para).then(res => {
+            console.log("开始执行");
             console.log(res);
             if (res.status === 'OK') {
               if(res.data[0].disease.diseaseTypeId===472){//判断是中医疾病还是西医疾病 472为中医
@@ -155,11 +155,11 @@
         },
         selectPatient(){//切换患者
           // do nothing
-          if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
-              this.ifReadonly = true;
-          }else{
-            this.ifReadonly = false;
-          }
+          // if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
+          //     this.ifReadonly = true;
+          // }else{
+          //   this.ifReadonly = false;
+          // }
         },
         finalDiagnosisReset(){//重置确诊信息
           if(this.medicalRecordState==='已初诊'){
@@ -167,9 +167,9 @@
             this.finalWesternDiagnosisItems=[];
           }else{
             if(this.medicalRecordState==='未初诊'){
-              alert("您还没初诊，不能确诊");
+              this.ifReadonly = true;
+              console.log("您还没初诊，不能确诊");
             }else{
-
               console.log("已确诊");
             }
           }
@@ -207,7 +207,6 @@
             }
           }
         },
-
       },
 
     }

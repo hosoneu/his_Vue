@@ -113,14 +113,20 @@
             title:"个人",
             getGroupTreatmentApi:"/doctor/treatment/listGroupTreatment",
             getGroupTreatmentParams:{scope:'1'},
+            deleteGroupTreatmentByIdApi:"/doctor/treatment/deleteGroupTreatmentById",
+            deleteGroupTreatmentByIdParams:{}
           },{
             title:"科室",
             getGroupTreatmentApi:"/doctor/treatment/listGroupTreatment",
             getGroupTreatmentParams:{scope:'2'},
+            deleteGroupTreatmentByIdApi:"/doctor/treatment/deleteGroupTreatmentById",
+            deleteGroupTreatmentByIdParams:{}
           },{
             title:"全院",
             getGroupTreatmentApi:"/doctor/treatment/listGroupTreatment",
             getGroupTreatmentParams:{scope:'3'},
+            deleteGroupTreatmentByIdApi:"/doctor/treatment/deleteGroupTreatmentById",
+            deleteGroupTreatmentByIdParams:{}
           }
           ],
           groupTreatmentFields: [
@@ -153,20 +159,23 @@
           }
         },
         deleteGroupTreatment(){//删除检查检验组套
-          // if(JSON.stringify(this.groupTreatmentInfoItem)=="{}"){
-          //   alert("请先选择组套");
-          // }else{
-          //     this.api.deleteMedicalRecordHomePageTemplateParams.medicalRecordHomePageTemplateId = this.groupTreatmentInfoItem.medicalRecordHomePageTemplateId;
-          //     this.$get(this.api.deleteMedicalRecordHomePageTemplateApi,this.api.deleteMedicalRecordHomePageTemplateParams).then(res=>{
-          //       console.log(res);
-          //       if(res.status === "OK"){
-          //         console.log(res.data);
-          //         this.getGroupTreatmentList();
-          //       }else{
-          //         console.log("插入失败");
-          //       }
-          //     });
-          // }
+          if(JSON.stringify(this.groupTreatmentInfoItem)=="{}"){
+            alert("请先选择组套");
+          }else{
+            if(this.groupTreatmentInfoItem.doctorId===this.doctor.userId){
+              this.groupTreatmentTabs[this.currentTab].deleteGroupTreatmentByIdParams.groupTreatmentId = this.groupTreatmentInfoItem.groupTreatmentId;
+              this.$get(this.groupTreatmentTabs[this.currentTab].deleteGroupTreatmentByIdApi,this.groupTreatmentTabs[this.currentTab].deleteGroupTreatmentByIdParams).then(res=>{
+                if(res.status === "OK"){
+                  alert(res.msg);
+                  this.getGroupTreatmentList();
+                }else{
+                  alert(res.msg);
+                }
+              });
+            }else{
+
+            }
+          }
         },
         checkGroupTreatment(){
           if(JSON.stringify(this.groupTreatmentInfoItem)=="{}"){

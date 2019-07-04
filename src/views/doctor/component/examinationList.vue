@@ -6,8 +6,6 @@
         </b-col>
         <b-col md="10">
           <b-row>
-            <b-col md="5">
-            </b-col>
             <b-col md="4" class="my-1">
               <b-input-group>
                 <b-form-input
@@ -25,7 +23,7 @@
                 </b-input-group-append>
               </b-input-group>
             </b-col>
-            <b-col md="3" class="my-1">
+            <b-col md="2" class="my-1">
               <b-form-select
                 v-model="perPage"
                 :options="pageOptions"

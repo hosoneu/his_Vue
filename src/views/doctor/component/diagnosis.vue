@@ -19,16 +19,17 @@
                 </b-col>
               </b-row>
               <br>
-              <b-modal :id="computedModalId" size="lg" centered title="检索疾病">
+              <b-modal :id="computedModalId" okTitle="确认" cancelTitle="取消" @ok="selectDiseaseOk" @cancel="selectDiseaseCancel" size="lg" centered title="检索疾病">
                 <disease-modal
                   @selectDisease="selectDisease"
                   :type=this.type
                 ></disease-modal>
               </b-modal>
 
-              <b-modal :id="computedCommonlyUsedModalId" size="lg" centered title="常用诊断">
+              <b-modal :id="computedCommonlyUsedModalId" @ok="selectCommonlyUsedItemOk" @cancel="selectCommonlyUsedItemCancel" okTitle="确认" cancelTitle="取消" size="lg" centered title="常用诊断">
                 <commonly-used-diagnosis
                   @selectCommonlyUsedItem="selectCommonlyUsedItem"
+                  :type=0
                   :commonly-used-type=this.type
                   :commonly-used-api=this.commonlyUsedApi
                   :commonly-used-fields=this.commonlyUsedFields
@@ -114,13 +115,13 @@
                     </b-button>
                     <b-button variant="outline-dark" size="md" @click="deleteDiagnosis()">删除
                     </b-button>
-                    <b-button variant="outline-dark" size="md" @click="addDiagnosis()">存档
+                    <b-button variant="outline-dark" size="md" @click="saveDiagnosis()">存档
                     </b-button>
                   </b-button-group>
                 </b-col>
               </b-row>
 
-              <b-modal ref="operate-diagnosis-modal" size="lg" centered title="修改诊断" @ok="exitOk">
+              <b-modal ref="operate-diagnosis-modal" okTitle="确认" cancelTitle="取消" size="lg" centered title="修改诊断" @ok="exitOk">
                 <b-row>
                   <b-col md="6">
                     <!--    疾病ICD diseaseIcd-->
@@ -251,11 +252,7 @@
             medicalRecordId:1,
             mainDiagnosisMark: '1',
             suspectMark:'1',
-            disease:{
-              diseaseName: '',
-              diseaseIcd:'',
-              diseaseId:0,
-            },
+            disease:{},
             onsetDate:'',
             diagnosisMark:'',//诊断标志：初诊1 终诊2
           },//用来编辑的诊断
@@ -264,11 +261,7 @@
             medicalRecordId:1,
             mainDiagnosisMark: '1',
             suspectMark:'1',
-            disease:{
-              diseaseName: '',
-              diseaseIcd:'',
-              diseaseId:0,
-            },
+            disease:{},
             onsetDate:'',
             diagnosisMark:'',//诊断标志：初诊1 终诊2
           },
@@ -284,7 +277,6 @@
             {key: 'disease.diseaseIcd', label: '疾病ICD', sortable: true},
             {key: 'disease.diseaseName', label: '疾病名称', sortable: true},
             {key: 'disease.diseaseCode', label:'疾病代码', sortable: true},
-            {key: 'disease.diseaseTypeId', label: '疾病类型', sortable: true},
           ],
           diagnosisFields: [
             {key: 'disease.diseaseIcd', label: 'ICD编码', sortable: true},
@@ -301,7 +293,9 @@
           ],
           api:{
             insertCommonlyUsedDiagnosisApi:"/doctor/common/insertCommonlyUsedDiagnosis",
-          }
+          },
+          selectedDisease:{},//当前选中的疾病
+          selectedCommonlyUsedDisease:{},//当前选中的疾病
       }
       },
       computed:{
@@ -349,15 +343,19 @@
         },
         onSubmit(evt) {//新增按钮
           evt.preventDefault();
-          this.diagnosisForm.diseaseId = this.diagnosisForm.disease.diseaseId;
-          this.diagnosisForm.medicalRecordId = this.medicalRecord.medicalRecordId;
-          this.diagnosisForm.defineDiagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
-          let copyDiagnosisForm = Object.assign({},this.diagnosisForm);
-          this.diagnosisItems.push(copyDiagnosisForm);
-          this.diagnosisForm.disease={};
-          this.diagnosisForm.mainDiagnosisMark= '1';
-          this.diagnosisForm.suspectMark= '1';
-          this.diagnosisForm.onsetDate= '';
+          if(JSON.stringify(this.diagnosisForm.disease)=="{}"){
+            alert("请选择疾病");
+          }else{
+            this.diagnosisForm.diseaseId = this.diagnosisForm.disease.diseaseId;
+            this.diagnosisForm.medicalRecordId = this.medicalRecord.medicalRecordId;
+            this.diagnosisForm.defineDiagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
+            let copyDiagnosisForm = Object.assign({},this.diagnosisForm);
+            this.diagnosisItems.push(copyDiagnosisForm);
+            this.diagnosisForm.disease={};
+            this.diagnosisForm.mainDiagnosisMark= '1';
+            this.diagnosisForm.suspectMark= '1';
+            this.diagnosisForm.onsetDate= '';
+          }
         },
         onReset(evt) {//清空按钮
           evt.preventDefault();
@@ -369,11 +367,28 @@
           // Trick to reset/clear native browser form validation state
         },
         selectDisease(disease){//在弹框中选择疾病
-          this.diagnosisForm.disease = JSON.parse(JSON.stringify(disease));
+          this.selectedDisease = JSON.parse(JSON.stringify(disease));
+        },
+        selectDiseaseOk(){//确认添加疾病
+          console.log("确认");
+          this.diagnosisForm.disease = JSON.parse(JSON.stringify(this.selectedDisease));
+          this.selectDiseaseCancel();
+          // console.log(this.selectedDisease())
+        },
+        selectDiseaseCancel(){
+          this.selectedDisease={};
         },
         selectCommonlyUsedItem(item){//选择常用诊断
-          this.diagnosisForm.disease = JSON.parse(JSON.stringify(item.disease));
+           this.selectedCommonlyUsedDisease = JSON.parse(JSON.stringify(item.disease));
         },
+        selectCommonlyUsedItemOk(){
+          this.diagnosisForm.disease = JSON.parse(JSON.stringify(this.selectedCommonlyUsedDisease));
+          this.selectCommonlyUsedItemCancel();
+        },
+        selectCommonlyUsedItemCancel(){
+          this.selectedCommonlyUsedDisease={};
+        },
+
         exitDiagnosis(){//更改诊断
           if(this.selectedIndex>=0){
             this.operateDiagnosisForm = Object.assign({},this.diagnosisItems[this.selectedIndex]);
@@ -397,7 +412,7 @@
             alert("请选中诊断条目");
           }
         },
-        addDiagnosis(){//存为常用诊断
+        saveDiagnosis(){//存为常用诊断
           if(this.selectedIndex>=0){
             let commonlyUsedDiagnosis = {};
             commonlyUsedDiagnosis.doctorId = this.doctor.userId;
