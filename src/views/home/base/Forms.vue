@@ -91,9 +91,9 @@
     <b-row>
       <b-col md="6">
         <b-card>
-          <div slot="header">
-            <strong>Basic Form</strong> Elements
-          </div>
+            <div slot="header">
+              <strong>Basic Form</strong> Elements
+            </div>
           <b-form>
           <b-form-group
             description="Let us know your full name."
