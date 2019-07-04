@@ -1,5 +1,5 @@
 <template>
-  <div class="animated fadeIn">
+  <div>
     <b-row>
       <b-col lg="12">
         <patient-info v-bind:initial-user="selectedPatientItems" ></patient-info>
@@ -9,7 +9,6 @@
     <b-col lg="3">
       <registrationList
         :registration-fields="patientFields"
-        :patientTabs="patientTabs"
         @selectPatient="selectPatient"
       >
       </registrationList>
@@ -45,7 +44,7 @@
       data: () =>{
         return {
           //表头及属性映射
-          selectedPatientItems:{  medicalRecordId: "secondary", patientName: "未选择", patientGender: '未选择', patientAge: '未选择', calculationTypeId:'未选择'},
+          selectedPatientItems:{medicalRecordId: "未选择", patientName: "未选择", patientGender: '未选择', patientAge: '未选择', calculationTypeId:'未选择'},
           patientFields: [
             {key: 'medicalRecordId', label: '病历号', sortable: true},
             {key: 'patient.patientName', label: '姓名', sortable: true},
@@ -63,11 +62,11 @@
             {key: 'actualQuantity', label:'数量'},
             {key: '缴费状态'}
           ],
-          patientTabs:{
-            title:"个人",
-            getPatientApi:"/tech/getAllPatientByDepartmentId",
-            getPatientParams:{departmentId:133},
-          },
+          // patientTabs:{
+          //   title:"个人",
+          //   getPatientApi:"/tech/getAllPatientByDepartmentId",
+          //   getPatientParams:{departmentId:133},
+          // },
           techDrugsfields:[
             {key: 'drugsMnemoniccode', label: '拼音助记码', sortable: true},
             {key: 'drugsName', label:'药品名称'},
@@ -75,8 +74,8 @@
             {key: 'amount', label:'数量', sortable: true},
           ],
 
-          techDoctorId:this.curr_user_id,
-          DepartmentId:this.curr_dept.departmentId,
+          // techDoctorId:this.curr_user_id,
+          // DepartmentId:this.curr_dept.departmentId,
 
           //当前病人下各种信息
           currentFmedical:-1,//当前非药品项目
@@ -98,10 +97,24 @@
           isWrite:true,//判断是否可写
 
           TextResult:false,
+
+          techDoctorId:-1,
+          DepartmentId:-1,
         }
       },
       computed:{
-        ...mapState("common",['curr_user_id','curr_dept.departmentId'])
+        // techDoctorId : this.$store.state.common.curr_user_id,
+        // DepartmentId : this.$store.state.common.curr_dept.departmentId
+        // techDoctorId:this.$store.state.common.curr_user_id,
+        // DepartmentId:this.$store.state.common.curr_dept.departmentId
+        ...mapState("common",['curr_user_id']),
+        ...mapState("common",['curr_dept']),
+
+  // {'curr_dept']
+      },
+      mounted:function(){
+        this.techDoctorId = this.curr_user_id;
+        this.DepartmentId = this.curr_dept.departmentId;
       },
       methods: {
         selectPatient: async function (registration) {//根据患者选择非药品项目
@@ -129,13 +142,19 @@
           // this.items = [];
 
           let data = {Medical_record_ID:registration.medicalRecordId,Department_ID:this.DepartmentId};
-          // let data = {"Medical_record_ID":registration.medicalRecordId};
+          console.log("点击病人获取非药品的data");
+          console.log(data);
           let url = "/tech/getAllFmedical";
           await this.$get(url, JSON.parse(JSON.stringify(data))).then(res => {
           // this.$get(url, JSON.parse(JSON.stringify(data))).then(res => {
             console.log(res);
             if (res.status === "OK") {
+              console.log("res.data");
+              console.log(res.data  );
               this.currentAllFmedical = res.data;
+              if (this.currentAllFmedical == null){
+                this.currentAllFmedical = [];
+              }
               for(let i=0;i<this.currentAllFmedical.length;i++){
                 this.getStatus(i);
               }
@@ -152,12 +171,16 @@
           this.$set(this.currentAllFmedical[i], 'currentStatus');
           //添加判断是否缴费
           let url = 'dispensing/getExpenseItems';
+          console.log("这是即将获得expenseItemsId的数据");
+
           let data = {expenseItemsId:this.currentAllFmedical[i].expenseItemsId};
+          console.log(data);
           await this.$get(url, data).then(res=>{
             if (res.status == "OK"){
               console.log("得到数据");
               this.$set(this.currentAllFmedical[i], 'expenseItems');
               this.currentAllFmedical[i].expenseItems = res.data;
+              console.log(res.data);
               console.log("啊哈哈哈");
             }
             else{
@@ -170,6 +193,12 @@
           console.log(this.currentAllFmedical[i].expenseItems);
           if (this.currentAllFmedical[i].expenseItems.payStatus!="2"){//未缴费
             this.currentAllFmedical[i].currentStatus = "未缴费";
+          }
+          else if (this.currentAllFmedical[i].expenseItems.payStatus=="3"){//未缴费
+            this.currentAllFmedical[i].currentStatus = "已退费";
+          }
+          else if (this.currentAllFmedical[i].expenseItems.payStatus=="4"){//未缴费
+            this.currentAllFmedical[i].currentStatus = "无效";
           }
           else if (this.currentAllFmedical[i].expenseItems.payStatus=="2") {
             if (this.currentAllFmedical[i].validStatus!=1){
@@ -185,6 +214,8 @@
         },
         selectFmedical:function(examinationFmedical){//选择非药品，给出药品
 
+          console.log("这是选择非药品");
+          console.log(examinationFmedical);
           this.$refs['imgCancel'].imgCancel();
           // alert("进来了");
           this.toptodownmessage = '';
@@ -227,19 +258,22 @@
           }
           this.medicalitems = [];
           this.medicalitems = examinationFmedical.examinationDrugsItemsList;
-          for (let i=0;i<this.medicalitems.length;i++){
-            let url = 'dispensing/getExpenseItems';
-            let data = {expenseItemsId:this.medicalitems[i].expenseItemsId};
-            this.$get(url, data).then(res=>{
-              if (res.status == "OK"){
-                console.log("得到数据");
-                this.$set(this.medicalitems[i], 'expenseItems');
-                this.medicalitems[i].expenseItems = res.data;
-              }
-              else{
-                alert("url出错");
-              }
-            });
+            if (this.medicalitems != null || this.medicalitems!=[]){
+            for (let i=0;i<this.medicalitems.length;i++){
+              let url = 'dispensing/getExpenseItems';
+              let data = {expenseItemsId:this.medicalitems[i].expenseItemsId};
+              console.log(data);
+              this.$get(url, data).then(res=>{
+                if (res.status == "OK"){
+                  console.log("得到数据");
+                  this.$set(this.medicalitems[i], 'expenseItems');
+                  this.medicalitems[i].expenseItems = res.data;
+                }
+                else{
+                  alert("url出错");
+                }
+              });
+            }
           }
           console.log(this.medicalitems);
           console.log("medicalitems");
@@ -306,7 +340,7 @@
           console.log('tech iswrite');
         },
         submit: async function (imgFile) {
-          if (this.currentAllFmedical || !this.currentAllFmedical[this.currentFmedical].temp_registrationStatus){
+          if (this.currentAllFmedical == -1 || !this.currentAllFmedical[this.currentFmedical].temp_registrationStatus){
             alert('请先登记非药品项目');
             return;
           }
@@ -381,7 +415,7 @@
           let url="/tech/insertExaminationResult"
           // let data = {examinationResult:{doctorId:this.techDoctorId, findings:temp.findings,diagnosticSuggestion:temp.msg}, examinationFmedicalItemsId:temp.examinationFmedicalItemsId};
           alert(this.smImgUrl);
-          let data = {doctorId:this.techDoctorId, findings:temp.findings,diagnosticSuggestion:temp.msg, examinationFmedicalItemsId:temp.examinationFmedicalItemsId, imageURL:this.smImgUrl,imageName:'aaa' };
+          let data = {doctorId:this.techDoctorId, findings:temp.findings,diagnosticSuggestion:temp.msg, examinationFmedicalItemsId:temp.examinationFmedicalItemsId, imageURL:this.smImgUrl,imageName:'name' };
           console.log(data);
           console.log("要传的data");
           this.$get(url, JSON.parse(JSON.stringify(data))).then(res=>{
@@ -452,7 +486,7 @@
           let data = {examinationDrugsItemsList:tempDrugs, medicalRecordID:this.currentregistration.medicalRecordId};
           this.$post(url, data).then(res=>{
             if (res.status == "OK"){
-              alert("药发过来了");
+              console.log("药发过来了");
             }
             else{
               alert("url出错");

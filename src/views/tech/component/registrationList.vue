@@ -67,6 +67,7 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   export default {
       name: "registrationList",
     props:{
@@ -74,7 +75,7 @@
         type: Array,
         default:()=>{return []}
       },
-      patientTabs:''
+      // patientTabs:''
     },
     data() {
       return {
@@ -89,7 +90,16 @@
         sortDesc: false,
         sortDirection: 'asc',
         filter: null,
+        // departmentId:this.curr_dept.departmentId,
+        // patientTabs:{
+        //   title:"个人",
+        //   getPatientApi:"/tech/getAllPatientByDepartmentId",
+        //   getPatientParams:{departmentId:this.departmentId},
+        // },
       }
+    },
+    computed:{
+      ...mapState("common",['curr_dept'])
     },
     mounted: async function(){//挂载之后才开始填充数据
       console.log("mounted");
@@ -113,9 +123,12 @@
       // },
       getPatientList(){
         console.log("请求患者列表");
-        let data = this.patientTabs.getPatientParams;
+        let url = '/tech/getAllPatientByDepartmentId';
+        // this.departmentId = this.curr_dept.departmentId;
+        // console.log("这是即将获得病人的科室号id" + this.departmentId);
+        let data = {departmentId:this.curr_dept.departmentId};
         console.log(data);
-        this.$get(this.patientTabs.getPatientApi, data).then(res=>{
+        this.$get(url, data).then(res=>{
           console.log("已获得")
           console.log(res);
           if(res.status === "OK"){

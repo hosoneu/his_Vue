@@ -25,7 +25,9 @@
 <script>
   export default {
     name: "patientInfo",
-    props:['initialUser'],
+    props: {
+      initialUser:{}
+    }
   }
 </script>
 
