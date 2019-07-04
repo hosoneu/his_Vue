@@ -50,7 +50,6 @@
 </template>
 
 <script>
-  import axios from 'axios/index'
   import WorkloadChart from './component/workloadChart'
   export default {
     components: {WorkloadChart},
@@ -62,11 +61,11 @@
       },
       chartlabels:{
         type:Array,
-        default:['zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd',]
+        default:()=>['zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd','zqysdd',]
       },
       fields:{
         type: Array,
-        default: [
+        default:()=>[
           { key: "itemID",label:'编号', sortable: true },
           { key: "itemname",label:'姓名', sortable: true },
           { key: "ghf",label:'挂号费', sortable: true },

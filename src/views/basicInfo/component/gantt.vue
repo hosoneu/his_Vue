@@ -67,6 +67,7 @@
           },
         methods :{
           addTask(newTask){
+            alert("调用");
             gantt.addTask(newTask);
             gantt.refreshData();
           },
