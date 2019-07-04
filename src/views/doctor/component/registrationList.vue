@@ -169,7 +169,6 @@
               selectedPatientItems.patientName = patient[0].patient.patientName;//名字
               selectedPatientItems.medicalRecordState = this.medicalRecordState;//诊断状态
               this.updatePatient(selectedPatientItems);//更新vuex中的patient对象
-
               this.$emit('selectPatient', patient[0]);
             }else{
               alert("切换失败");

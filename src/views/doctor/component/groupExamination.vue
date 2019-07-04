@@ -148,11 +148,11 @@
         console.log("await this.getGroupExaminationList");
       },
       computed:{
-        ...mapState("doctor",['doctor']),
+        ...mapState("common",['curr_user']),
       },
       methods:{
         transformDoctor(item){
-          if(item.doctorId===this.doctor.userId){
+          if(item.doctorId===this.curr_user.userId){
             return "自己";
           }else{
             return "其他";
@@ -169,7 +169,7 @@
           if(JSON.stringify(this.groupExaminationInfoItem)=="{}"){
             alert("请先选择组套");
           }else{
-            if(this.groupExaminationInfoItem.doctorId===this.doctor.userId){
+            if(this.groupExaminationInfoItem.doctorId===this.curr_user.userId){
               this.groupExaminationTabs[this.currentTab].deleteGroupExaminationParams.groupExaminationId = this.groupExaminationInfoItem.groupExaminationId;
               this.$get(this.groupExaminationTabs[this.currentTab].deleteGroupExaminationApi,this.groupExaminationTabs[this.currentTab].deleteGroupExaminationParams).then(res=>{
                 console.log(res);
@@ -208,7 +208,7 @@
         },
         getGroupExaminationList(){
           this.groupExaminationTabs[this.currentTab].getGroupExaminationParams.type=this.type+1;
-          this.groupExaminationTabs[this.currentTab].getGroupExaminationParams.userId=this.doctor.userId;
+          this.groupExaminationTabs[this.currentTab].getGroupExaminationParams.userId=this.curr_user.userId;
           this.$get(this.groupExaminationTabs[this.currentTab].getGroupExaminationApi, this.groupExaminationTabs[this.currentTab].getGroupExaminationParams).then(res=>{
             console.log(res);
             if(res.status === 'OK'){

@@ -7,8 +7,8 @@ const FinalDiagnosis = () => import('../views/doctor/finalDiagnosis');
 const PatentPrescription = () => import('../views/doctor/patentPrescription');
 const HerbalPrescription = () => import('../views/doctor/herbalPrescription');
 const Treatment = () => import('../views/doctor/treatment');
-const ExaminatonFirst = () => import('../views/doctor/examination1');
-const ExaminatonSecond = () => import('../views/doctor/examination2');
+const ExaminationFirst = () => import('../views/doctor/examination1');
+const ExaminationSecond = () => import('../views/doctor/examination2');
 const TreatmentOver = () => import('../views/doctor/treatmentOver');
 const ExpenseSearch = () => import('../views/doctor/expenseSearch');
 export default {
@@ -45,12 +45,12 @@ export default {
     {
       path:'examination1',
       name:'examination1',
-      component:ExaminatonFirst
+      component:ExaminationFirst
     },
     {
       path:'examination2',
       name:'examination2',
-      component:ExaminatonSecond
+      component:ExaminationSecond
     },
     {
       path:'treatmentOver',

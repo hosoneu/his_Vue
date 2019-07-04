@@ -138,7 +138,7 @@
         console.log("await this.getMedicalRecordTemplateList");
       },
       computed:{
-        ...mapState("doctor",['doctor']),
+        ...mapState("common",['curr_user']),
       },
       methods:{
         selectMedicalRecordTemplate(item) {//选中一个模板
@@ -149,7 +149,7 @@
           }
         },
         transformDoctor(item){
-          if(item.doctorId===this.doctor.userId){
+          if(item.doctorId===this.curr_user.userId){
             return "自己";
           }else{
             return "其他";
@@ -159,7 +159,7 @@
           if(JSON.stringify(this.medicalRecordTemplateInfoItem)=="{}"){
             alert("请先选择模板");
           }else{
-            if(this.medicalRecordTemplateInfoItem.doctorId===this.doctor.userId){
+            if(this.medicalRecordTemplateInfoItem.doctorId===this.curr_user.userId){
               this.api.deleteMedicalRecordHomePageTemplateParams.medicalRecordHomePageTemplateId = this.medicalRecordTemplateInfoItem.medicalRecordHomePageTemplateId;
               this.$get(this.api.deleteMedicalRecordHomePageTemplateApi,this.api.deleteMedicalRecordHomePageTemplateParams).then(res=>{
                 console.log(res);
@@ -196,7 +196,7 @@
           this.currentPage = 1;
         },
         getMedicalRecordTemplateList(){
-          this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams.userId=this.doctor.userId;
+          this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams.userId=this.curr_user.userId;
           this.$get(this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateApi, this.medicalRecordTemplateTabs[this.currentTab].getMedicalRecordTemplateParams).then(res=>{
             console.log(res);
             if(res.status === 'OK'){

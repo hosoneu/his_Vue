@@ -3,7 +3,9 @@
     <b-row>
 
       <b-col lg="12">
-        <patient-info></patient-info>
+        <patient-info
+         ref="patientInfo"
+        ></patient-info>
       </b-col>
     </b-row>
     <b-row>
@@ -211,34 +213,54 @@
       computed:{
         ...mapState("doctor",["medicalRecord"]),//得到当前的病历内容 得到就诊状态 未选择 未初诊、已初诊、已终诊、诊毕
         ...mapState("doctor",["medicalRecordState"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
+        ...mapState("doctor",["patient"]),
+        ...mapState("doctor",["registration"]),
+      },
+      mounted:function () {
+
+        this.getMedicalRecord();
+      },
+      watch:{
+        patient:{
+          handler(){
+            this.getMedicalRecord();
+          }
+        }
       },
       methods:{
-        selectPatient(registration){//切换患者时需要更新当前的MedicalRecord的部分
+        selectPatient(){//切换患者时需要更新当前的MedicalRecord的部分
+
+        },
+        getMedicalRecord(){
           if(!(this.medicalRecordState==='未初诊')){//如果已初诊 查询病历首页的信息
-            // this.inputDisabled=true;
-            this.api.selectMedicalRecordHomePageParams.medicalRecordId=registration.medicalRecordId;
+            this.api.selectMedicalRecordHomePageParams.medicalRecordId=this.registration.medicalRecordId;
             this.$get(this.api.selectMedicalRecordHomePageApi,JSON.parse(JSON.stringify(this.api.selectMedicalRecordHomePageParams))).then(res=>{
               console.log(res);
               if(res.status === "OK"){
                 this.medicalRecordHomePage = res.data;
                 console.log(res.data);
               }else{
-                console.log(res.message);
+                console.log(res.msg);
               }
             });
-            this.api.listFirstDiagnosisByMedicalRecordIdParams.medicalRecordId=registration.medicalRecordId;
+            console.log("w哦请求1");
+            this.api.listFirstDiagnosisByMedicalRecordIdParams.medicalRecordId=this.registration.medicalRecordId;
             this.$get(this.api.listFirstDiagnosisByMedicalRecordIdApi,JSON.parse(JSON.stringify(this.api.listFirstDiagnosisByMedicalRecordIdParams))).then(res=>{
               console.log(res);
               if(res.status === "OK"){
-                if(res.data[0].diagnosisMark==='1'){//如果是中医疾病
-                  this.firstChineseDiagnosisItems = res.data;//填充中医Items
+                //todo 疾病类型
+                console.log("w哦请求2");
+                console.log(res);
+                if(res.data[0].disease.diseaseTypeId===472){//如果是中医疾病
+                  this.firstChineseDiagnosisItems= res.data;//填充中医Items)
                 }else{//如果是西医疾病
-                  this.firstWesternDiagnosisItems = res.data;//填充西医Items
+                  this.firstWesternDiagnosisItems = res.data;
+                  // this.firstWesternDiagnosisItems = res.data;//填充西医Items
                 }
                 console.log(res.data);
               }else{
-                console.log(res.message);
+                console.log(res.msg);
               }
             });
             this.ifReadonly = true;//如果不是未初诊 则更改为只读
@@ -248,11 +270,15 @@
             this.ifReadonly = false;//如果未初诊 则改为可编辑
             this.ifSeen = true;//改为可见
           }
-
         },
         medicalRecordSubmit(){
           let chineseDiagnosisItems = this.$refs["chineseDiagnosis"].diagnosisItems;
           let westernDiagnosisItems = this.$refs["westernDiagnosis"].diagnosisItems;
+          let diagnosisItems=[];
+          diagnosisItems = chineseDiagnosisItems.concat(westernDiagnosisItems);
+          console.log("病历首页录入成功");
+          console.log(diagnosisItems);
+          console.log("病历首页录入成功");
           if(chineseDiagnosisItems.length===0&&westernDiagnosisItems.length===0){//判断是否有诊断信息
             alert("您还没有诊断");
           }else{
@@ -267,20 +293,20 @@
                   console.log("插入失败");
                 }
               });
-              let diagnosisItems = chineseDiagnosisItems.concat(westernDiagnosisItems);
               this.$post(this.api.insertFirstDiagnosisApi,JSON.parse(JSON.stringify(diagnosisItems))).then(res=>{
                 console.log(res);
                 if(res.status === "OK"){
                   console.log(res.data);
-                  console.log(res.message);
+                  console.log(res.msg);
                   alert("病历首页录入成功");
+                  this.$refs["registrationList"].getPatientList();
+                  this.$refs["patientInfo"].initPatient();
                 }else{
-                  console.log(res.message);
+                  console.log(res.msg);
                 }
               });
             }
           }
-          this.$refs['registrationList'].getPatientList();
         },
         onSave(){
           if(this.templateName===''){
@@ -288,7 +314,7 @@
           }else{
             let medicalRecordHomePageTemplate = {};
             let diagnosisItems = this.firstChineseDiagnosisItems.concat(this.firstWesternDiagnosisItems);
-            medicalRecordHomePageTemplate.doctorId = this.doctor.userId;
+            medicalRecordHomePageTemplate.doctorId = this.curr_user.userId;
             medicalRecordHomePageTemplate.name=this.templateName;
             medicalRecordHomePageTemplate.scope=this.templateScope;
             medicalRecordHomePageTemplate.chiefComplaint = this.medicalRecordHomePage.chiefComplaint;
@@ -355,9 +381,8 @@
                 this.firstWesternDiagnosisItems.push(templateDiagnosisItem);
               }
             }
-
           }else{
-            alert("患者已经初诊了喔！");
+            alert("患者已经初诊,不能引用模板");
           }
         },
       }

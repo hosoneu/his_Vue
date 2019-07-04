@@ -25,5 +25,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-
+utils.js
+toggle-class.js
 

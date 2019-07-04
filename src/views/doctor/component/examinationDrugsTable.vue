@@ -371,7 +371,7 @@
         }
       },
       computed:{
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         computedDrugsModalId(){//药品弹框
           return this.modalId+this.type+"drugs";
         },
@@ -404,7 +404,7 @@
         },
         addExaminationDrugsItem(){//为非药品项目附加药品
           this.examinationDrugsItemsForm.drugsId = this.examinationDrugsItemsForm.drugs.drugsId;
-          this.examinationDrugsItemsForm.doctorId = this.doctor.userId;
+          this.examinationDrugsItemsForm.doctorId = this.curr_user.userId;
           this.examinationDrugsItemsList.push(JSON.parse(JSON.stringify(this.examinationDrugsItemsForm)));
           this.resetExaminationDrugsItem();
         },

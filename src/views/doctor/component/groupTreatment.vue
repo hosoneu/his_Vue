@@ -141,11 +141,11 @@
         console.log("await this.getGroupTreatmentList");
       },
       computed:{
-        ...mapState("doctor",['doctor']),
+        ...mapState("common",['curr_user']),
       },
       methods:{
         transformDoctor(item){
-          if(item.doctorId===this.doctor.userId){
+          if(item.doctorId===this.curr_user.userId){
             return "自己";
           }else{
             return "其他";
@@ -162,7 +162,7 @@
           if(JSON.stringify(this.groupTreatmentInfoItem)=="{}"){
             alert("请先选择组套");
           }else{
-            if(this.groupTreatmentInfoItem.doctorId===this.doctor.userId){
+            if(this.groupTreatmentInfoItem.doctorId===this.curr_user.userId){
               this.groupTreatmentTabs[this.currentTab].deleteGroupTreatmentByIdParams.groupTreatmentId = this.groupTreatmentInfoItem.groupTreatmentId;
               this.$get(this.groupTreatmentTabs[this.currentTab].deleteGroupTreatmentByIdApi,this.groupTreatmentTabs[this.currentTab].deleteGroupTreatmentByIdParams).then(res=>{
                 if(res.status === "OK"){
@@ -199,7 +199,7 @@
           this.currentPage = 1;
         },
         getGroupTreatmentList(){
-          this.groupTreatmentTabs[this.currentTab].getGroupTreatmentParams.userId=this.doctor.userId;
+          this.groupTreatmentTabs[this.currentTab].getGroupTreatmentParams.userId=this.curr_user.userId;
           this.$get(this.groupTreatmentTabs[this.currentTab].getGroupTreatmentApi, this.groupTreatmentTabs[this.currentTab].getGroupTreatmentParams).then(res=>{
             console.log(res);
             if(res.status === 'OK'){
