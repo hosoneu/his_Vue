@@ -267,7 +267,7 @@
           },
           charge(payModeId) {
             //registerModal对话框提交后触发事件 执行此方法 并从对话框处得到支付方式
-            this.$post('http://localhost:8080/hoso/registration/charge', {"expenseItemsIdList": this.selected_items_Id, "userId": this.$store.state.register.cashier.userId,"payModeId": payModeId}).then((res)=> {
+            this.$post('registration/charge', {"expenseItemsIdList": this.selected_items_Id, "userId": this.$store.state.register.cashier.userId,"payModeId": payModeId}).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 alert("缴费成功");
@@ -312,7 +312,7 @@
           refund() {
             let replace = {expenseItemsList: this.selected_items, userId: this.$store.state.register.cashier.userId};
             //registerModal对话框提交后触发事件 执行此方法
-            this.$post('http://localhost:8080/hoso/registration/refund', replace).then((res)=> {
+            this.$post('registration/refund', replace).then((res)=> {
               console.log(res.data);
               if(res.status === 'OK'){
                 alert("退费成功");

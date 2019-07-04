@@ -83,7 +83,7 @@
         },
         mounted: async function(){
           console.log("mounted");
-          this.$store.commit('common/set_curr_user_type', 'basicInfo');
+          // this.$store.commit('common/set_curr_user_type', 'basicInfo');
           await this.getDiseaseList();
           await this.getDiseaseTypeList();
 
@@ -91,7 +91,7 @@
         methods: {
           getDiseaseList() {
             console.log("请求疾病列表");
-            this.$get('http://localhost:8080/hoso/disease/getAllDiseaseWithType').then((res) => {
+            this.$get('disease/getAllDiseaseWithType').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
@@ -101,7 +101,7 @@
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/disease/delete', {"id": item.diseaseId}).then((res) => {
+            this.$get('disease/delete', {"id": item.diseaseId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.getDiseaseList();
@@ -112,7 +112,7 @@
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/disease/update', JSON.stringify(item)).then((res) => {
+            this.$post('disease/update', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -125,7 +125,7 @@
           },
           insertList(item){
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/disease/insert', JSON.stringify(item)).then((res) => {
+            this.$post('disease/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求
@@ -138,7 +138,7 @@
           },
           getDiseaseTypeList() {
             console.log("请求疾病分类列表");
-            this.$get('http://localhost:8080/hoso/diseaseType/getAllDiseaseType').then((res) => {
+            this.$get('diseaseType/getAllDiseaseType').then((res) => {
               if (res.status === 'OK') {
                 this.usedData.diseaseType = res.data;
                 console.log(this.usedData.diseaseType);

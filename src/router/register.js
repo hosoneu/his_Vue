@@ -10,6 +10,7 @@ import ChargeHome from "../views/register/chargeHome";
 export default {
   path: '/register',
   name: 'register',
+  redirect:'/register/registerHome',
   component: DefaultContainer,
   children: [
     {

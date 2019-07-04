@@ -117,6 +117,7 @@
           }
         });
         this.currentdepartmentitems=newList;
+        return null;
       },
       personalSearch() {
         var newList = [];

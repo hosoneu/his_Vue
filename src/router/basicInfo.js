@@ -31,6 +31,7 @@ import DrugsInfo from "../views/basicInfo/drugsInfo"
 export default {
   path: '/basicInfo',
   name: 'basicInfo',
+  redirect:'/basicInfo/departmentInfo',
   component: DefaultContainer,
   children: [
     {

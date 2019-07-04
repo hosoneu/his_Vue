@@ -40,13 +40,13 @@
         },
         mounted: async function(){
           console.log("mounted");
-          this.$store.commit('common/set_curr_user_type', 'basicInfo');
+          // this.$store.commit('common/set_curr_user_type', 'basicInfo');
           await this.getExpenseTypeList();
         },
         methods: {
           getExpenseTypeList() {
             console.log("请求费用科目列表");
-            this.$get('http://localhost:8080/hoso/expenseType/getAllExpenseType').then((res) => {
+            this.$get('expenseType/getAllExpenseType').then((res) => {
               console.log(res.data);
               if (res.status === 'OK') {
                 this.items = res.data;
@@ -56,7 +56,7 @@
             })
           },
           deleteList(item) {
-            this.$get('http://localhost:8080/hoso/expenseType/delete', {"id": item.expenseTypeId}).then((res) => {
+            this.$get('expenseType/delete', {"id": item.expenseTypeId}).then((res) => {
               if (res.status === 'OK') {
                 console.log("删除成功");
                 this.getExpenseTypeList();
@@ -66,7 +66,7 @@
             })
           },
           updateList(item) {
-            this.$post('http://localhost:8080/hoso/expenseType/update', JSON.stringify(item)).then((res) => {
+            this.$post('expenseType/update', JSON.stringify(item)).then((res) => {
               if (res.code === true) {
                 console.log("更新成功");
                 //改变数据后重新请求
@@ -78,7 +78,7 @@
           },
           insertList(item) {
             alert(JSON.stringify(item));
-            this.$post('http://localhost:8080/hoso/expenseType/insert', JSON.stringify(item)).then((res) => {
+            this.$post('expenseType/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");
                 //改变数据后重新请求
