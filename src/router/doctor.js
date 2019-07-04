@@ -9,6 +9,7 @@ const WorkloadChart = () => import('../views/statistics/component/workloadChart'
 const UserTable = () => import('../views/statistics/dayCalPage');
 const personalWorkload = () => import('../views/statistics/personalworkload');
 const dayCalHistory = () => import('../views/statistics/component/dayCalHistory');
+const patientCost= () => import('../views/doctor/patientCost');
 export default {
   path:'/doctor',
     redirect:'/doctor/doctorHome',
@@ -21,34 +22,10 @@ export default {
     component: DoctorHome
   },
     {
-      path: 'departmentTable',
-      name: 'departmentTable',
-      component: DepartmentTable
+      path: 'patientCost',
+      name: 'patientCost',
+      component: patientCost
     },
-    {
-      path: 'workload',
-      name: 'workload',
-      component: Workload
-    },
-    {
-      path: 'dayCalHistory',
-      name: 'dayCalHistory',
-      component: dayCalHistory,
-    },
-    {
-      path: 'personalworkload',
-      name: 'personalworkload',
-      component: personalWorkload
-    },
-    {
-      path: 'userTable',
-      name: 'userTable',
-      component: UserTable
-    },
-    {
-      path: 'workloadChart',
-      name: 'workloadChart',
-      component: WorkloadChart
-    }
+
 ]
 }

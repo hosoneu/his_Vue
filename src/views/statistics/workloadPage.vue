@@ -48,9 +48,9 @@
       ></b-pagination>
     </b-card>
     </b-col>
-    <b-col>
+    <b-col lg="9">
       <b-card>
-      <workload :test-i-d="test" :currentdepartment="currentdepartmentID" :currentperson="currentpersonalID">
+      <workload :test-i-d="test" ref="workload" :currentdepartment="currentdepartmentID" :currentperson="currentpersonalID">
       </workload>
       </b-card>
     </b-col>
@@ -158,6 +158,7 @@
           }
       },
       departmentrowSelected(items) {
+        this.$refs['workload'].reloadChart()
         //console.log(items)
         if (items.length===0){
           this.isShow = false;
@@ -183,6 +184,7 @@
         this.findModel()
       },
       personalrowSelected(items) {
+        this.$refs['workload'].reloadChart()
         if (items.length===0){
           this.currentpersonalID = null;
           this.personalselected=null;

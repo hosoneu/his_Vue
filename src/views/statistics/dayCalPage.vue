@@ -3,6 +3,7 @@
     <b-row>
       <b-col lg="3">
         <b-card header="日结列表">
+
           <b-tabs @input="changeTab">
             <b-tab title="未日结" :active="currentTab===0">
               <b-form-input v-model="filter" placeholder="请输入关键字" ></b-form-input>
@@ -72,7 +73,41 @@
               </b-col>
               <b-col  lg="9" >
                 <b-row style="float: right">
-                <b-button   variant="primary" :disabled="invoiceIDselected.length===0" @click="DODaycal">日结</b-button>
+                  <div>
+                    <!-- Using modifiers -->
+                    <!-- Using value -->
+                    <b-button variant="primary" v-b-modal="'my-modal'" @click="CalSelectedtotalRows" :disabled="invoiceIDselected.length===0">日结</b-button>
+
+                    <!-- The modal -->
+                    <b-modal id="my-modal" title="日结发票列表" @ok="DODaycal" okTitle="确认日结" cancelTitle="取消">
+
+                      <b-table
+                        striped hover
+                        :items="invoiceselected"
+                        :fields="invoicefields"
+                        :current-page="invoiceselectedcurrentPage"
+                        :per-page="invoiceselectedperPage"
+                        :filter="invoiceselectedfilter"
+                        :sort-by.sync="invoiceselectedsortBy"
+                        :sort-desc.sync="invoiceselectedsortDesc"
+                        :sort-direction="invoiceselectedsortDirection"
+                        @filtered="InvoiceSelectedOnFiltered"
+                      >
+                        <template slot="payTime" slot-scope="row">
+                          {{row.value.split('T')[0]}}
+                        </template>
+                        <template slot="isselected" slot-scope="row">
+                            {{ row.item.isselected ? '' : '已选择'}}
+                        </template>
+                      </b-table>
+                      <b-pagination
+                        v-model="invoiceselectedcurrentPage"
+                        :total-rows="invoiceselectedtotalRows"
+                        :per-page="invoiceselectedperPage"
+                        align="center"
+                      ></b-pagination>
+                    </b-modal>
+                  </div>
                 </b-row>
               </b-col>
             </b-row>
@@ -202,6 +237,13 @@
     },
     data() {
       return {
+        invoiceselectedtotalRows: 1,
+        invoiceselectedcurrentPage: 1,
+        invoiceselectedperPage: 4,
+        invoiceselectedsortBy: null,
+        invoiceselectedsortDesc: false,
+        invoiceselectedsortDirection: 'asc',
+        invoiceselectedfilter: null,
         isAllRowSelected: false,
         historyuserID: null,
         daycalfields: [
@@ -544,6 +586,9 @@
       CaltotalRows() {
         this.totalRows = this.items.length;
       },
+      CalSelectedtotalRows() {
+        this.invoiceselectedtotalRows = this.invoiceselected.length;
+      },
       CalTotalInvoicesRows() {
         this.invoicetotalRows = this.invoiceitems.length;
       },
@@ -561,6 +606,11 @@
         // Trigger pagination to update the number of buttons/pages due to filtering
         this.historytotalRows = filteredItems.length
         this.historycurrentPage = 1
+      },
+      InvoiceSelectedOnFiltered(filteredItems) {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.invoiceselectedtotalRows = filteredItems.length
+        this.invoiceselectedcurrentPage = 1
       },
       rowSelected(items) {
         if (items.length === 0) {
