@@ -106,7 +106,7 @@
                            size="lg"
                            :plain="true"
                            v-model="registration.doctorId">
-              <option v-for="doctor in doctorList" :key="doctor.userId" :value="doctor.userId" :label="doctor.userName"></option>
+              <option v-for="doctor in this.doctorListByDepartmentId(registration.departmentId)" :key="doctor.userId" :value="doctor.userId" :label="doctor.userName"></option>
             </b-form-select>
           </b-form-group>
         </b-col>
@@ -241,6 +241,15 @@
         },
         nameState(){
           return this.patient.patientName.length > 1;
+        },
+        doctorListByDepartmentId(){
+          // let ds = this.doctorList.filter(doctor => {if(doctor.departmentId === departmentId) return true;});
+          // if(ds.length > 0) return ds[0].text;
+          // else return "未知";
+          return function(departmentId) {
+            let ds = this.doctorList.filter(doctor => {if(doctor.department.departmentId === departmentId) return true;});
+            return ds;
+          };
         },
       },
       methods:{
