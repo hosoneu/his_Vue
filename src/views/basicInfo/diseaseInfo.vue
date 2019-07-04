@@ -83,7 +83,7 @@
         },
         mounted: async function(){
           console.log("mounted");
-          this.$store.commit('common/set_curr_user_type', 'basicInfo');
+          // this.$store.commit('common/set_curr_user_type', 'basicInfo');
           await this.getDiseaseList();
           await this.getDiseaseTypeList();
 

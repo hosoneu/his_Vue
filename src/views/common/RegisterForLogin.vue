@@ -58,6 +58,6 @@
 
 <script>
 export default {
-  name: 'Register'
+  name: 'RegisterForLogin'
 }
 </script>

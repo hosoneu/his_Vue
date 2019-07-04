@@ -1,7 +1,7 @@
 const Page404 = () => import('../views/common/Page404');
 const Page500 = () => import('../views/common/Page500');
 const Login = () => import('../views/common/Login');
-const Register = () => import('../views/common/Register');
+const Register = () => import('../views/common/RegisterForLogin');
 
 
 export default {
@@ -28,7 +28,7 @@ export default {
       component: Login
     },
     {
-      path: 'register',
+      path: 'registerForLogin',
       name: 'Register',
       component: Register
     }

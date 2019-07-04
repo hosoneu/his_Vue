@@ -21,7 +21,7 @@
           }
         },
         mounted() {
-          this.$store.commit('common/set_curr_user_type', 'basicInfo');
+          // this.$store.commit('common/set_curr_user_type', 'basicInfo');
           //设置甘特表为工作时间表 默认周六日不上班，可根据后续setWorkTime调整
           gantt.config.work_time = true;  // removes non-working time from calculations
           //设置小时为duration单位
