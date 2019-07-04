@@ -152,7 +152,7 @@
       },
       computed:{
         ...mapState("doctor",["patient"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         ...mapState("doctor",["registration"]),
         ...mapState("doctor",["medicalRecordState"]),
       },

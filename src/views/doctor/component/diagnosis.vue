@@ -300,7 +300,7 @@
       },
       computed:{
         ...mapState("doctor",["medicalRecord"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         computedModalId:function () {
           return this.modalId+this.type;
         },
@@ -323,6 +323,8 @@
         transformOnsetDate(item){//得到发病日期
           if(item.onsetDate==''){
             return '';
+          }else if(item.onsetDate===null){
+            return "";
           }else{
             return item.onsetDate.split("T")[0];
           }
@@ -348,7 +350,7 @@
           }else{
             this.diagnosisForm.diseaseId = this.diagnosisForm.disease.diseaseId;
             this.diagnosisForm.medicalRecordId = this.medicalRecord.medicalRecordId;
-            this.diagnosisForm.defineDiagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
+            this.diagnosisForm.diagnosisMark = this.defineDiagnosisMark;//设置诊断标志 1 初诊 2 终诊
             let copyDiagnosisForm = Object.assign({},this.diagnosisForm);
             this.diagnosisItems.push(copyDiagnosisForm);
             this.diagnosisForm.disease={};
@@ -392,8 +394,8 @@
         exitDiagnosis(){//更改诊断
           if(this.selectedIndex>=0){
             this.operateDiagnosisForm = Object.assign({},this.diagnosisItems[this.selectedIndex]);
-
-            this.operateDiagnosisForm.onsetDate = this.operateDiagnosisForm.onsetDate.split("T")[0];//处理从数据库传输过来的日期
+            this.operateDiagnosisForm.onsetDate = this.transformOnsetDate(this.operateDiagnosisForm);
+            // this.operateDiagnosisForm.onsetDate = this.operateDiagnosisForm.onsetDate.split("T")[0];//处理从数据库传输过来的日期
             console.log("我来了");
             console.log(this.operateDiagnosisForm);
             console.log("我走了");
@@ -415,7 +417,7 @@
         saveDiagnosis(){//存为常用诊断
           if(this.selectedIndex>=0){
             let commonlyUsedDiagnosis = {};
-            commonlyUsedDiagnosis.doctorId = this.doctor.userId;
+            commonlyUsedDiagnosis.doctorId = this.curr_user.userId;
             commonlyUsedDiagnosis.diseaseId = this.diagnosisItems[this.selectedIndex].diseaseId;
             this.$post(this.api.insertCommonlyUsedDiagnosisApi,JSON.parse(JSON.stringify(commonlyUsedDiagnosis))).then(res=>{
               if(res.status === "OK"){

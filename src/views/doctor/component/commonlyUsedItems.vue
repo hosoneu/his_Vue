@@ -113,7 +113,7 @@
         console.log("await this.getCommonlyUsedList");
       },
       computed:{
-        ...mapState("doctor",["doctor"])
+        ...mapState("common",["curr_user"])
       },
       methods:{
         selectCommonlyUsedItem(item) {//选中常用项目
@@ -131,7 +131,7 @@
           this.currentPage = 1;
         },
         getCommonlyUsedList(){
-          this.commonlyUsedApi[this.commonlyUsedType].getCommonlyUsedParams.userId = this.doctor.userId
+          this.commonlyUsedApi[this.commonlyUsedType].getCommonlyUsedParams.userId = this.curr_user.userId
           let data = this.commonlyUsedApi[this.commonlyUsedType].getCommonlyUsedParams;
           console.log(data);
           this.$get(this.commonlyUsedApi[this.commonlyUsedType].getCommonlyUsedListApi, data).then(res=>{

@@ -64,7 +64,8 @@
           </b-modal>
           <b-tabs>
             <!--主模块部分的分菜单栏-->
-            <b-tab title = "开立处方" :disabled="this.ifReadonly">
+<!--            <b-tab title = "开立处方" :disabled="this.ifReadonly">-->
+            <b-tab title = "开立处方" >
               <br>
               <b-card>
                 <b-row>
@@ -487,7 +488,7 @@
       },
       computed:{
         ...mapState("doctor",["patient"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         ...mapState("doctor",["registration"]),
         ...mapState("doctor",["medicalRecordState"]),
         computedCommonlyUsedModalId(){
@@ -496,6 +497,9 @@
         computedModalId(){
           return this.modalId+this.type;
         },
+      },
+      mounted:async function(){
+        await this.prescriptionReset();
       },
       watch:{
         patient:{
@@ -521,7 +525,7 @@
               break;
             }
           }
-        },
+        },  
         selectPatient(){//选择患者
           //do nothing
           if(this.medicalRecordState==="未初诊"||this.medicalRecordState==="诊毕"){
@@ -532,7 +536,7 @@
         },
         prescriptionSubmit(){//提交处方
           this.prescriptionForm.medicalRecordId=this.registration.medicalRecordId;
-          this.prescriptionForm.doctorId=this.doctor.userId;
+          this.prescriptionForm.doctorId=this.curr_user.userId;
           this.prescriptionForm.prescriptionType=this.transformType;
           this.$post(this.api[this.type].insertPrescription,JSON.parse(JSON.stringify(this.prescriptionForm))).then(res=>{
             console.log(res);
@@ -551,7 +555,7 @@
         prescriptionReset(){//重置处方
           this.prescriptionForm={
             medicalRecordId:this.registration.medicalRecordId,
-            doctorId:this.doctor.userId,
+            doctorId:this.curr_user.userId,
             prescriptionType:this.transformType,
             prescriptionItemsList:[],//处方药品数组
           };
@@ -572,7 +576,7 @@
           if(this.selectedIndex>=0){
             let commonlyUsedDrugs = {};
             commonlyUsedDrugs.drugsId = this.prescriptionForm.prescriptionItemsList[this.selectedIndex].drugs.drugsId;
-            commonlyUsedDrugs.doctorId = this.doctor.userId;
+            commonlyUsedDrugs.doctorId = this.curr_user.userId;
             this.$post(this.api[this.type].insertCommonlyUsedDrugsApi,JSON.parse(JSON.stringify(commonlyUsedDrugs))).then(res=>{
               if(res.status==="OK"){
                 alert(res.msg);
@@ -649,7 +653,7 @@
         },
         onSave(){
           let groupPrescription={};
-          groupPrescription.doctorId = this.doctor.userId;
+          groupPrescription.doctorId = this.curr_user.userId;
           groupPrescription.groupPrescriptionCode = this.groupPrescriptionCode;
           groupPrescription.groupPrescriptionName = this.groupPrescriptionName;
           groupPrescription.groupPrescriptionScope= this.groupPrescriptionScope;
