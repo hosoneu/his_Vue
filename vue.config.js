@@ -2,6 +2,7 @@ module.exports = {
   lintOnSave: false,
   runtimeCompiler: true,
   devServer:{
+<<<<<<< HEAD
     port: 8000,
     proxy:{
       '/sm':{
@@ -13,4 +14,8 @@ module.exports = {
       }
     }
   },
+=======
+    port:8000
+  }
+>>>>>>> 69c79112271136a43184cc6b0815548696ed8218
 };

@@ -58,6 +58,8 @@
           },
           convertInfo(schedulingData, userName){
             this.schedulingData = schedulingData;
+            //计算时间间隔 转换日期类型
+            // this.$moment
             let newTask = {id: this.lastId+1, text: userName, start_date: schedulingData.schedulingStarttime, duration: schedulingData.schedulingEndtime - schedulingData.schedulingttartTime};
             this.tasks.data.push(newTask);
           },
