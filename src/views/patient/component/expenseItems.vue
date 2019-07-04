@@ -1,63 +1,44 @@
 <template>
   <div class="animated fadeIn">
-    <b-row>
-
-      <b-col lg="12">
-        <patient-info></patient-info>
-      </b-col>
-    </b-row>
-    <b-row>
-
-      <b-col lg="3">
-        <!--  挂号列表-->
-        <registration-list
-          ref="registrationList"
-          @selectPatient="selectPatient"
-        >
-        </registration-list>
-      </b-col>
-      <b-col lg="9">
-        <b-card header="患者费用">
-
-          <br>
+      <b-col sm="12">
+        <b-card header="费用明细">
           <b-row>
-            <b-col md="1">
-
+            <b-col sm="1">
             </b-col>
-            <b-col md="10">
+            <b-col sm="10">
               <b-row>
-                <b-col md="5" class="my-1">
+                <b-col sm="5" class="my-1">
                   <b-input-group>
                     <b-form-input
                       v-model="filter"
                       placeholder="请输入..."
-                      size="md"
+                      size="sm"
                     ></b-form-input>
                     <b-input-group-append>
                       <b-button
                         :disabled="!filter"
                         @click="filter = ''"
-                        size="md"
+                        size="sm"
                       >
                         清空</b-button>
                     </b-input-group-append>
                   </b-input-group>
                 </b-col>
-                <b-col md="2" class="my-1">
+                <b-col sm="2" class="my-1">
                   <b-form-select
                     v-model="perPage"
                     :options="pageOptions"
-                    size="md"
+                    size="sm"
                   ></b-form-select>
                 </b-col>
               </b-row>
               <br>
               <b-table
+                stacked="sm"
                 show-empty
                 hover
                 :items="expenseItemsList"
                 :fields="expenseItemsFields"
-                :busy="isBusy"
                 :current-page="currentPage"
                 :per-page="perPage"
                 :filter="filter"
@@ -74,31 +55,30 @@
           </b-row>
           <br>
           <b-row>
-            <b-col md="12" class="my-1">
+            <b-col sm="12" class="my-1">
               <b-pagination
                 v-model="currentPage"
                 :total-rows="total"
                 :per-page="perPage"
                 class="my-0"
-                size="md"
+                size="sm"
                 align="center"
               ></b-pagination>
             </b-col>
           </b-row>
         </b-card>
       </b-col>
-    </b-row>
   </div>
 </template>
-
 <script>
-  import RegistrationList from "./component/registrationList";
-  import PatientInfo from "./component/patientInfo";
-  import {mapState} from "vuex";
-
   export default {
-    name: "expenseSearch",
-    components: {RegistrationList, PatientInfo},
+    name: "expenseItems",
+    props:{
+      medicalRecordId:{
+        type:Number,
+        default:()=>{return 0}
+      }
+    },
     data() {
       return {
         expenseItemsList: [],
@@ -126,21 +106,8 @@
         filter: null,
       }
     },
-    computed: {
-      ...mapState("doctor", ["patient"]),
-      ...mapState("doctor", ["registration"]),
-      ...mapState("doctor",["medicalRecordState"])
-    },
-    watch:{
-      patient:{
-        handler(){
-          if(this.medicalRecordState==="未选择"){
-            this.expenseItemsList=[];
-          }else{
-            this.getExpenseItemsList();
-          }
-        }
-      }
+    mounted:function(){
+      this.getExpenseItemsList()
     },
     methods: {
       transformPayStatus(item){
@@ -156,10 +123,9 @@
         }else{
           return "无效";
         }
-
       },
       getExpenseItemsList(){
-        this.api.getExpenseItemsListParams.medicalRecordId = this.registration.medicalRecordId;
+        this.api.getExpenseItemsListParams.medicalRecordId = this.medicalRecordId;
         this.expenseItemsList = [];
         this.$get(this.api.getExpenseItemsListApi, this.api.getExpenseItemsListParams).then(res => {
           if(res.status==="OK"){
@@ -209,8 +175,6 @@
         this.currentPage = 1;
       },
     },
-
-
   }
 </script>
 

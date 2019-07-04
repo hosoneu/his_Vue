@@ -535,8 +535,8 @@
           this.examinationFmedicalItemsForm.purposeRequirements='';
         },
         addExaminationFmedicalItem(){//新增非药品检查检验条目
-          if(JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm.fmedicalItems))=="{}"||JSON.parse(JSON.stringify(this.examinationFmedicalItemsForm.fmedicalItems))=="") {//判断是否有诊断信息
-            alert("您还没有新增检查检验条目");
+          if(JSON.stringify(this.examinationFmedicalItemsForm.fmedicalItems)=="{}"||(!this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId)) {//判断是否有诊断信息
+            alert("您还没有选择检查检验条目");
           }else{
             this.examinationFmedicalItemsForm.doctorId = this.curr_user.userId;
             this.examinationFmedicalItemsForm.fmedicalItemsId = this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId;
