@@ -390,7 +390,7 @@
       },
       computed:{
         ...mapState("doctor",["patient"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         ...mapState("doctor",["registration"]),
         ...mapState("doctor",["medicalRecordState"]),
         computedTitle1(){
@@ -427,7 +427,7 @@
             for(let i = 0;i<groupExaminationFmedicalItemsList.length;i++){
               let examinationFmedicalItems = {};
               examinationFmedicalItems.purposeRequirements=groupExaminationFmedicalItemsList[i].purposeRequirements;
-              examinationFmedicalItems.doctorId=this.doctor.userId;
+              examinationFmedicalItems.doctorId=this.curr_user.userId;
               examinationFmedicalItems.quantity = groupExaminationFmedicalItemsList[i].quantity;
               examinationFmedicalItems.fmedicalItemsId = groupExaminationFmedicalItemsList[i].fmedicalItemsId;
               examinationFmedicalItems.fmedicalItems = groupExaminationFmedicalItemsList[i].fmedicalItems;
@@ -436,7 +436,7 @@
               for(let j = 0;j<groupExaminationDrugsItemsList.length;j++){
                 let examinationDrugsItems = {};
                 examinationDrugsItems.drugsId = groupExaminationDrugsItemsList[j].drugs.drugsId;
-                examinationDrugsItems.doctorId = this.doctor.userId;
+                examinationDrugsItems.doctorId = this.curr_user.userId;
                 examinationDrugsItems.drugs=groupExaminationDrugsItemsList[j].drugs;
                 examinationDrugsItems.drugsUsage=groupExaminationDrugsItemsList[j].drugsUsage;
                 examinationDrugsItems.dosage=groupExaminationDrugsItemsList[j].dosage;//药品用量
@@ -454,7 +454,7 @@
         },
         onSave(){
           let groupExamination = {};
-          groupExamination.doctorId = this.doctor.userId;
+          groupExamination.doctorId = this.curr_user.userId;
           groupExamination.groupExaminationName = this.groupName;
           groupExamination.groupExaminationCode = this.groupCode;
           groupExamination.groupExaminationScope = this.groupScope;
@@ -495,7 +495,7 @@
           }else{
             this.examinationForm.examinationMark = '2';//检验
           }
-          this.examinationForm.doctorId=this.doctor.userId;
+          this.examinationForm.doctorId=this.curr_user.userId;
           this.examinationForm.medicalRecordId=this.registration.medicalRecordId;
           console.log(this.examinationForm);
           this.$post(this.api[this.type].insertExaminationApi,JSON.parse(JSON.stringify(this.examinationForm))).then(res=>{
@@ -532,7 +532,7 @@
           this.examinationFmedicalItemsForm.purposeRequirements='';
         },
         addExaminationFmedicalItem(){//新增非药品检查检验条目
-          this.examinationFmedicalItemsForm.doctorId = this.doctor.userId;
+          this.examinationFmedicalItemsForm.doctorId = this.curr_user.userId;
           this.examinationFmedicalItemsForm.fmedicalItemsId = this.examinationFmedicalItemsForm.fmedicalItems.fmedicalItemsId;
           this.examinationForm.examinationFmedicalItemsList.push( Object.assign({},this.examinationFmedicalItemsForm));
           this.examinationFmedicalItemsForm.fmedicalItems={};
@@ -573,7 +573,7 @@
           if(this.selectedExaminationFmedicalItemsIndex>=0){
             let commonlyUsedFmedical = {};
             commonlyUsedFmedical.fmedicalItemsId = this.examinationForm.examinationFmedicalItemsList[this.selectedExaminationFmedicalItemsIndex].fmedicalItemsId;
-            commonlyUsedFmedical.doctorId = this.doctor.userId;
+            commonlyUsedFmedical.doctorId = this.curr_user.userId;
             this.$post(this.api[this.type].insertCommonlyUsedFmedicalApi,JSON.parse(JSON.stringify(commonlyUsedFmedical))).then(res=>{
               if(res.status === "OK"){
                 console.log(res.data);

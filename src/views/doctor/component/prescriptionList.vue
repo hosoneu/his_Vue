@@ -230,6 +230,9 @@
       cancelPrescriptionItem() {//废除处方
         //首先判断是否可以废除
         //然后进行废除操作
+        alert(!(JSON.stringify(this.selectedPrescription == "{}")));
+        alert((JSON.stringify(this.selectedPrescription == "{}")));
+
         if (!(JSON.stringify(this.selectedPrescription == "{}"))) {
           this.api[this.type].ifPrescriptionCanCancelParams.prescriptionId = this.selectedPrescription.prescriptionId;
           this.$get(this.api[this.type].ifPrescriptionCanCancelApi, this.api[this.type].ifPrescriptionCanCancelParams).then(res => {

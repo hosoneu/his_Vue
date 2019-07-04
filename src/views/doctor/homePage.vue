@@ -211,7 +211,7 @@
       computed:{
         ...mapState("doctor",["medicalRecord"]),//得到当前的病历内容 得到就诊状态 未选择 未初诊、已初诊、已终诊、诊毕
         ...mapState("doctor",["medicalRecordState"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
       },
       methods:{
         selectPatient(registration){//切换患者时需要更新当前的MedicalRecord的部分
@@ -288,7 +288,7 @@
           }else{
             let medicalRecordHomePageTemplate = {};
             let diagnosisItems = this.firstChineseDiagnosisItems.concat(this.firstWesternDiagnosisItems);
-            medicalRecordHomePageTemplate.doctorId = this.doctor.userId;
+            medicalRecordHomePageTemplate.doctorId = this.curr_user.userId;
             medicalRecordHomePageTemplate.name=this.templateName;
             medicalRecordHomePageTemplate.scope=this.templateScope;
             medicalRecordHomePageTemplate.chiefComplaint = this.medicalRecordHomePage.chiefComplaint;

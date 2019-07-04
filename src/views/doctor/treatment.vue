@@ -313,7 +313,7 @@
       },
       computed:{
         ...mapState("doctor",["patient"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         ...mapState("doctor",["registration"]),
         ...mapState("doctor",["medicalRecordState"]),
         computedModalId(){
@@ -378,14 +378,14 @@
         treatmentReset(){//重置处置单
           this.treatmentForm={
             medicalRecordId:this.registration.medicalRecordId,
-            doctorId:this.doctor.userId,
+            doctorId:this.curr_user.userId,
             treatmentItemsList:[],//处方药品数组
           };
           this.resetTreatmentItem();
         },
         treatmentSubmit(){//提交处置单
           this.treatmentForm.medicalRecordId=this.registration.medicalRecordId;
-          this.treatmentForm.doctorId=this.doctor.userId;
+          this.treatmentForm.doctorId=this.curr_user.userId;
           console.log("提交处置单");
           console.log(this.treatmentForm);
           this.$post(this.api.insertTreatmentApi,JSON.parse(JSON.stringify(this.treatmentForm))).then(res=>{
@@ -436,7 +436,7 @@
           if(this.selectedIndex>=0){
             let commonlyUsedFmedical = {};
             commonlyUsedFmedical.fmedicalItemsId = this.treatmentForm.treatmentItemsList[this.selectedIndex].fmedicalItems.fmedicalItemsId;
-            commonlyUsedFmedical.doctorId = this.doctor.userId;
+            commonlyUsedFmedical.doctorId = this.curr_user.userId;
             this.$post(this.api.insertCommonlyUsedFmedicalApi,JSON.parse(JSON.stringify(commonlyUsedFmedical))).then(res=>{
               if(res.status==="OK"){
                 alert(res.msg);
@@ -474,7 +474,7 @@
         },
         treatmentSave(){//
           let groupTreatment={};
-          groupTreatment.doctorId = this.doctor.userId;
+          groupTreatment.doctorId = this.curr_user.userId;
           groupTreatment.groupTreatmentCode = "DSAD";
           groupTreatment.groupTreatmentName = "的撒大";
           groupTreatment.groupTreatmentScope= '1';

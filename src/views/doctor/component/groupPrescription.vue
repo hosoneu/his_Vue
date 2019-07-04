@@ -155,11 +155,11 @@
         console.log("await this.getGroupPrescriptionList");
       },
       computed:{
-        ...mapState("doctor",['doctor']),
+        ...mapState("common",['curr_user']),
       },
       methods:{
         transformDoctor(item){
-          if(item.doctorId===this.doctor.userId){
+          if(item.doctorId===this.curr_user.userId){
             return "自己";
           }else{
             return "其他";
@@ -211,7 +211,7 @@
           this.currentPage = 1;
         },
         getGroupPrescriptionList(){
-          this.groupPrescriptionTabs[this.currentTab].api[this.type].getGroupPrescriptionParams.userId=this.doctor.userId;
+          this.groupPrescriptionTabs[this.currentTab].api[this.type].getGroupPrescriptionParams.userId=this.curr_user.userId;
           this.$get(this.groupPrescriptionTabs[this.currentTab].api[this.type].getGroupPrescriptionApi, this.groupPrescriptionTabs[this.currentTab].api[this.type].getGroupPrescriptionParams).then(res=>{
             console.log(res);
             if(res.status === 'OK'){

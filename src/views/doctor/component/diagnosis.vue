@@ -300,7 +300,7 @@
       },
       computed:{
         ...mapState("doctor",["medicalRecord"]),
-        ...mapState("doctor",["doctor"]),
+        ...mapState("common",["curr_user"]),
         computedModalId:function () {
           return this.modalId+this.type;
         },
@@ -415,7 +415,7 @@
         saveDiagnosis(){//存为常用诊断
           if(this.selectedIndex>=0){
             let commonlyUsedDiagnosis = {};
-            commonlyUsedDiagnosis.doctorId = this.doctor.userId;
+            commonlyUsedDiagnosis.doctorId = this.curr_user.userId;
             commonlyUsedDiagnosis.diseaseId = this.diagnosisItems[this.selectedIndex].diseaseId;
             this.$post(this.api.insertCommonlyUsedDiagnosisApi,JSON.parse(JSON.stringify(commonlyUsedDiagnosis))).then(res=>{
               if(res.status === "OK"){
