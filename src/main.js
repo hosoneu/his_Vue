@@ -10,15 +10,20 @@ import { post, fetch }  from "./config/axios"
 import VeeValidate from "vee-validate"
 import Vuex from 'vuex'
 import store from './store'
+import moment from 'moment'
+// import Vuetree from 'vue-simple-tree'
 
 
 Vue.prototype.$get=fetch;
 Vue.prototype.$post=post;
 
+Vue.prototype.$moment = moment;
+
 
 Vue.use(BootstrapVue);
 Vue.use(VeeValidate);
 Vue.use(Vuex);
+// Vue.use(Vuetree);
 
 if (process.env.NODE_ENV === 'development') {
   start_mock();

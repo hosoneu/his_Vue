@@ -4,10 +4,10 @@ import home from './home'
 import common from './common'
 import doctor from './doctor'
 import statistics from './statistics'
-// import basicInfo from './basicInfo'
-// import pharmacy from './pharmacy'
-// import register from './register'
-// import tech from './tech'
+import basicInfo from './basicInfo'
+import pharmacy from './pharmacy'
+import register from './register'
+import tech from './tech'
 
 
 Vue.use(Router);
@@ -20,10 +20,10 @@ export default new Router({
     home,
     common,
     doctor,
+    basicInfo,
     statistics,
-    // basicInfo,
-    // tech,
-    // register,
-    // pharmacy
+    tech,
+    register,
+    pharmacy
   ]
 })

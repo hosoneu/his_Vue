@@ -4,6 +4,7 @@ import {
 import axios from 'axios';
 axios.defaults.timeout = 10000; //设置请求时间
 axios.defaults.baseURL = baseUrl;//设置默认接口地址
+axios.defaults.headers.post['Content-Type'] = 'application/json';//设置post传递JSON
 /**
  * 封装get方法
  * @param url
