@@ -192,7 +192,7 @@
           console.log(this.currentAllFmedical[i]);
           console.log(this.currentAllFmedical[i].expenseItems);
           if (this.currentAllFmedical[i].expenseItems.payStatus!="2"){//未缴费
-            this.currentAllFmedical[i].currentStatus = "未缴费";
+            this.currentAllFmedical[i].currentStatus = "无效";
           }
           else if (this.currentAllFmedical[i].expenseItems.payStatus=="3"){//未缴费
             this.currentAllFmedical[i].currentStatus = "已退费";
@@ -202,7 +202,7 @@
           }
           else if (this.currentAllFmedical[i].expenseItems.payStatus=="2") {
             if (this.currentAllFmedical[i].validStatus!=1){
-              this.currentAllFmedical[i].currentStatus = "已失效";
+              this.currentAllFmedical[i].currentStatus = "无效";
             }
             else if (this.currentAllFmedical[i].examinationResultId != null ){
               this.currentAllFmedical[i].currentStatus = "已提交";
@@ -220,6 +220,7 @@
           // alert("进来了");
           this.toptodownmessage = '';
           if (examinationFmedical == undefined){//解决连续点击多次，触发事件，但是没有返回值
+            this.currentFmedical = -1;
             return;
           }
           //切换非药品项目后，给出药品，添加msg属性，选择当前非药品项目，传递msg
@@ -288,7 +289,7 @@
             alert("该项目未缴费");
             return;
           }
-          if (this.currentAllFmedical[this.currentFmedical].currentStatus == "已失效") {
+          if (this.currentAllFmedical[this.currentFmedical].currentStatus == "无效") {
             alert("该项目已失效");
             return;
           }

@@ -1,5 +1,5 @@
 <template>
-  <b-card header="Card title">
+  <b-card header="详情">
     <p>药品详情</p>
     <b-table  select-mode="single"
               show-empty

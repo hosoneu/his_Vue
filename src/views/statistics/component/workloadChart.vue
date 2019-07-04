@@ -11,9 +11,6 @@
       'chartData':'reload'
     },
     mounted () {
-      //this.test()
-      // Overwriting base render method with actual data.
- //     console.log("dsadadadaddadadadsssssssssssssssssssssssssssssssssssssss");
       this.renderChart(this.chartData,
         {
           responsive: true,

@@ -73,7 +73,7 @@
     </div>
 
 
-    <b-modal title="删除请求" size="sm" v-model="largeModal" @ok="largeModal = false" id="isDelete">
+    <b-modal title="删除请求" size="sm" v-model="largeModalDE" @ok="largeModalDE = false" id="isDelete">
       <center>确定删除</center>
       <template slot="modal-footer" slot-scope="{cancel, ok}">
         <b-button size="sm" variant="success" @click="cancel()">
