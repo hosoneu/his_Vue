@@ -22,7 +22,7 @@
     <b-row>
       <b-col md="1"></b-col>
       <b-col md="10">
-        <b-img :src=examinationResult.examinationResultImageList[0].imageUrl fluid ></b-img>
+        <b-img :src="(!examinationResult.examinationResultImageList[0])?'#':examinationResult.examinationResultImageList[0].imageUrl" fluid ></b-img>
       </b-col>
     </b-row>
 
