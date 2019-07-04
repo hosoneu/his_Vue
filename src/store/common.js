@@ -1,9 +1,9 @@
 export default {
   namespaced:true,
   state:{
-    curr_user_type:'doctor',
+    curr_user_type:'home',
     curr_user_id:null,
-    curr_user:{userId:1},
+    curr_user:null,
     curr_role:null,
     curr_dept:null,
   },
