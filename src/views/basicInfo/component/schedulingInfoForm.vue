@@ -146,6 +146,7 @@
               schedulingEndtime:'',
               schedulingNoonbreak: 'Morning',
               schedulingLimitcount: '',
+              doctorId: '',
             },
             user: {
               userName: '',
@@ -171,19 +172,19 @@
             }
           },
           submit(){
-            this.schedulingData = this.schedulingInfo;
-            this.schedulingData.doctorId = this.user.userId;
-            console.log(this.schedulingData);
-            this.$post('http://localhost:8080/hoso/scheduling/insertInfo', {"schedulingInfo": this.schedulingData}).then((res) => {
+            this.schedulingInfo.doctorId = this.user.userId;
+            console.log("接下来打印");
+            console.log(this.schedulingInfo);
+            this.$post('http://localhost:8080/hoso/scheduling/insertInfo', this.schedulingInfo).then((res) => {
               if (res.status === 'OK') {
                 alert("生成排班信息成功");
               } else {
                 console.log("挂号失败");
               }
             });
-            this.$emit('convertInfo', JSON.parse(JSON.stringify(this.schedulingData)), this.user.userName);
+            this.$emit('convertInfo', JSON.parse(JSON.stringify(this.schedulingInfo)), this.user.userName);
             // this.schedulingData = {};
-            this.reset();
+            // this.reset();
           },
           reset(){
             this.user = {};
