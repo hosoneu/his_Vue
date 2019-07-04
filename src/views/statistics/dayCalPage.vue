@@ -146,7 +146,7 @@
           <b-row>
                 <b-table :items="daycalitems" :fields="daycalfields" striped>
                   <template slot="show_details" slot-scope="row">
-                    <b-button size="sm" :variant="row.detailsShowing ?  'warning':'primary'"@click="row.toggleDetails" class="mr-2">
+                    <b-button size="sm" :variant="row.detailsShowing ?  'warning':'primary'" @click="row.toggleDetails" class="mr-2">
                       {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
                     </b-button>
                   </template>
@@ -208,8 +208,8 @@
         </b-card>
       </b-col>
     </b-row>
-    {{ invoiceselected }}
-    {{invoiceIDselected}}
+    <!--{{ invoiceselected }}-->
+    <!--{{invoiceIDselected}}-->
 <!--    {{userID}}-->
 <!--    {{historyuserID}}-->
   </div>
@@ -218,7 +218,6 @@
 <script>
   //UserDayCalculate
   import {mapState} from 'vuex'
-  import axios from 'axios/index'
   import dayCalHistory from './component/dayCalHistory'
   export default {
     name: 'userTable',
@@ -347,10 +346,9 @@
 
       },
       DODaycal() {
-        var qs = require('qs');
         //console.log(qs.stringify({usrID:this.userID,date:new Date(),drugCost:this.detailworkload.YF_Total,registrateCost:this.detailworkload.GH_Total,materialCost:this.detailworkload.CL_Total,examinateCost:this.detailworkload.JC_Total,treatCost:this.detailworkload.CZ_Total,qtCost:this.detailworkload.QT_Total ,totalCost:this.detailworkload.Day_Cal_Total,invoiceIDs: this.invoiceIDselected}, {indices: false}))
-        this.$post("dayCalculate/personalDayCalculate", qs.stringify({
-          usrID: this.userID,
+        this.$post("dayCalculate/personalDayCalculate", {
+          userID: this.userID,
           date: new Date(),
           drugCost: this.detailworkload.YF_Total,
           registrateCost: this.detailworkload.GH_Total,
@@ -360,7 +358,7 @@
           qtCost: this.detailworkload.QT_Total,
           totalCost: this.detailworkload.Day_Cal_Total,
           invoiceIDs: this.invoiceIDselected
-        }, {indices: false})).then(res=> {
+        }).then(res=> {
           // result是所有的返回回来的数据
           // 包括了响应报文行
           // 响应报文头
@@ -380,9 +378,8 @@
         this.daycalitems.push(this.detailworkload)
       },
       findNotCalInvoices() {
-        var qs = require('qs');
         console.log(this.selected[0]['userId'])
-        this.$post("dayCalculate/findInvoices", qs.stringify({userID: this.selected[0]['userId']})).then(res=> {
+        this.$post("dayCalculate/findInvoices", {userID: this.selected[0]['userId']}).then(res=> {
           // result是所有的返回回来的数据
           // 包括了响应报文行
           // 响应报文头
@@ -445,8 +442,7 @@
             // itemname:0,
           }
         } else {
-          var qs = require('qs');
-          this.$post("dayCalculate/userDayCalculate", qs.stringify({invoiceIDs: this.invoiceIDselected}, {indices: false})).then(res=> {
+          this.$post("dayCalculate/userDayCalculate", {invoiceIDs: this.invoiceIDselected}).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
@@ -656,6 +652,7 @@
           }
           for (var j in this.invoiceitems) {//找到items中的他，并改为false
             if (this.invoiceitems[j] === null) {
+              console.log();
             }
             if (this.invoiceitems[j]["invoiceId"] === item['invoiceId']) {
               this.invoiceitems[j]['isselected'] = false;

@@ -25,7 +25,7 @@
         align="center"
       ></b-pagination>
     </b-card>
-    <b-card :header="departmentselected[0].departmentName"v-if="isShow" >
+    <b-card :header="departmentselected[0].departmentName" v-if="isShow" >
       <input type="text" class="form-control" placeholder="请输入关键字" v-on:input="personalSearch" v-model="personalKeywords" >
       <b-table
         :per-page="personalPerPage"
@@ -59,7 +59,6 @@
 
 <script>
   import Workload from "./component/workload";
-  import axios from 'axios/index'
   export default {
     components: {Workload},
     data() {
@@ -104,6 +103,9 @@
       personalRows() {
         return this.personalitems.length
       },
+    },
+    methods: {
+      //需要一个方法当点击department的时候用传来的departmentID请求doctor列表的数据
       departmentSearch() {
         var newList = [];
         //console.log(this.departmentKeywords)
@@ -128,9 +130,6 @@
         });
         this.currentpersonalitems=newList;
       },
-    },
-    methods: {
-      //需要一个方法当点击department的时候用传来的departmentID请求doctor列表的数据
       findAll(){
         var url  = "department/findAll";
                     // 发送请求:将数据返回到一个回到函数中
@@ -141,7 +140,7 @@
                           // 响应报文头
                           // 响应报文体
                       this.departmentitems=res.data
-                      this.currentdepartmentitems.push(res.data[0])
+                      this.currentdepartmentitems=res.data
                       //console.log(res.data);
                     });
       },
@@ -167,14 +166,20 @@
         } else {
           this.currentdepartmentID= items[0]['departmentId'];
           this.departmentselected= items;
-          console.log(items[0]['departmentId'])
-          var qs = require('qs');
-          this.$post("department/findUser",qs.stringify({ 'departmentID': items[0]['departmentId'] })).then(res=> {
+          console.log(items[0]['departmentId']);
+          var data = {
+            departmentID: items[0]['departmentId']
+          };
+          console.log(data);
+          this.$get("department/findUser",data).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
             // 响应报文体
-            this.personalitems=res.data
+            console.log("here");
+            this.personalitems=res.data;
+            this.currentpersonalitems=res.data;
+            console.log(res.data);
             console.log("res.data:"+this.personalitems);
           });
           console.log(this.departmentitems)

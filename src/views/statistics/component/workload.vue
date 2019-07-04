@@ -64,7 +64,6 @@
 </template>
 
 <script>
-  import axios from 'axios/index'
   import WorkloadChart from './workloadChart'
   export default {
     components: {WorkloadChart},
@@ -83,7 +82,6 @@
         chartlabels: [],
         sdate:'2019-06-09',
         edate:'2019-06-10',
-        testID:'0',
         items: [
         ],
         fields: [
@@ -143,7 +141,7 @@
       reloadChart(){
         this.chartdatasets=[]
       },
-      handleResize (event) {
+      handleResize () {
         this.fullWidth = document.documentElement.clientWidth},
       random(min,max){
         if(isNaN(min) || isNaN(max)){
@@ -333,10 +331,11 @@
       //   console.log(this.sdate)
       // },
       selectItems(){//从数据库搜索items
+        var qs = require('qs');
         if(this.testID==='0'){//所有科室
           //console.log("testID"+this.testID)
-          var qs = require('qs');
-          this.$post("workload/findAllDepartmentWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate })).then(res=> {
+          console.log(qs.stringify({ 'sdate':this.sdate,'edate':this.edate })),
+          this.$post("workload/findAllDepartmentWorkload",{ 'sdate':this.sdate,'edate':this.edate }).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
@@ -348,8 +347,7 @@
             //console.log("result"+res.data);
           });
         }else if(this.testID==='1'){//某科室
-          var qs = require('qs');
-          this.$post("workload/findAllDoctorsWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'departmentID':this.currentdepartment})).then(res=> {
+          this.$post("workload/findAllDoctorsWorkload",{ 'sdate':this.sdate,'edate':this.edate,'departmentID':this.currentdepartment}).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
@@ -363,8 +361,7 @@
         }else {//某医生
             //console.log('p'+this.currentperson)
           //console.log('d'+this.currentdepartment)
-          var qs = require('qs');
-          this.$post("workload/personalWorkload",qs.stringify({ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.currentperson})).then(res=> {
+          this.$post("workload/personalWorkload",{ 'sdate':this.sdate,'edate':this.edate,'doctorID':this.currentperson}).then(res=> {
             // result是所有的返回回来的数据
             // 包括了响应报文行
             // 响应报文头
