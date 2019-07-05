@@ -407,7 +407,8 @@
           data.push(this.currentPatient.medicalRecordId);
 
           this.$post(url, data).then(res=>{
-            if (res.data == "OK"){
+
+            if (res.status == "OK"){
               alert("发药成功");
             }
             else{
@@ -424,7 +425,7 @@
                   for (let m=0;m<this.currentAllExamination[i].examinationDrugsItemsList.length;m++){
                     if (drugsId == this.currentAllExamination[i].examinationDrugsItemsList[m].drugsId) {//找到该药品
                       this.currentAllExamination[i].examinationDrugsItemsList[m].drugsDispensingStatus = "2";
-                      alert("更改成功");
+                      console.log("更改成功");
                     }
                   }
                 }
@@ -435,15 +436,15 @@
             console.log("处方药");
             for (let n=0;n<this.selectedDrugs.length;n++){
               let drugsId = this.selectedDrugs[n].dragsId;
-              alert("药id" + drugsId);
+              console.log("药id" + drugsId);
               for (let i=0;i<this.currentAllPrescription.length;i++){
                 if (this.currentPatient.prescriptionId == this.currentAllPrescription[i].prescriptionId) {//找到
                   alert("找到currentAllPrescription");
                   for (let m=0;m<this.currentAllPrescription[i].prescriptionItems.length;m++){
                     if (drugsId == this.currentAllPrescription[i].prescriptionItems[m].dragsId){//找到该药品
                       this.currentAllPrescription[i].prescriptionItems[m].drugsDispensingStatus = "2";
-                      alert(drugsId);
-                      alert("进来一次");
+                      console.log(drugsId);
+                      console.log("进来一次");
                     }
                   }
                 }

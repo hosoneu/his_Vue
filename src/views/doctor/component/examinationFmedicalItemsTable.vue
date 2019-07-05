@@ -121,7 +121,10 @@
             this.api.selectExaminationResultByIdParams.examinationResultId = this.selectedExaminationFmedicalItems.examinationResultId;
             this.$get(this.api.selectExaminationResultByIdApi, this.api.selectExaminationResultByIdParams).then(res => {
               if (res.status === "OK") {
+                console.log(res);
                 this.selectedExaminationFmedicalItemsResult = res.data;
+                console.log("结果为selectedExaminationFmedicalItemsResult");
+                console.log(this.selectedExaminationFmedicalItemsResult)
                 //todo传值
                 this.$refs["result"].show();
                 console.log(res.msg + res.data);
