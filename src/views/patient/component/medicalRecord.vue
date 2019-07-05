@@ -213,7 +213,14 @@
             }
           });
         }
-      }
+      },
+      watch:{
+        medicalRecordId:{
+          handler(){
+            this.getMedicalHomePage()
+          }
+        }
+      },
     }
 </script>
 

@@ -2,9 +2,9 @@
   <b-card :header="caption">
     <b-row>
       <b-col md="12" class="my-1">
-        <b-form-group label-cols-sm="1" label="Filter" class="mb-0">
+        <b-form-group label-cols-sm="1" class="mb-0">
           <b-input-group>
-            <b-form-input v-model="filter" placeholder="Type to Search"></b-form-input>
+            <b-form-input v-model="filter" placeholder="请输入..."></b-form-input>
             <b-input-group-append>
               <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
             </b-input-group-append>
@@ -14,7 +14,7 @@
     </b-row>
     <b-row>
       <b-col md="12" class="my-1">
-        <b-form-group label-cols-sm="1" label="Sort" class="mb-0">
+        <b-form-group label-cols-sm="1" class="mb-0">
           <b-input-group>
             <b-form-select v-model="sortBy" :options="sortOptions">
               <option slot="first" :value="null">-- none --</option>

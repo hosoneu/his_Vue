@@ -133,7 +133,7 @@
             })
           },
           insertList(item){
-            alert(JSON.stringify(item));
+            // alert(JSON.stringify(item));
             this.$post('fmedicalItems/insert', JSON.stringify(item)).then((res) => {
               if (res.status === 'OK') {
                 console.log("插入成功");

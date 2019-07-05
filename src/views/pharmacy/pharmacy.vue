@@ -408,14 +408,12 @@
 
           this.$post(url, data).then(res=>{
             if (res.data == "OK"){
-              alert("退药成功");
+              alert("发药成功");
             }
             else{
-              alert("退药失败");
+              alert("发药失败");
             }
           });
-          alert("发药成功");
-
           //改变状态1->2
           if (this.currentPatient.examinationId) {//若是检查检验药
             console.log("检查检验药");
