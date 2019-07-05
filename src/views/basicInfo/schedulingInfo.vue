@@ -108,7 +108,7 @@
             // this.schedulingData.schedulingStarttime = this.$moment(schedulingInfo.schedulingStarttime).format("DD-MM-YYYY");
             let newTask = {id: this.lastId+1, text: userName, start_date: date, duration: timeDuration};
             //调用子组件方法
-            this.$refs["gantt"].addTask(newTask);
+            // this.$refs["gantt"].addTask(newTask);
             // this.newTasks.push(newTask);
           },
           convertRule(schedulingData, userName){

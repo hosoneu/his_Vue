@@ -147,7 +147,7 @@
                 <b-table :items="daycalitems" :fields="daycalfields" striped>
                   <template slot="show_details" slot-scope="row">
                     <b-button size="sm" :variant="row.detailsShowing ?  'warning':'primary'" @click="row.toggleDetails" class="mr-2">
-                      {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
+                      {{ row.detailsShowing ? '隐藏明细' : '显示明细'}}
                     </b-button>
                   </template>
                   <template slot="row-details" slot-scope="row">
@@ -253,7 +253,7 @@
           {key: 'CZ_Total', label: '处置（含麻醉）费'},
           {key: 'QT_Total', label: '其他费用'},
           {key: 'Day_Cal_Total', label: '总计'},
-          'show_details'
+          {key: 'show_details', label: '明细'},
         ],
         daycalitems: [],
         detailworkload: {
