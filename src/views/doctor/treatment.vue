@@ -29,6 +29,37 @@
               </b-button-group>
             </div>
           </div>
+
+          <b-modal ref="treatment-group" size="md" @ok="onSave" okTitle="保存" cancelTitle="取消" centered title="存为模板">
+            <!--  名称 -->
+            <b-form-group
+              label="模板名称"
+              label-for="groupName"
+              :label-cols="3"
+              :horizontal="true">
+              <b-form-input v-model="groupName" id="groupName" type="text" placeholder="请输入内容..."></b-form-input>
+            </b-form-group>
+            <!--  名称 -->
+            <b-form-group
+              label="模板编码"
+              label-for="groupCode"
+              :label-cols="3"
+              :horizontal="true">
+              <b-form-input v-model="groupCode" id="groupCode" type="text" placeholder="请输入内容..."></b-form-input>
+            </b-form-group>
+            <!--  范围 -->
+            <b-form-group
+              label="适用范围"
+              label-for="groupScope"
+              :label-cols="3">
+              <b-form-radio-group
+                id="groupScope"
+                v-model="groupScope"
+                :options="scopeOptions"
+              ></b-form-radio-group>
+            </b-form-group>
+          </b-modal>
+
           <b-tabs>
             <!--主模块部分的分菜单栏-->
             <b-tab title = "开立处置" :disabled="this.ifReadonly">
@@ -308,7 +339,15 @@
             ],
             ifReadonly:true,
             selectedCommonlyUsedItem:{},//在常用项目中选择的项目
-            selectedFmedical:{}//在所有处置信息中选择的项目
+            selectedFmedical:{},//在所有处置信息中选择的项目
+            groupName:'',//组套名字
+            groupCode:'',
+            groupScope:'1',//组套范围
+            scopeOptions:[
+              { text: '个人', value: '1' },
+              { text: '科室', value: '2' },
+              { text: '全院', value: '3' },
+            ],
           }
       },
       computed:{
@@ -409,15 +448,20 @@
           };
         },
         addTreatmentItem(){//新增正在编辑的treatmentItem
-          this.treatmentItemForm.fmedicalItemsId = this.treatmentItemForm.fmedicalItems.fmedicalItemsId;
-          this.treatmentForm.treatmentItemsList.push( Object.assign({},this.treatmentItemForm));
-          this.treatmentItemForm={
-            fmedicalItems:{},//处置非药品
-            fmedicalItemsId:-1,//处置非药品ID
-            quantity:1,//开立数量
-            actualQuantity:1,//实际数量
-          };
-          this.resetTreatmentItem();
+          if(JSON.stringify(this.treatmentItemForm.fmedicalItems)=="{}"||(!this.treatmentItemForm.fmedicalItems.fmedicalItemsId )) {//判断是否有诊断信息
+            alert("您还没有选择处方条目");
+          }else{
+            this.treatmentItemForm.fmedicalItemsId = this.treatmentItemForm.fmedicalItems.fmedicalItemsId;
+            this.treatmentForm.treatmentItemsList.push( Object.assign({},this.treatmentItemForm));
+            this.treatmentItemForm={
+              fmedicalItems:{},//处置非药品
+              fmedicalItemsId:-1,//处置非药品ID
+              quantity:1,//开立数量
+              actualQuantity:1,//实际数量
+            };
+            this.resetTreatmentItem();
+          }
+
         },
         exitTreatmentItem(){
           if(this.selectedIndex>=0){
@@ -473,11 +517,14 @@
           }
         },
         treatmentSave(){//
+          this.$refs["treatment-group"].show();
+        },
+        onSave(){
           let groupTreatment={};
           groupTreatment.doctorId = this.curr_user.userId;
-          groupTreatment.groupTreatmentCode = "DSAD";
-          groupTreatment.groupTreatmentName = "的撒大";
-          groupTreatment.groupTreatmentScope= '1';
+          groupTreatment.groupTreatmentCode = this.groupCode;
+          groupTreatment.groupTreatmentName = this.groupName;
+          groupTreatment.groupTreatmentScope= this.groupScope;
           groupTreatment.groupTreatmentItemsList = this.treatmentForm.treatmentItemsList;
           this.$post(this.api.insertGroupTreatmentApi,JSON.parse(JSON.stringify(groupTreatment))).then(res=>{
             if(res.status==="OK"){
@@ -486,7 +533,7 @@
               alert(res.msg);
             }
           });
-        }
+        },
 
       }
     }

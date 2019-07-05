@@ -6,7 +6,8 @@
               hover :items="items" :fields="captions">
       <template slot="缴费状态" slot-scope="data">
         <!--            <b-badge :variant="success">{{data.item.amount}}</b-badge>-->
-        {{data.item.expenseItems.payStatus==2?"已缴费":"未缴费"}}
+<!--        {{data.item.expenseItems.payStatus==2?"已缴费":"未缴费"}}-->
+        {{getStatus(data.item)}}
       </template>
     </b-table>
     <br>
@@ -218,6 +219,11 @@
         // },
       },
       methods:{
+        getStatus:function(item){
+          if (item.expenseItems) {
+            return item.expenseItems.payStatus == 2 ? "已缴费" : "未缴费"
+          }
+        },
         onFiltered(filteredItems) {
           // Trigger pagination to update the number of buttons/pages due to filtering
           this.total = filteredItems.length;

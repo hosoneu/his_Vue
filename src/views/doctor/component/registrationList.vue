@@ -96,15 +96,15 @@
           registrationTabs:[{//tabs定义挂号列表的状态是个人还是科室的挂号列表
             title:"个人",
             getRegistrationApi:"/doctor/common/listRegistrationFromUserByUserId",
-            getRegistrationParams:{userId:1},
+            getRegistrationParams:{},
             getChangeRegistrationApi:"/doctor/common/changePatientFromUser",
-            getChangeRegistrationParams:{userId:1},
+            getChangeRegistrationParams:{},
           },{
             title:"科室",
             getRegistrationApi:"/doctor/common/listRegistrationFromDepartmentByUserId",
-            getRegistrationParams:{userId:1},
+            getRegistrationParams:{},
             getChangeRegistrationApi:"/doctor/common/changePatientFromDepartment",
-            getChangeRegistrationParams:{userId:1},
+            getChangeRegistrationParams:{},
           }],
           registrationFields: [
             {key: 'medicalRecordId', label: '病历号', sortable: true},
@@ -120,6 +120,7 @@
       },
       computed:{
         ...mapState('doctor',['medicalRecordState']),
+        ...mapState('common',["curr_user"]),
       },
       methods:{
         ...mapMutations('doctor',['updateMedicalRecordState']),
@@ -150,11 +151,14 @@
           this.currentPage = 1;
         },
         selectPatient(patient) {//选择一个患者
-          let data = this.registrationTabs[this.currentPatinetTab].getChangeRegistrationParams;
+          let data = this.registrationTabs[this.currentTab].getChangeRegistrationParams;
+          console.log("患者列表");
           console.log(patient[0]);
-          data.medicalRecordId = patient[0].medicalRecordId;
+          data.medicalRecordId = patient[0].registrationId;
+          data.userId = this.curr_user.userId;
           console.log(data);
-          this.$get(this.registrationTabs[this.currentPatinetTab].getChangeRegistrationApi, data).then(res=>{
+
+          this.$get(this.registrationTabs[this.currentTab].getChangeRegistrationApi, data).then(res=>{
             console.log(res);
             if(res.status === "OK"){
               console.log(patient[0]);
@@ -177,14 +181,15 @@
           });
         },
         async changeTab(index){
-          this.currentPatinetTab = index;
+          this.currentTab = index;
           await this.getPatientList();//串行：等待前面一个await执行后接着执行下一个await
         },
         getPatientList(){
           console.log("请求患者列表");
-          let data = this.registrationTabs[this.currentPatinetTab].getRegistrationParams;
+          let data = this.registrationTabs[this.currentTab].getRegistrationParams;
           console.log(data);
-          this.$get(this.registrationTabs[this.currentPatinetTab].getRegistrationApi, data).then(res=>{
+          this.registrationTabs[this.currentTab].getRegistrationParams.userId = this.curr_user.userId;
+          this.$get(this.registrationTabs[this.currentTab].getRegistrationApi, data).then(res=>{
             console.log(res);
             if(res.status === "OK"){
               this.items = res.data;//填充患者列表数据

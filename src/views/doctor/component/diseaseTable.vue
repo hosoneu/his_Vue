@@ -2,28 +2,28 @@
   <div class="my-1">
     <!-- User Interface controls -->
     <b-row>
-      <b-col sm="8" class="my-1">
+      <b-col sm="5" class="my-1">
         <b-input-group>
           <b-form-input
             v-model="filter"
             placeholder="请输入..."
-            size="sm"
+            size="md"
           ></b-form-input>
           <b-input-group-append>
             <b-button
               :disabled="!filter"
               @click="filter = ''"
-              size="sm"
+              size="md"
             >
               清空</b-button>
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col sm="4" class="my-1">
+      <b-col sm="2" class="my-1">
         <b-form-select
           v-model="perPage"
           :options="pageOptions"
-          size="sm"
+          size="md"
         ></b-form-select>
       </b-col>
     </b-row>

@@ -321,9 +321,7 @@
 
         },
         transformOnsetDate(item){//得到发病日期
-          if(item.onsetDate==''){
-            return '';
-          }else if(item.onsetDate===null){
+          if(item.onsetDate==''||item.onsetDate===null){
             return "";
           }else{
             return item.onsetDate.split("T")[0];

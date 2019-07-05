@@ -1,34 +1,32 @@
 <template  slot-scope="scope">
-        <b-card header="发药列表">
-
-              <b-table
-                :items="items"
-                :fields="tableFields"
-                :busy="isBusy">
-                <template slot="status" slot-scope="data">
-                  <b-badge
-                    :variant="data.item.status">{{data.item.status}}
-                  </b-badge>
-                </template>
-                <template slot="选择" slot-scope="data">
-                  <b-button
-                    variant="outline-primary"
-                    size="sm"
-                    @click="selectUser(data.item)"
-                    class="mr-2">
-                    选择
-                  </b-button>
-                </template>
-              </b-table>
-              <b-pagination
-                @change="getPatientList"
-                v-model="currentPage"
-                :total-rows="total"
-                :per-page="perPage"
-                aria-controls="user-table"
-              ></b-pagination>
-
-        </b-card>
+  <b-card header="发药列表">
+    <b-table
+      :items="items"
+      :fields="tableFields"
+      :busy="isBusy">
+      <template slot="status" slot-scope="data">
+        <b-badge
+          :variant="data.item.status">{{data.item.status}}
+        </b-badge>
+      </template>
+      <template slot="选择" slot-scope="data">
+        <b-button
+          variant="outline-primary"
+          size="sm"
+          @click="selectUser(data.item)"
+          class="mr-2">
+          选择
+        </b-button>
+      </template>
+    </b-table>
+    <b-pagination
+      @change="getPatientList"
+      v-model="currentPage"
+      :total-rows="total"
+      :per-page="perPage"
+      aria-controls="user-table"
+    ></b-pagination>
+  </b-card>
 </template>
 
 <script>
