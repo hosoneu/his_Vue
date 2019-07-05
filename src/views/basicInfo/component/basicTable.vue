@@ -27,13 +27,13 @@
     <b-row>
       <b-col md="9" class="my-1"></b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="success" class="btn-pill" @click="insertList">添加</b-button>
+        <b-button variant="success" @click="insertList">添加</b-button>
       </b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="danger" class="btn-pill" @click="deleteList">删除</b-button>
+        <b-button variant="danger" @click="deleteList">删除</b-button>
       </b-col>
       <b-col md="1" class="my-1">
-        <b-button variant="info" class="btn-pill" @click="updateList">编辑</b-button>
+        <b-button variant="info" @click="updateList">编辑</b-button>
       </b-col>
     </b-row>
     <b-table selectable select-mode="single" @row-selected="selectItem" show-empty :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" :busy="isBusy" responsive="sm" :items="items" :fields="captions" :filter="filter" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" @filtered="onFiltered"

@@ -5,9 +5,9 @@
     </div>
     <div>
       <span style="font-style: italic"><strong>排班医生</strong></span>
-      <b-button class="pull-right" type="submit" size="sm" variant="primary" @click="submit"><i class="fa fa-dot-circle-o"></i> Submit</b-button>
-      <b-button class="pull-right" type="saveRule" size="sm" variant="info" @click="saveRule"><i class="fa fa-dot-circle-o"></i> Save As Rule</b-button>
-      <b-button class="pull-right" type="reset" size="sm" variant="danger" @click="reset"><i class="fa fa-ban"></i> Reset</b-button>
+      <b-button class="pull-right" type="submit" size="sm" variant="primary" @click="submit"><i class="fa fa-dot-circle-o"></i> 提交</b-button>
+      <b-button class="pull-right" type="saveRule" size="sm" variant="info" @click="saveRule"><i class="fa fa-dot-circle-o"></i> 存为规则</b-button>
+      <b-button class="pull-right" type="reset" size="sm" variant="danger" @click="reset"><i class="fa fa-ban"></i> 重置</b-button>
     </div>
     <br/>
     <div style="background:linear-gradient(to left,#efefef,#b6b6b6);height:1px;"></div>
@@ -150,6 +150,7 @@
 <script>
     export default {
         name: "schedulingInfoForm",
+        inject: ['reload'],
         props: {
           doctorList: {
             type: [Array, Object],
@@ -213,6 +214,7 @@
             this.$post('scheduling/insertInfo', this.schedulingInfo).then((res) => {
               if (res.status === 'OK') {
                 alert("生成排班信息成功");
+                this.reload();
               } else {
                 console.log("挂号失败");
               }
