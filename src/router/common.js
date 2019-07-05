@@ -3,10 +3,13 @@ const Page500 = () => import('../views/common/Page500');
 const Login = () => import('../views/common/Login');
 const Register = () => import('../views/common/RegisterForLogin');
 
+const LoginForPatient = () => import('../views/patient/LoginForPatient');
+
 
 export default {
   path: '/',
     redirect: '/login',
+  // redirect:'/loginForPatient',
   name: 'Pages',
   component: {
   render (c) { return c('router-view') }
@@ -31,6 +34,11 @@ export default {
       path: 'registerForLogin',
       name: 'Register',
       component: Register
+    },
+    {
+      path: 'loginForPatient',
+      name: 'loginForPatient',
+      component: LoginForPatient
     }
   ]
 }

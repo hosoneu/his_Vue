@@ -2,17 +2,17 @@
   <b-card :header="caption">
     <b-row>
       <b-col md="6" class="my-1">
-        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+        <b-form-group label-cols-sm="2" label="查询" class="mb-0">
           <b-input-group>
-            <b-form-input v-model="filter" placeholder="Type to Search"></b-form-input>
+            <b-form-input v-model="filter" placeholder="请输入..."></b-form-input>
             <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+              <b-button :disabled="!filter" @click="filter = ''">清空</b-button>
             </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
       <b-col md="6" class="my-1">
-        <b-form-group label-cols-sm="3" label="Sort" class="mb-0">
+        <b-form-group label-cols-sm="2" label="排序" class="mb-0">
           <b-input-group>
             <b-form-select v-model="sortBy" :options="sortOptions">
               <option slot="first" :value="null">-- none --</option>

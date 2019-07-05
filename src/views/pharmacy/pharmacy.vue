@@ -407,6 +407,7 @@
           data.push(this.currentPatient.medicalRecordId);
 
           this.$post(url, data).then(res=>{
+
             if (res.status == "OK"){
               alert("发药成功");
             }
@@ -414,7 +415,6 @@
               alert("发药失败");
             }
           });
-
           //改变状态1->2
           if (this.currentPatient.examinationId) {//若是检查检验药
             console.log("检查检验药");

@@ -6,6 +6,7 @@ import pharmacy from './pharmacy'
 import register from './register'
 import tech from './tech'
 import statistics from './statistics'
+import patient from './patient'
 export default {
   items: {
     home: home,
@@ -16,5 +17,6 @@ export default {
     register: register,
     tech: tech,
     statistics:statistics,
+    patient:patient,
   }
 }

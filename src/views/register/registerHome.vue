@@ -61,9 +61,9 @@
             ],
             //items一般都是刚创建vue时接收的主列表 这里是挂号列表registrationList
             items: [],
-            departmentList: {},
-            doctorList: {},
-            patientList:{},
+            departmentList: [],
+            doctorList: [],
+            patientList:[],
           }
         },
         mounted: async function(){

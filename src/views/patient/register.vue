@@ -184,142 +184,173 @@
         </b-col>
       </b-row>
     </b-form>
-    <RegisterModal   @register="register" :total-cost="totalCost">
-    </RegisterModal>
+    <RegisterModalForPatient   @register="register" :total-cost="totalCost">
+    </RegisterModalForPatient>
   </b-card>
 </template>
 
 <script>
-    import RegisterModal from "./registerModal"
-    export default {
-        name: "registerForm",
-        components:{RegisterModal},
-        props: {
-          departmentList: {
-            type: [Array, Object],
-            default: () => []
-          },
-          doctorList: {
-            type: [Array, Object],
-            default: () => []
-          },
-          patientList: {
-            type: [Array, Object],
-            default: () => []
-          },
+  import RegisterModalForPatient from "./component/registerModalForPatient"
+  export default {
+    name: "register",
+    components:{RegisterModalForPatient},
+    data: () => {
+      return{
+        patient: {
+          patientName:'',
+          patientGender: '1',
+          patientBirth: '2019-06-29',
+          patientIdentity: '',
         },
-        data: () => {
-            return{
-              patient: {
-                patientName:'',
-                patientGender: '1',
-                patientBirth: '2019-06-29',
-                patientIdentity: '',
-              },
-              registration: {
-                registrationLevelId: 1,
-                departmentId: 1,
-                calculationTypeId: 1,
-                //doctorId可谓不填项，则insertSelective不更新
-                doctorId: null,
-                buyMedicalRecord: 1,
-                registrationStatus: 1,
-              },
-              medicalRecord: {
-                //后端拼写错误 用Treament
-                isTreamentOver: 1,
-              },
-              expenseItems: {
-                payStatus: 1,
-              },
-              totalCost: 0,
-            }
-          },
-      computed:{
-        idState(){
-          return this.patient.patientIdentity.length === 18;
+        registration: {
+          registrationLevelId: 1,
+          departmentId: 1,
+          calculationTypeId: 1,
+          //doctorId可谓不填项，则insertSelective不更新
+          doctorId: null,
+          buyMedicalRecord: 1,
+          registrationStatus: 1,
         },
-        nameState(){
-          return this.patient.patientName.length > 1;
+        medicalRecord: {
+          //后端拼写错误 用Treament
+          isTreamentOver: 1,
         },
-        doctorListByDepartmentId(){
-          // let ds = this.doctorList.filter(doctor => {if(doctor.departmentId === departmentId) return true;});
-          // if(ds.length > 0) return ds[0].text;
-          // else return "未知";
-          return function(departmentId) {
-            let ds = this.doctorList.filter(doctor => {if(doctor.department.departmentId === departmentId) return true;});
-            return ds;
-          };
+        expenseItems: {
+          payStatus: 1,
         },
+        totalCost: 0,
+        departmentList: {},
+        doctorList: [],
+        patientList: [],
+      }
+    },
+    computed:{
+      idState(){
+        return this.patient.patientIdentity.length === 18;
       },
-      methods:{
-        getPatient(){
-          let ds = this.patientList.filter(patient => {if(patient.patientIdentity === this.patient.patientIdentity) return true;});
-          if(ds.length > 0) {
-            this.patient = JSON.parse(JSON.stringify(ds[0]));
+      nameState(){
+        return this.patient.patientName.length > 1;
+      },
+      doctorListByDepartmentId(){
+        // let ds = this.doctorList.filter(doctor => {if(doctor.departmentId === departmentId) return true;});
+        // if(ds.length > 0) return ds[0].text;
+        // else return "未知";
+        return function(departmentId) {
+          let ds = this.doctorList.filter(doctor => {if(doctor.department.departmentId === departmentId) return true;});
+          return ds;
+        };
+      },
+    },
+    mounted: async function(){
+      // this.$store.commit('common/set_curr_user_type', 'register');
+      await this.getDepartmentList();
+      await this.getDoctorList();
+      await this.getPatientList();
+    },
+    methods:{
+      getDepartmentList(){
+        console.log("请求科室列表");
+        this.$get('department/getAllDepartmentWithCategory').then((res)=> {
+          console.log(res.data);
+          if(res.status === 'OK'){
+            this.departmentList = res.data;
+            // return  res.data;
+          }else{
+            console.log("加载科室列表失败");
           }
-          else {
-            alert("此患者尚未在本医院就诊过！");
+        })
+      },
+      getDoctorList(){
+        console.log("请求医生列表");
+        this.$get('user/getUserByRole', {roleId: 1}).then((res)=> {
+          console.log(res.data);
+          if(res.status === 'OK'){
+            this.doctorList = res.data;
+            // return res.data;
+          }else{
+            console.log("加载医生列表失败");
           }
-        },
-        checkForm(){
-          return this.idState && this.nameState;
-        },
-        submit:(async function () {
-          //检查表单是否填充 身份证号18位且名字处长度大于1
-          if(this.checkForm()){
-            await this.getRegistrationCost();
-            this.$bvModal.show('registerModal');
+        })
+      },
+      getPatientList(){
+        this.$get('registration/getAllPatient').then((res)=> {
+          console.log(res.data);
+          if(res.status === 'OK'){
+            let that = this;
+            this.patientList = res.data;
+            this.patientList.forEach(function (patient) {
+              patient.patientBirth = that.$moment(patient.patientBirth).format("YYYY-MM-DD");
+            });
+          }else{
+            console.log("加载患者列表失败");
           }
-          else{
-            alert("患者信息部分填写尚不完善，请正确填写");
-          }
-        }),
-        reset(){
-          //初始化 若全部置为空对象会报错
-          this.patient = {
-            patientName:'',
-            patientGender: '',
-            patientBirth: '2019-06-29',
-            patientIdentity: '',
-          };
-          this.registration = {
-            registrationLevelId: 1,
-            departmentId: 1,
-            calculationTypeId: 1,
-            //doctorId可谓不填项，则insertSelective不更新
-            doctorId: null,
-            buyMedicalRecord: 1,
-            registrationStatus: 1,
-          };
-        },
-        getRegistrationCost:(function () {
-           this.$get('registrationLevel/getRegistrationLevelById', {"id": this.registration.registrationLevelId}).then((res) => {
-            if (res.status === 'OK') {
-              this.totalCost = parseFloat(res.data.registrationCost) + parseFloat(this.registration.buyMedicalRecord);
-            } else {
-              console.log("挂号失败");
-            }
-          })
-        }),
-        register(payModeId){
-          this.$post('registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.state.register.cashier.userId, "payModeId": payModeId}).then((res) => {
-            if (res.status === 'OK') {
-              alert("挂号成功！");
-              payModeId = 51;
-              //改变父组件props属性 破坏了单项数据流
-              //改变自身数据
-              this.totalCost = 0;
-              this.reset();
-              //刷新左侧挂号信息表格
-              this.$emit('refresh');
-            } else {
-              alert("挂号失败！");
-            }
-          })
+        })
+      },
+      getPatient(){
+        let ds = this.patientList.filter(patient => {if(patient.patientIdentity === this.patient.patientIdentity) return true;});
+        if(ds.length > 0) {
+          this.patient = JSON.parse(JSON.stringify(ds[0]));
+        }
+        else {
+          alert("此患者尚未在本医院就诊过！");
         }
       },
-    }
+      checkForm(){
+        return this.idState && this.nameState;
+      },
+      submit:(async function () {
+        //检查表单是否填充 身份证号18位且名字处长度大于1
+        if(this.checkForm()){
+          await this.getRegistrationCost();
+          this.$bvModal.show('registerModalForPatient');
+        }
+        else{
+          alert("患者信息部分填写尚不完善，请正确填写");
+        }
+      }),
+      reset(){
+        //初始化 若全部置为空对象会报错
+        this.patient = {
+          patientName:'',
+          patientGender: '',
+          patientBirth: '2019-06-29',
+          patientIdentity: '',
+        };
+        this.registration = {
+          registrationLevelId: 1,
+          departmentId: 1,
+          calculationTypeId: 1,
+          //doctorId可谓不填项，则insertSelective不更新
+          doctorId: null,
+          buyMedicalRecord: 1,
+          registrationStatus: 1,
+        };
+      },
+      getRegistrationCost:(function () {
+        this.$get('registrationLevel/getRegistrationLevelById', {"id": this.registration.registrationLevelId}).then((res) => {
+          if (res.status === 'OK') {
+            this.totalCost = parseFloat(res.data.registrationCost) + parseFloat(this.registration.buyMedicalRecord);
+          } else {
+            console.log("挂号失败");
+          }
+        })
+      }),
+      register(payModeId){
+        this.$post('registration/register', {"registration": this.registration, "patient": this.patient, "medicalRecord": this.medicalRecord, "expenseItems": this.expenseItems, "userId": this.$store.state.register.cashier.userId, "payModeId": payModeId}).then((res) => {
+          if (res.status === 'OK') {
+            alert("挂号成功！");
+            payModeId = 51;
+            //改变父组件props属性 破坏了单项数据流
+            //改变自身数据
+            this.totalCost = 0;
+            this.reset();
+          } else {
+            alert("挂号失败！");
+          }
+        })
+      }
+    },
+  }
 </script>
 
 <style scoped>

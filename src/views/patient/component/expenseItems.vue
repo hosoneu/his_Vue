@@ -10,10 +10,10 @@
                 <b-col sm="5" class="my-1">
                   <b-input-group>
                     <b-form-input
-                      v-model="filter"
-                      placeholder="请输入..."
-                      size="sm"
-                    ></b-form-input>
+                    v-model="filter"
+                    placeholder="请输入..."
+                    size="sm"
+                  ></b-form-input>
                     <b-input-group-append>
                       <b-button
                         :disabled="!filter"
@@ -174,6 +174,13 @@
         this.total = filteredItems.length;
         this.currentPage = 1;
       },
+    },
+    watch:{
+      medicalRecordId:{
+        handler(){
+          this.getExpenseItemsList()
+        }
+      }
     },
   }
 </script>
