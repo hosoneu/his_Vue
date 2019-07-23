@@ -108,7 +108,7 @@ npm run serve
 ### 3 其他
 
 1. 登录做的比较简单，只要用户名和密码都不为空，则有一半的概率登录成功，可多尝试几次
-#### 4 What More
+### 4 What More
 1. If you are in the human-computer interaction experiment class of northeast university in 2016 and use this demo, all team members and project organization of star and fellow are rejected
 2. If you directly use this project as the result of submission, please relax, you basically failed this course, because the project team members are lazy, you may encounter n brother projects with a load checking rate of up to 90%
 3. thanks for your read
