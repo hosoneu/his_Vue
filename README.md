@@ -1,5 +1,10 @@
 ## his 前端项目
 
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/hosoneu/his_Vue)
+![GitHub](https://img.shields.io/github/license/hosoneu/his_Vue)
+[![HitCount](http://hits.dwyl.com/hosoneu/his_Vue.svg)](http://hits.dwyl.com/hosoneu/his_Vue)
+![GitHub last commit](https://img.shields.io/github/last-commit/hosoneu/his_Vue)
+
 基于vue框架的his前端项目
 
 IDE统一采用WebStorm
